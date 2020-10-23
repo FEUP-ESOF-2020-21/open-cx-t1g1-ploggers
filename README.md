@@ -1,6 +1,6 @@
 # open-cx-t1g1-ploggers Development Report
 
-Welcome to the documentation pages of the Meetix of **openCX**!
+Welcome to the documentation pages of the AsQuestions of **openCX**!
 
 * Business modeling 
   * [Product Vision](#Product-Vision)
@@ -166,7 +166,7 @@ Scenario: Answering questions from the audience
 	Then the app shows me the question and its comment thread
 	When I tap the "Answer Question" button
 	Then the system allows me to write an answer
-    When I tap the "Submit Answer" button
+    	When I tap the "Submit Answer" button
 	Then the system posts the answer to the thread and fixes it at the top, marking it as the host's response
 ```
 _Value/Effort_
