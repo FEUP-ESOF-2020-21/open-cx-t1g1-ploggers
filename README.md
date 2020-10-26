@@ -43,6 +43,8 @@ AsQuestions aims to encourage and simplify host-attendee interaction during conf
 ---
 ## Elevator Pitch
 
+
+
 ---
 ## Requirements
 
@@ -60,16 +62,19 @@ As an attendee, I want to post questions so that the host or other attendees can
 
 _User interface mockups_
 
-![User story #1 mockup1](./img/mockup1.jpg)
+![User story #1 mockup1](./img/mockup1.png)
+![User story #1 mockup2](./img/mockup2.png)
+
+
 
 _Acceptance Tests_
 
 ```gherkin
 Scenario: Posting a question
-	Given there are 2 questions asked in the forum
-	When I tap the "Post a Question" button
+	Given there are 4 questions asked in the forum
+	When I tap the "Post a Question (+)" button
 	And I write and submit a question
-	Then there are 3 questions asked in the forum.
+	Then there are 5 questions asked in the forum.
 ```
 
 _Value/Effort_
@@ -85,7 +90,7 @@ As an attendee, I want to be able to mention a specific part of the presentation
 
 _User interface mockups_
 
-![User story #2 mockup](./img/mockup2.jpg)
+![User story #2 mockup3](./img/mockup3.png)
 
 _Acceptance Tests_
 
@@ -108,7 +113,7 @@ As an attendee, I want to answer questions so that I can help the other attendee
 
 _User interface mockups_
 
-![User story #3 mockup](./img/mockup3.jpg)
+![User story #3 mockup4](./img/mockup4.png)
 
 _Acceptance Tests_
 ```gherkin
@@ -134,7 +139,7 @@ As an attendee, I want to be able to upvote/downvote questions so that the host 
 
 _User interface mockups_
 
-![User story #4 mockup](./img/mockup4.jpg)
+![User story #4 mockup1](./img/mockup1.png)
 
 _Acceptance Tests_
 ```gherkin
@@ -156,7 +161,7 @@ As a host, I want to answer my audience’s questions so that they can leave the
 
 _User interface mockups_
 
-![User story #5 mockup](./img/mockup5.jpg)
+![User story #5 mockup5](./img/mockup5.png)
 
 _Acceptance Tests_
 ```gherkin
@@ -166,7 +171,7 @@ Scenario: Answering questions from the audience
 	Then the app shows me the question and its comment thread
 	When I tap the "Answer Question" button
 	Then the system allows me to write an answer
-    	When I tap the "Submit Answer" button
+    When I tap the "Submit Answer" button
 	Then the system posts the answer to the thread and fixes it at the top, marking it as the host's response
 ```
 _Value/Effort_
@@ -182,7 +187,8 @@ As a host, I want to be able to create a forum for my audience to place their qu
 
 _User interface mockups_
 
-![User story #6 mockup](./img/mockup6.jpg)
+![User story #6 mockup6](./img/mockup6.png)
+![User story #6 mockup7](./img/mockup7.png)
 
 _Acceptance Tests_
 ```gherkin
@@ -205,7 +211,7 @@ As a moderator, I want to be able to control what questions are passed to the ho
 
 _User interface mockups_
 
-![User story #7 mockup](./img/mockup7.jpg)
+![User story #7 mockup8](./img/mockup8.png)
 
 _Acceptance Tests_
 ```gherkin
@@ -221,5 +227,96 @@ _Value/Effort_
 Value: Should Have
 
 Effort: M
+
+### Domain model
+
+To better understand the context of the software system, it is very useful to have a simple UML class diagram with all the key concepts (names, attributes) and relationships involved of the problem domain addressed by your module.
+
+------
+
+## Architecture and Design
+
+The architecture of a software system encompasses the set of key decisions about its overall organization.
+
+A well written architecture document is brief but reduces the amount of time it takes new programmers to a project to understand the code to feel able to make modifications and enhancements.
+
+To document the architecture requires describing the decomposition of the system in their parts (high-level components) and the key behaviors and collaborations between them.
+
+In this section you should start by briefly describing the overall components of the project and their interrelations. You should also describe how you solved typical problems you may have encountered, pointing to well-known architectural and design patterns, if applicable.
+
+### Logical architecture
+
+The purpose of this subsection is to document the high-level logical structure of the code, using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
+
+It can be beneficial to present the system both in a horizontal or vertical decomposition:
+
+- horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts;
+- vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
+
+### Physical architecture
+
+The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
+
+It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
+
+### Prototype
+
+To help on validating all the architectural, design and technological decisions made, we usually implement a vertical prototype, a thin vertical slice of the system.
+
+In this subsection please describe in more detail which, and how, user(s) story(ies) were implemented.
+
+------
+
+## Implementation
+
+Regular product increments are a good practice of product management.
+
+While not necessary, sometimes it might be useful to explain a few aspects of the code that have the greatest potential to confuse software engineers about how it works. Since the code should speak by itself, try to keep this section as short and simple as possible.
+
+Use cross-links to the code repository and only embed real fragments of code when strictly needed, since they tend to become outdated very soon.
+
+------
+
+## Test
+
+There are several ways of documenting testing activities, and quality assurance in general, being the most common: a strategy, a plan, test case specifications, and test checklists.
+
+In this section it is only expected to include the following:
+
+- test plan describing the list of features to be tested and the testing methods and tools;
+- test case specifications to verify the functionalities, using unit tests and acceptance tests.
+
+A good practice is to simplify this, avoiding repetitions, and automating the testing actions as much as possible.
+
+------
+
+## Configuration and change management
+
+Configuration and change management are key activities to control change to, and maintain the integrity of, a project’s artifacts (code, models, documents).
+
+For the purpose of ESOF, we will use a very simple approach, just to manage feature requests, bug fixes, and improvements, using GitHub issues and following the [GitHub flow](https://guides.github.com/introduction/flow/).
+
+------
+
+## Project management
+
+Software project management is an art and science of planning and leading software projects, in which software projects are planned, implemented, monitored and controlled.
+
+In the context of ESOF, we expect that each team adopts a project management tool capable of registering tasks, assign tasks to people, add estimations to tasks, monitor tasks progress, and therefore being able to track their projects.
+
+Example of tools to do this are:
+
+- [Trello.com](https://trello.com/)
+- [Github Projects](https://github.com/features/project-management/com)
+- [Pivotal Tracker](https://www.pivotaltracker.com/)
+- [Jira](https://www.atlassian.com/software/jira)
+
+We recommend to use the simplest tool that can possibly work for the team.
+
+------
+
+## Evolution - contributions to open-cx
+
+Describe your contribution to open-cx (iteration 5), linking to the appropriate pull requests, issues, documentation.
 
 ---
