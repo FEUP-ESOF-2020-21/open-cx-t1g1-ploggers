@@ -72,7 +72,7 @@ _Acceptance Tests_
 ```gherkin
 Scenario: Posting a question
 	Given there are 4 questions asked in the forum
-	When I tap the "Post a Question (+)" button
+	When I tap the "Post a Question (+ icon)" button
 	And I write and submit a question
 	Then there are 5 questions asked in the forum.
 ```
@@ -97,7 +97,7 @@ _Acceptance Tests_
 ```gherkin
 Scenario: Mentioning/Tagging a part of the presentation with my question
 	Given that I'm posting a question in the forum
-	When I click on the "Add a Slide" button
+	When I click on the "Add a Slide (Clip icon)" button
 	Then the app allows me to refer a slide related to my question
 ```
 _Value/Effort_
@@ -118,10 +118,10 @@ _User interface mockups_
 _Acceptance Tests_
 ```gherkin
 Scenario: Answering other attendees' questions
-	Given there are 3 questions asked in the forum,
+	Given there are 4 questions asked in the forum,
 	When I click on one of them
 	Then the app shows me the question and its comment thread
-	When I tap the "Answer Question" button
+	When I tap the Textbox
 	Then the system allows me to write an answer 
 	When I tap the "Submit Answer" button
 	Then the system posts the answer to the thread
@@ -169,7 +169,7 @@ Scenario: Answering questions from the audience
 	Given I'm logged in as a host and there are 3 questions asked in the forum 
 	When I click on one of them
 	Then the app shows me the question and its comment thread
-	When I tap the "Answer Question" button
+	When I tap the Textbox
 	Then the system allows me to write an answer
     When I tap the "Submit Answer" button
 	Then the system posts the answer to the thread and fixes it at the top, marking it as the host's response
@@ -195,7 +195,9 @@ _Acceptance Tests_
 Scenario: Creating a forum for the audience's questions
 	Given I’m logged-in as a host
 	Then the app shows me a menu of options
-	When I click the ‘Create conference forum’ button
+	When I click the ‘Create Conference Room’ button
+	Then the app shows me a form to fill with information about the conference
+	When I click the 'Create' button
 	Then the app creates the empty question forum and takes me to it
 ```
 _Value/Effort_
@@ -216,11 +218,11 @@ _User interface mockups_
 _Acceptance Tests_
 ```gherkin
 Scenario: Controlling which questions are passed to the host
-	Given I’m logged-in as a moderator and there are 3 questions asked in the forum 
-	When I click on one of them
-	Then the app shows me the question and its comment thread
-	When I click on "Send question to host"
+	Given I’m logged-in as a moderator and there are 4 questions asked in the forum 
+	When I click on "Send question to host (Star icon)"
 	Then the system puts the question on top of the list for the host, ignoring the upvote/downvote system
+	When I click on "Delete Question (Trash bin icon)"
+	Then the app deletes that question from the forum
 ```
 _Value/Effort_
 
