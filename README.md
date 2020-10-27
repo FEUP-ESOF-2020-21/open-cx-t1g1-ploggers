@@ -43,7 +43,7 @@ AsQuestions aims to encourage and simplify host-attendee interaction during conf
 ---
 ## Elevator Pitch
 
-
+Clearing up the audience's doubts during a meeting is often a difficult task for the host. It is impossible to guarantee that the most relevant questions don't end up unanswered. To solve this issue, AsQuestions provides a conference-targeted interface that allows attendees to post their doubts for everyone in the room. The audience can then upvote the ones they want to see answered and downvote the ones they find less interesting. This way, the host can effortlessly see what questions and topics to cover in the Q&A section of the talk.
 
 ---
 ## Requirements
