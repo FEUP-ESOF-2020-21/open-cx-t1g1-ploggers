@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   //To move to model
   final List<Question> questionList = [
-    Question("Question 1", "Atendee One", 28, 6),
+    Question("Question 1", "Atendee One", 26, 6),
     Question("Question 2", "Atendee Two", 13, 5),
     Question("Question 3", "Atendee Three", 10, 3),
     Question("Question 4", "Atendee Four", 10, 3),
@@ -57,69 +57,54 @@ class MyHomePage extends StatelessWidget {
 
   Widget buildQuestionCard(BuildContext context, int index) {
     final question = questionList[index];
+
     return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(question.title, style: new TextStyle(fontSize: 25.0)),
-                      Spacer(),
-                      Transform.scale(
-                      scale: 2.0,
-                      child: IconButton(
-                        icon: Icon(Icons.keyboard_arrow_up_outlined), 
-                        onPressed: (){question.votes++;}
-                      ),
-                    ),
-                    ],
+      padding: const EdgeInsets.all(5.0),
+      child: Card(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(question.title, style: new TextStyle(fontSize: 25.0)),
+                  Container(
+                    height: 10,
                   ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.only(right: 12.0, top: 20.0), //Centered with padding -> need a better solution
-                  child: Row(
-                    children: <Widget>[
-                      Spacer(),
-                      Text(question.votes.toString(), style: new TextStyle(fontSize: 18.0)),
-                    ],
-                  ),
-                ),
-                
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 0.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(question.author, style: new TextStyle(fontSize: 18.0)),
-                      Spacer(),
-                    ],
-                  ),
-                ),
-
-
-                Row(
-                  children: <Widget>[
-                    Text(question.numComments.toString() + " comments"),
-                    Spacer(),
-                    Transform.scale(
-                      scale: 2.0,
-                      child: IconButton(
-                        icon: Icon(Icons.keyboard_arrow_down_outlined), 
-                        onPressed: (){question.votes--;}
-                      ),
-                    ),
-                  ],
-                ),
-
-              ],
+                  Text(question.author, style: new TextStyle(fontSize: 18.0)),
+                  Text(question.numComments.toString() + " comments",
+                      style: new TextStyle(fontSize: 15.0)),
+                ],
+              ),
             ),
-          ),
+            Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: Column(
+                children: <Widget>[
+                  Transform.scale(
+                    scale: 2.0,
+                    child: IconButton(
+                        icon: Icon(Icons.keyboard_arrow_up_outlined),
+                        onPressed: () {
+                          question.votes++;
+                        }),
+                  ),
+                  Text(question.votes.toString(),
+                      style: new TextStyle(fontSize: 18.0)),
+                  Transform.scale(
+                    scale: 2.0,
+                    child: IconButton(
+                        icon: Icon(Icons.keyboard_arrow_down_outlined),
+                        onPressed: () {
+                          question.votes--;
+                        }),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
