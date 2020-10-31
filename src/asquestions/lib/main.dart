@@ -35,9 +35,9 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   //To move to model
   final List<Question> questionList = [
-    Question("Question 1", "Atendee One", 26, 6),
+    Question("Question 1", "Atendee One", 1, 6),
     Question("Question 2", "Atendee Two", 13, 5),
-    Question("Question 3", "Atendee Three", 10, 3),
+    Question("Question 3", "Atendee Three", 100, 3),
     Question("Question 4", "Atendee Four", 10, 3),
   ];
 
