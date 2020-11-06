@@ -61,41 +61,49 @@ class _MyQuestionPageState extends State<MyQuestionPage> {
       );
     }
     return ListView.builder(
-      itemCount: question.comments.length,
-      itemBuilder: (BuildContext context, int index) {
-        Comment comment = question.comments[index];
-        return Card(
-          color: Colors.blue.shade100,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children:  
-                [ListTile(
-                  leading: Image(image: AssetImage(comment.user.picture)),
-                  title: Text(comment.user.name, style: new TextStyle(fontSize: 20.0)),
-                  subtitle: Text(comment.text, style: new TextStyle(fontSize: 18.0))
-                  ),
+        itemCount: question.comments.length,
+        itemBuilder: (BuildContext context, int index) {
+          Comment comment = question.comments[index];
+          return Card(
+            color: Colors.blue.shade100,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  ListTile(
+                      leading: Image(image: AssetImage(comment.user.picture)),
+                      title: Text(comment.user.name,
+                          style: new TextStyle(fontSize: 20.0)),
+                      subtitle: Text(comment.text,
+                          style: new TextStyle(fontSize: 18.0))),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(comment.date.hour.toString() + ":" + comment.date.minute.toString(), style: new TextStyle(fontSize: 14.0, color: Colors.grey.shade700)),
-                        if(!comment.isFromHost)
-                          Icon(Icons.person_rounded, color: Colors.grey.shade600,)
-                        else
-                          Icon(Icons.mic_rounded, color: Colors.yellow.shade800,)
-                      ]
-                    ),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              comment.date.hour.toString() +
+                                  ":" +
+                                  comment.date.minute.toString(),
+                              style: new TextStyle(
+                                  fontSize: 14.0, color: Colors.grey.shade700)),
+                          if (!comment.isFromHost)
+                            Icon(
+                              Icons.person_rounded,
+                              color: Colors.grey.shade600,
+                            )
+                          else
+                            Icon(
+                              Icons.mic_rounded,
+                              color: Colors.yellow.shade800,
+                            )
+                        ]),
                   )
-
                 ],
-              
+              ),
             ),
-          ),
-        );
-      }
-    );
+          );
+        });
   }
 
   Widget buildQuestion() {
@@ -129,12 +137,20 @@ class _MyQuestionPageState extends State<MyQuestionPage> {
                   endIndent: 40),
               Image(image: AssetImage('assets/pp1.png')),
               Padding(
-                padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 5.0),
+                padding:
+                    const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 5.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(question.comments.length.toString() + " comments", style: new TextStyle(fontSize: 14.0, color: Colors.grey.shade700)),
-                    Text(question.date.hour.toString() + ":" + question.date.minute.toString(), style: new TextStyle(fontSize: 14.0, color: Colors.grey.shade700))
+                    Text(question.comments.length.toString() + " comments",
+                        style: new TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade700)),
+                    Text(
+                        question.date.hour.toString() +
+                            ":" +
+                            question.date.minute.toString(),
+                        style: new TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade700))
                   ],
                 ),
               )
