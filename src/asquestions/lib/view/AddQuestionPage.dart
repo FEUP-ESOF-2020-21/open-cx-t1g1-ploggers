@@ -70,7 +70,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
             padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: Image(
               image: AssetImage("assets/avatar1.png"),
-              width: 250,
+              width: 150,
             ),
           ),
           Divider(
@@ -78,9 +78,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
               color: Colors.blue.shade200,
               indent: 48,
               endIndent: 48),
-          Container(
-              child:
-                  Text("Pedro Queirós", style: new TextStyle(fontSize: 20.0))),
+          Text("Atendee Six", style: new TextStyle(fontSize: 20.0)),
           Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
             child: Divider(
