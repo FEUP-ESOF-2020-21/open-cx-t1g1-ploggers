@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'view/MyConferenceQuestionsPage.dart';
+import 'view/UserProfilePage.dart';
+import 'model/User.dart';
 
 void main() {
   runApp(MyApp());
@@ -7,6 +9,9 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
+  User user = new User("Caio Nogueira", "from Albergaria", "Caio Nogueira",
+      "assets/avatar1.png", "Im draining");
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,7 +32,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyConferenceQuestionsPage(),
+      home: UserProfilePage(user),
     );
   }
 }
