@@ -24,18 +24,19 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ClipPath(
             clipper: MyCustomClipper(),
             child: Container(
-              
               height: 300,
               //color: Colors.transparent,
               decoration: new BoxDecoration(
-                image: new DecorationImage( image: new AssetImage("assets/background1.png"),
-                fit: BoxFit.cover)
-              ),
+                  image: new DecorationImage(
+                      image: new AssetImage("assets/background1.png"),
+                      fit: BoxFit.cover)),
             ),
           ),
+          topBar(),
           Container(
-            height: 600,
-            padding: EdgeInsets.only(left: size.width*0.25, top: size.height*0.2),
+            //height: size.hei,
+            padding: EdgeInsets.only(
+                left: size.width * 0.015, top: size.height * 0.2),
             child: Column(
               children: <Widget>[
                 //alignment: Alignment.,
@@ -56,9 +57,88 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ),
                   ),
                 ),
+
+                getItems(user),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget getItems(User user) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 20, right: 10), //use size later
+          child: Column(children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.chrome_reader_mode),
+              title: Text(
+                "Bio",
+                style:
+                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text(
+                user.bio,
+                style: new TextStyle(fontSize: 18.0),
+              ),
+            ),
+            Divider(indent: 20, endIndent: 50),
+            ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text(
+                "Username",
+                style:
+                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text(
+                user.username,
+                style: new TextStyle(fontSize: 17.0),
+              ),
+              dense: true,
+            ),
+            Divider(indent: 20, endIndent: 50),
+            ListTile(
+              leading: Icon(Icons.lock),
+              title: Text(
+                "Password",
+                style:
+                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text(
+                user.replacePassword(),
+                style: new TextStyle(fontSize: 18.0),
+              ),
+            ),
+            Divider(indent: 20, endIndent: 50),
+            ListTile(
+              leading: Icon(Icons.alternate_email),
+              title: Text(
+                "Email",
+                style:
+                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text(
+                user.email,
+                style: new TextStyle(fontSize: 18.0),
+              ),
+            ),
+            Divider(indent: 20, endIndent: 50),
+          ]),
+        )
+      ],
+    );
+  }
+
+  Widget topBar() {
+    return SafeArea(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}, iconSize: 35),
+          IconButton(icon: Icon(Icons.settings), onPressed: () {}, iconSize: 35),
         ],
       ),
     );
