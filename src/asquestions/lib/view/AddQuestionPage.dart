@@ -1,4 +1,5 @@
 import 'package:asquestions/view/MyConferenceQuestionsPage.dart';
+import '../model/Presentation.dart';
 import 'package:flutter/material.dart';
 
 class MyCustomForm extends StatefulWidget {
@@ -19,18 +20,16 @@ class _MyCustomFormState extends State<MyCustomForm> {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-          height: 600,
-          width: 300,
           child: TextFormField(
-            controller: myController,
-            keyboardType: TextInputType.multiline,
-            maxLines: 15,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Write your question",
-            ),
-            style: TextStyle(height: 1),
-          )),
+        controller: myController,
+        keyboardType: TextInputType.multiline,
+        maxLines: 15,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: "Write your question",
+        ),
+        style: TextStyle(height: 1),
+      )),
     );
   }
 }
@@ -47,50 +46,64 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
+    // pseudo-database, just to test code
+    Presentation presentation =
+        Presentation("Presentation 1", ["pp1.png", "pp2.png", "pp3.png"]);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("New Question"),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.check_sharp),
-              iconSize: 25,
-              color: Colors.white,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyConferenceQuestionsPage()));
-              })
-        ],
-      ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: Image(
-              image: AssetImage("assets/avatar1.png"),
-              width: 150,
-            ),
-          ),
-          Divider(
-              thickness: 3.0,
-              color: Colors.blue.shade200,
-              indent: 48,
-              endIndent: 48),
-          Text("Atendee Six", style: new TextStyle(fontSize: 20.0)),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
-            child: Divider(
+        appBar: AppBar(
+          title: Text("New Question"),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(IconData(0xe5c7, fontFamily: 'MaterialIcons')),
+                iconSize: 25,
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyConferenceQuestionsPage()));
+                })
+          ],
+        ),
+        body: Padding(
+          padding:
+              const EdgeInsets.only(top: 10, bottom: 10, left: 35, right: 35),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Image(
+                image: AssetImage("assets/avatar1.png"),
+                width: 150,
+              ),
+              Divider(
                 thickness: 3.0,
                 color: Colors.blue.shade200,
-                indent: 48,
-                endIndent: 48),
+              ),
+              Text("Atendee Six", style: new TextStyle(fontSize: 20.0)),
+              Divider(
+                thickness: 3.0,
+                color: Colors.blue.shade200,
+              ),
+              MyCustomForm(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                      child: TextButton(
+                    onPressed: null,
+                    child:
+                        Text("Submit", style: TextStyle(color: Colors.white)),
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blue)),
+                  ))
+                ],
+              )
+            ],
           ),
-          Expanded(child: MyCustomForm())
-        ],
-      ),
-    );
+        ));
   }
 
   //Widget newQuestion() {}
