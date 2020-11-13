@@ -1,6 +1,6 @@
-import 'package:asquestions/view/MyConferenceQuestionsPage.dart';
-import '../model/Presentation.dart';
+import 'package:asquestions/view/AnnexSlidePage.dart';
 import 'package:flutter/material.dart';
+import '../model/Question.dart';
 
 class MyCustomForm extends StatefulWidget {
   @override
@@ -46,10 +46,6 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
-    // pseudo-database, just to test code
-    Presentation presentation =
-        Presentation("Presentation 1", ["pp1.png", "pp2.png", "pp3.png"]);
-
     return Scaffold(
         appBar: AppBar(
           title: Text("New Question"),
@@ -63,7 +59,8 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MyConferenceQuestionsPage()));
+                          builder: (context) => AnnexSlidePage(Question(
+                              null, null, null, null, null, null, []))));
                 })
           ],
         ),
@@ -98,13 +95,11 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                     style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.blue)),
-                  ))
+                  )),
                 ],
               )
             ],
           ),
         ));
   }
-
-  //Widget newQuestion() {}
 }

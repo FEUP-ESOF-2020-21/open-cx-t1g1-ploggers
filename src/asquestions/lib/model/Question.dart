@@ -8,10 +8,10 @@ class Question {
   int votes;
   List<Comment> comments;
   int voted; //0 is not voted, 1 is upvoted, 2 is downvoted
-  String annexedSlide;
+  List<String> annexedSlides;
 
   Question(this.title, this.user, this.date, this.votes, this.comments,
-      this.voted, this.annexedSlide);
+      this.voted, this.annexedSlides);
 
   void triggerUpvote() {
     if (this.voted == 0) {
@@ -37,5 +37,11 @@ class Question {
       this.votes++;
       this.voted = 0;
     }
+  }
+
+  void annexSlide(slide) {
+    print("annexing");
+    if (this.annexedSlides == null) this.annexedSlides = List<String>();
+    this.annexedSlides.add(slide);
   }
 }
