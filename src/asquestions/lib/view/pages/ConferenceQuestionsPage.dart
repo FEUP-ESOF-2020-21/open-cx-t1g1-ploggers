@@ -1,16 +1,17 @@
-import 'package:asquestions/view/MyQuestionPage.dart';
-import 'package:asquestions/view/AddQuestionPage.dart';
+import 'package:asquestions/view/pages/QuestionPage.dart';
+import 'package:asquestions/view/pages/AddQuestionPage.dart';
 import 'package:flutter/material.dart';
-import '../model/Question.dart';
-import '../model/User.dart';
-import '../model/Comment.dart';
+import '../../model/Question.dart';
+import '../../model/User.dart';
+import '../../model/Comment.dart';
 
-class MyConferenceQuestionsPage extends StatefulWidget {
+class ConferenceQuestionsPage extends StatefulWidget {
   @override
-  _MyConferenceQuestionsState createState() => _MyConferenceQuestionsState();
+  _ConferenceQuestionsState createState() => _ConferenceQuestionsState();
 }
 
-class _MyConferenceQuestionsState extends State<MyConferenceQuestionsPage> {
+class _ConferenceQuestionsState extends State<ConferenceQuestionsPage> {
+
   static List<Comment> comments = [
     Comment(
         User('', '', 'Atendee One', 'assets/avatar1.png', '', '1234'),
@@ -113,7 +114,8 @@ class _MyConferenceQuestionsState extends State<MyConferenceQuestionsPage> {
               iconSize: 28,
               color: Colors.white,
               onPressed: () {
-                Navigator.push(context,
+                Navigator.push(
+                    context,
                     MaterialPageRoute(builder: (context) => AddQuestionPage()));
               })
         ],
@@ -121,7 +123,7 @@ class _MyConferenceQuestionsState extends State<MyConferenceQuestionsPage> {
       body: ListView.builder(
           itemCount: questionList.length,
           itemBuilder: (BuildContext context, int index) =>
-              buildQuestionCard(context, index)),
+          buildQuestionCard(context, index)),
     );
   }
 
@@ -131,7 +133,7 @@ class _MyConferenceQuestionsState extends State<MyConferenceQuestionsPage> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => MyQuestionPage(question)));
+            MaterialPageRoute(builder: (context) => QuestionPage(question)));
       },
       child: Container(
         padding: const EdgeInsets.all(2.0),

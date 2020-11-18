@@ -1,6 +1,6 @@
-import 'package:asquestions/view/AnnexSlidePage.dart';
+import 'package:asquestions/view/pages/AnnexSlidePage.dart';
 import 'package:flutter/material.dart';
-import '../model/Question.dart';
+import '../../model/Question.dart';
 
 class MyCustomForm extends StatefulWidget {
   @override
@@ -47,6 +47,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           title: Text("New Question"),
           centerTitle: true,
@@ -68,20 +69,28 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
           padding:
               const EdgeInsets.only(top: 10, bottom: 10, left: 35, right: 35),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Image(
                 image: AssetImage("assets/avatar1.png"),
-                width: 150,
+                width: 120,
               ),
-              Divider(
-                thickness: 3.0,
-                color: Colors.blue.shade200,
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Divider(
+                  thickness: 3.0,
+                  color: Colors.blue.shade200,
+                ),
               ),
-              Text("Atendee Six", style: new TextStyle(fontSize: 20.0)),
-              Divider(
-                thickness: 3.0,
-                color: Colors.blue.shade200,
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text("Atendee Six", style: new TextStyle(fontSize: 20.0)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Divider(
+                  thickness: 3.0,
+                  color: Colors.blue.shade200,
+                ),
               ),
               MyCustomForm(),
               Row(
