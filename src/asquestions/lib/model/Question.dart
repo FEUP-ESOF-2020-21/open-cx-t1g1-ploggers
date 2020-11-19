@@ -8,7 +8,7 @@ class Question {
   int votes;
   List<Comment> comments;
   int voted; //0 is not voted, 1 is upvoted, 2 is downvoted
-  List<String> annexedSlides;
+  List<int> annexedSlides;
 
   Question(this.title, this.user, this.date, this.votes, this.comments,
       this.voted, this.annexedSlides);
@@ -39,9 +39,10 @@ class Question {
     }
   }
 
-  void annexSlide(slide) {
-    print("annexing");
-    if (this.annexedSlides == null) this.annexedSlides = List<String>();
-    this.annexedSlides.add(slide);
+  void toggleAnnexSlide(slideIndex) {
+    if (this.annexedSlides.contains(slideIndex))
+      this.annexedSlides.remove(slideIndex);
+    else
+      this.annexedSlides.add(slideIndex);
   }
 }

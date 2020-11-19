@@ -55,26 +55,56 @@ class _AnnexSlidePageState extends State<AnnexSlidePage> {
 
   Widget buildSlideCard(BuildContext context, int index) {
     final slide = presentation.slides[index];
+    return SlideCard(widget.question, index, slide, presentation.slides.length);
+  }
+}
 
+class SlideCard extends StatefulWidget {
+  Question question;
+  int slideIndex;
+  String slide;
+  int presentationLength;
+
+  SlideCard(
+      this.question, this.slideIndex, this.slide, this.presentationLength);
+
+  @override
+  _SlideCardState createState() {
+    return _SlideCardState();
+  }
+}
+
+class _SlideCardState extends State<SlideCard> {
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        question.annexSlide(slide);
+        setState(() {
+          widget.question.toggleAnnexSlide(widget.slideIndex);
+        });
       },
       child: Container(
-        // add a margin when selected
-        // decoration: BoxDecoration(
-        //     border: (question.annexedSlides.contains(slide)
-        //         ? Border.all(color: Colors.blue)
-        //         : null)),
-        margin: (index != presentation.slides.length - 1
-            ? const EdgeInsets.only(bottom: 10)
-            : const EdgeInsets.all(0)),
-        child: Card(
-          child: Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Image(image: AssetImage(slide))),
-        ),
-      ),
+          // add a margin when selected
+          decoration: BoxDecoration(
+              border: (widget.question.annexedSlides.contains(widget.slideIndex)
+                  ? Border.all(width: 1.0, color: Colors.blue)
+                  : Border.all(width: 0.0))),
+          margin: (widget.slideIndex != widget.presentationLength - 1
+              ? const EdgeInsets.only(bottom: 10)
+              : const EdgeInsets.all(0)),
+          child: Card(
+            child: Stack(children: [
+              Image(image: AssetImage(widget.slide)),
+              Container(
+                  margin: const EdgeInsets.all(5),
+                  color: Colors.grey.withOpacity(0.5),
+                  width: 20,
+                  height: 20,
+                  child: Center(
+                      child: Text(widget.slideIndex.toString(),
+                          style: TextStyle(color: Colors.black))))
+            ]),
+          )),
     );
   }
 }
