@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import '../model/Question.dart';
-import '../model/Comment.dart';
+import '../../model/Question.dart';
+import '../../model/Comment.dart';
 
-class MyQuestionPage extends StatefulWidget {
+class QuestionPage extends StatefulWidget {
   final Question question;
 
-  MyQuestionPage(this.question);
+  QuestionPage(this.question);
 
   @override
-  _MyQuestionPageState createState() => _MyQuestionPageState(question);
+  _QuestionPageState createState() => _QuestionPageState(question);
 }
 
-class _MyQuestionPageState extends State<MyQuestionPage> {
+class _QuestionPageState extends State<QuestionPage> {
   final Question question;
 
-  _MyQuestionPageState(this.question);
+  _QuestionPageState(this.question);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _MyQuestionPageState extends State<MyQuestionPage> {
               Icon(
                 Icons.question_answer_rounded,
                 size: 80,
-                color: Colors.blue.shade200,
+                color: Colors.lightBlue.shade300,
               ),
               Text("Be the first!",
                   style: new TextStyle(fontSize: 14.0, color: Colors.blue)),
@@ -128,7 +128,10 @@ class _MyQuestionPageState extends State<MyQuestionPage> {
                   color: Colors.blue.shade200,
                   indent: 40,
                   endIndent: 40),
-              Text("Tagged Slide: ", style: new TextStyle(fontSize: 18.0)),
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text("Tagged Slide: ", style: new TextStyle(fontSize: 18.0)),
+              ),
               Divider(
                   height: 5,
                   thickness: 3,
