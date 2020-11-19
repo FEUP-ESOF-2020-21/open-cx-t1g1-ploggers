@@ -44,7 +44,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
         backgroundColor: Colors.white,
         buttonBackgroundColor: Colors.blue,
         animationDuration: Duration(milliseconds: 300),
-        height: 60,
+        height: 50,
         onTap: (int index) {
           setState(() {
             _currentIndex = index;

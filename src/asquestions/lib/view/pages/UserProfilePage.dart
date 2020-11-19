@@ -25,18 +25,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
             clipper: MyCustomClipper(),
             child: Container(
               height: 300,
-              //color: Colors.transparent,
               decoration: new BoxDecoration(
                   color: Colors.blue)
             ),
           ),
           Container(
-            //height: size.hei,
             padding: EdgeInsets.only(
                 left: size.width * 0.015, top: size.height * 0.2),
             child: Column(
               children: <Widget>[
-                //alignment: Alignment.,
                 Container(
                   height: 150,
                   width: 150,
@@ -75,7 +72,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(top: 20, right: 10), //use size later
+          padding: EdgeInsets.only(right: 10), //use size later
           child: Column(children: <Widget>[
             Divider(indent: 20, endIndent: 50),
             ListTile(
