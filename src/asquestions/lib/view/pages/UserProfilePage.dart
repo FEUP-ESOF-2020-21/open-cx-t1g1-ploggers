@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:asquestions/model/User.dart';
 
 class UserProfilePage extends StatefulWidget {
-  final User user;
+  final User _user;
 
-  UserProfilePage(this.user);
+  UserProfilePage(this._user);
 
   @override
-  _UserProfilePageState createState() => _UserProfilePageState(user);
+  _UserProfilePageState createState() => _UserProfilePageState(_user);
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  final User user;
+  final User _user;
 
-  _UserProfilePageState(this.user);
+  _UserProfilePageState(this._user);
 
   @override
   Widget build(BuildContext context) {
@@ -25,40 +25,41 @@ class _UserProfilePageState extends State<UserProfilePage> {
             clipper: MyCustomClipper(),
             child: Container(
               height: 300,
-              //color: Colors.transparent,
               decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                      image: new AssetImage("assets/background1.png"),
-                      fit: BoxFit.cover)),
+                  color: Colors.blue)
             ),
           ),
-          topBar(),
           Container(
-            //height: size.hei,
             padding: EdgeInsets.only(
                 left: size.width * 0.015, top: size.height * 0.2),
             child: Column(
               children: <Widget>[
-                //alignment: Alignment.,
                 Container(
                   height: 150,
                   width: 150,
                   child: Image.asset("assets/avatar1.png"),
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white30, width: 4)),
+                      border: Border.all(color: Colors.lightBlue.shade300, width: 4)),
                 ),
-                Positioned(
-                  child: Text(
-                    user.name,
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _user.name,
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w300,
+                    )),
+                    IconButton(
+                      icon: Icon(Icons.settings_rounded),
+                      color: Colors.black,
+                      onPressed: () {},
+                    )
+                  ],
                 ),
 
-                getItems(user),
+                getItems(_user),
               ],
             ),
           ),
@@ -71,17 +72,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(top: 20, right: 10), //use size later
+          padding: EdgeInsets.only(right: 10), //use size later
           child: Column(children: <Widget>[
+            Divider(indent: 20, endIndent: 50),
             ListTile(
               leading: Icon(Icons.chrome_reader_mode),
               title: Text(
                 "Bio",
                 style:
-                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
               ),
               subtitle: Text(
-                user.bio,
+                _user.bio,
                 style: new TextStyle(fontSize: 18.0),
               ),
             ),
@@ -91,10 +93,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
               title: Text(
                 "Username",
                 style:
-                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
               ),
               subtitle: Text(
-                user.username,
+                _user.username,
                 style: new TextStyle(fontSize: 17.0),
               ),
               dense: true,
@@ -105,10 +107,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
               title: Text(
                 "Password",
                 style:
-                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
               ),
               subtitle: Text(
-                user.replacePassword(),
+                _user.replacePassword(),
                 style: new TextStyle(fontSize: 18.0),
               ),
             ),
@@ -118,10 +120,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
               title: Text(
                 "Email",
                 style:
-                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
+                    new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
               ),
               subtitle: Text(
-                user.email,
+                _user.email,
                 style: new TextStyle(fontSize: 18.0),
               ),
             ),
@@ -137,8 +139,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}, iconSize: 35),
-          IconButton(icon: Icon(Icons.settings), onPressed: () {}, iconSize: 35),
+          IconButton(
+              icon: Icon(Icons.arrow_back), onPressed: () {}, iconSize: 35),
+          IconButton(
+              icon: Icon(Icons.settings), onPressed: () {}, iconSize: 35),
         ],
       ),
     );

@@ -1,6 +1,6 @@
-import 'package:asquestions/view/AddQuestionPage.dart';
-import '../model/Presentation.dart';
-import '../model/Question.dart';
+import 'package:asquestions/view/pages/AddQuestionPage.dart';
+import '../../model/Presentation.dart';
+import '../../model/Question.dart';
 import 'package:flutter/material.dart';
 
 class AnnexSlidePage extends StatefulWidget {
