@@ -38,12 +38,12 @@ Telmo Botelho
 
 ## Product Vision
 
-AsQuestions aims to encourage and simplify host-attendee interaction during conferences by providing an easy-to-use interface for posting, rating, and answering questions.
+AsQuestions aims to encourage and simplify speaker-audience interaction during talks by providing an easy-to-use interface for posting, rating, and answering questions.
 
 ---
 ## Elevator Pitch
 
-Clearing up the audience's doubts during a meeting is often a difficult task for the host. It is impossible to guarantee that the most relevant questions don't end up unanswered. To solve this issue, AsQuestions provides a conference-targeted interface that allows attendees to post their doubts for everyone in the room. The audience can then upvote the ones they want to see answered and downvote the ones they find less interesting. This way, the host can effortlessly see what questions and topics to cover in the Q&A section of the talk.
+Clearing up the audience's doubts during a talk is often a difficult task for the speaker. It is impossible to guarantee that the most relevant questions don't end up unanswered. To solve this issue, AsQuestions provides a talk-targeted interface that allows attendees to post their doubts for everyone in the room. The audience can then upvote the ones they want to see answered and downvote the ones they find less interesting. This way, the speaker can effortlessly see what questions and topics to cover in the Q&A section of the talk.
 
 ---
 ## Requirements
@@ -58,7 +58,7 @@ Clearing up the audience's doubts during a meeting is often a difficult task for
 
 #### **Story #1**
 
-As an attendee, I want to post questions so that the host or other attendees can answer them.
+As an attendee, I want to post questions so that the speaker or other attendees can answer them.
 
 _User interface mockups_
 
@@ -86,7 +86,7 @@ Effort: XL
 ---
 #### **Story #2**
 
-As an attendee, I want to be able to mention a specific part of the presentation with my question (like a slide) to help the host better understand it.
+As an attendee, I want to be able to mention a specific part of the presentation with my question (like a slide) to help the speaker better understand it.
 
 _User interface mockups_
 
@@ -98,7 +98,9 @@ _Acceptance Tests_
 Scenario: Mentioning/Tagging a part of the presentation with my question
 	Given that I'm posting a question in the forum
 	When I click on the "Add a Slide (Clip icon)" button
-	Then the app allows me to refer a slide related to my question
+	Then the app allows me to refer a slide related to my question, through its number or picture
+	When I click on the "Confirm Selection (Verified icon)"
+	Then the app attaches that slide to my question
 ```
 _Value/Effort_
 
@@ -135,7 +137,7 @@ Effort: L
 ---
 #### **Story #4**
 
-As an attendee, I want to be able to see and upvote/downvote questions so that the host knows which questions are most relevant for the audience.
+As an attendee, I want to be able to see and upvote/downvote questions so that the speaker knows which questions are most relevant for the audience.
 
 _User interface mockups_
 
@@ -145,8 +147,10 @@ _Acceptance Tests_
 ```gherkin
 Scenario: Upvoting/Downvoting posted questions
 	Given there are 3 questions asked in the forum
-	When I click on the "Upvote" or "Downvote" buttons next to the questions
-	Then their score increases or decreases respectively affecting their visibility in the forum
+	When I click on the "Upvote (Arrow up icon)" buttons next to the questions
+	Then their score increases improving their visibility in the forum
+	When I click on the "Downvote (Arrow down icon)" buttons next to the questions
+	Then their score decreases lowering their visibility in the forum
 ```
 _Value/Effort_
 
@@ -157,7 +161,7 @@ Effort: M
 ---
 #### **Story #5**
 
-As a host, I want to answer my audience’s questions so that they can leave the session clarified and informed.
+As a speaker, I want to answer my audience’s questions so that they can leave the session clarified and informed.
 
 _User interface mockups_
 
@@ -166,13 +170,13 @@ _User interface mockups_
 _Acceptance Tests_
 ```gherkin
 Scenario: Answering questions from the audience
-	Given I'm logged in as a host and there are 3 questions asked in the forum 
+	Given I'm logged in as a speaker and there are 3 questions asked in the forum 
 	When I click on one of them
 	Then the app shows me the question and its comment thread
 	When I tap the Textbox
 	Then the system allows me to write an answer
     When I tap the "Submit Answer" button
-	Then the system posts the answer to the thread and fixes it at the top, marking it as the host's response
+	Then the system posts the answer to the thread and attaches it at the top, marking it as the speaker's response
 ```
 _Value/Effort_
 
@@ -183,7 +187,7 @@ Effort: XL
 ---
 #### **Story #6**
 
-As a host, I want to be able to create a forum for my audience to place their questions about the presentation.
+As a speaker, I want to be able to create a forum for my audience to place their questions about the presentation.
 
 _User interface mockups_
 
@@ -193,10 +197,10 @@ _User interface mockups_
 _Acceptance Tests_
 ```gherkin
 Scenario: Creating a forum for the audience's questions
-	Given I’m logged-in as a host
+	Given I’m logged-in as a speaker
 	Then the app shows me a menu of options
-	When I click the "Create Conference Room" button
-	Then the app shows me a form to fill with information about the conference
+	When I click the "Create Talk Room" button
+	Then the app shows me a form to fill with information about the talk
 	When I click the "Create" button
 	Then the app creates the empty question forum and takes me to it
 ```
@@ -209,7 +213,7 @@ Effort: XL
 ---
 #### **Story #7**
 
-As a moderator, I want to be able to control what questions are passed to the host so that the most relevant are answered.
+As a moderator, I want to be able to control what questions are passed to the speaker so that the most relevant are answered.
 
 _User interface mockups_
 
@@ -217,10 +221,10 @@ _User interface mockups_
 
 _Acceptance Tests_
 ```gherkin
-Scenario: Controlling which questions are passed to the host
+Scenario: Controlling which questions are passed to the speaker
 	Given I’m logged-in as a moderator and there are 4 questions asked in the forum 
-	When I click on "Send question to host (Star icon)"
-	Then the system puts the question on top of the list for the host, ignoring the upvote/downvote system
+	When I click on "Send question to speaker (Star icon)"
+	Then the system puts the question on top of the list for the speaker, ignoring the upvote/downvote system
 	When I click on "Delete Question (Trash bin icon)"
 	Then the app deletes that question from the forum
 ```
@@ -242,9 +246,11 @@ _User interface mockups_
 _Acceptance Tests_
 ```gherkin
 Scenario: Navigating between the different app sections 
-	Given I'm logged in as any type of user (attendee/host/moderator) and I'm currently on the app's Home page
-	When I click on "Navigate to the Conference Questions Section (Message Icon)" button on the Navigation Bar
-	Then the app takes me to the Conference Questions section
+	Given I'm logged in as any type of user (attendee/speaker/moderator)
+	When I click on "Navigate to the Home Page (Home Icon)" button on the Navigation Bar
+	Then the app takes me to the Home Page
+	When I click on "Navigate to the Talk Questions Section (Message Icon)" button on the Navigation Bar
+	Then the app takes me to the Talk Questions section
 	When I click on "Navigate to the User Profile (Person Icon)" button on the Navigation Bar
 	Then the app takes me to the User Profile section
 	When I click on "Navigate to Settings (Settings Icon)" button on the Navigation Bar
@@ -269,9 +275,9 @@ _User interface mockups_
 _Acceptance Tests_
 ```gherkin
 Scenario: Checking User Profiles
-	Given I'm logged in as any type of user (attendee/host/moderator) and I'm currently on the Conference Questions page
+	Given I'm logged in as any type of user (attendee/speaker/moderator) and I'm currently on the talk Questions page
 	When I click on a person's icon near their question
-	Then the app takes me to their profile, where I can see their bio and the conferences they're attending
+	Then the app takes me to their profile, where I can see their bio and the talks they're attending
 	When I click on "Navigate to the User Profile (Person Icon)" button on the Navigation Bar
 	Then the app takes me to my profile, where I can see more details and edit my account details
 ```
