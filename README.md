@@ -109,7 +109,7 @@ Effort: M
 ---
 #### **Story #3**
 
-As an attendee, I want to answer questions so that I can help the other attendees.
+As an attendee, I want to see and answer questions so that I can help the other attendees.
 
 _User interface mockups_
 
@@ -135,7 +135,7 @@ Effort: L
 ---
 #### **Story #4**
 
-As an attendee, I want to be able to upvote/downvote questions so that the host knows which questions are most relevant for the audience.
+As an attendee, I want to be able to see and upvote/downvote questions so that the host knows which questions are most relevant for the audience.
 
 _User interface mockups_
 
@@ -195,9 +195,9 @@ _Acceptance Tests_
 Scenario: Creating a forum for the audience's questions
 	Given I’m logged-in as a host
 	Then the app shows me a menu of options
-	When I click the ‘Create Conference Room’ button
+	When I click the "Create Conference Room" button
 	Then the app shows me a form to fill with information about the conference
-	When I click the 'Create' button
+	When I click the "Create" button
 	Then the app creates the empty question forum and takes me to it
 ```
 _Value/Effort_
@@ -229,6 +229,58 @@ _Value/Effort_
 Value: Should Have
 
 Effort: M
+
+---
+#### **Story #8**
+
+As a user, I want to be able to navigate between the various app sections.
+
+_User interface mockups_
+
+![User story #8 mockup9](./img/mockup9.png)
+
+_Acceptance Tests_
+```gherkin
+Scenario: Navigating between the different app sections 
+	Given I'm logged in as any type of user (attendee/host/moderator) and I'm currently on the app's Home page
+	When I click on "Navigate to the Conference Questions Section (Message Icon)" button on the Navigation Bar
+	Then the app takes me to the Conference Questions section
+	When I click on "Navigate to the User Profile (Person Icon)" button on the Navigation Bar
+	Then the app takes me to the User Profile section
+	When I click on "Navigate to Settings (Settings Icon)" button on the Navigation Bar
+	Then the app takes me to the Settings
+```
+_Value/Effort_
+
+Value: Must Have
+
+Effort: XL
+
+---
+#### **Story #9**
+
+As a user, I want to be able to see my profile and other users' profiles.
+
+_User interface mockups_
+
+![User story #9 mockup10](./img/mockup10.png)
+![User story #9 mockup11](./img/mockup11.png)
+
+_Acceptance Tests_
+```gherkin
+Scenario: Checking User Profiles
+	Given I'm logged in as any type of user (attendee/host/moderator) and I'm currently on the Conference Questions page
+	When I click on a person's icon near their question
+	Then the app takes me to their profile, where I can see their bio and the conferences they're attending
+	When I click on "Navigate to the User Profile (Person Icon)" button on the Navigation Bar
+	Then the app takes me to my profile, where I can see more details and edit my account details
+```
+_Value/Effort_
+
+Value: Should Have
+
+Effort: L
+
 
 ### Domain model
 
