@@ -24,14 +24,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ClipPath(
             clipper: MyCustomClipper(),
             child: Container(
-              height: 300,
+              height: 250,
               decoration: new BoxDecoration(
                   color: Colors.blue)
             ),
           ),
           Container(
             padding: EdgeInsets.only(
-                left: size.width * 0.015, top: size.height * 0.2),
+                left: size.width * 0.015, top: size.height * 0.15),
             child: Column(
               children: <Widget>[
                 Container(

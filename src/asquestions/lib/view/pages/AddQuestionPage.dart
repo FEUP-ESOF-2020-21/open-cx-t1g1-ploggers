@@ -53,7 +53,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-                icon: Icon(IconData(0xe5c7, fontFamily: 'MaterialIcons')),
+                icon: Icon(Icons.attachment_rounded),
                 iconSize: 25,
                 color: Colors.white,
                 onPressed: () {
