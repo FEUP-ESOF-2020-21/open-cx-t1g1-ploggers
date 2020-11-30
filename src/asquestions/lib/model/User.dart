@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   String username;
   String email;
@@ -5,8 +7,12 @@ class User {
   String name;
   String picture;
   String bio;
+  DocumentReference reference;
 
-  User(this.username, this.email, this.name, this.picture, this.bio, this.password);
+  User(this.username, this.email, this.name, this.picture, this.bio,
+      this.password, this.reference);
+
+
 
   String replacePassword() {
     String result = this

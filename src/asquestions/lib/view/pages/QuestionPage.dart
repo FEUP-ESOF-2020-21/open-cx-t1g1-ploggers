@@ -1,40 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:asquestions/controller/CloudFirestoreController.dart';
 import '../../model/Question.dart';
 import '../../model/Comment.dart';
 
 class QuestionPage extends StatefulWidget {
-  final Question question;
+  final CloudFirestoreController _firestore;
+  final DocumentReference _questionReference;
 
-  QuestionPage(this.question);
+  QuestionPage(this._firestore, this._questionReference);
 
   @override
-  _QuestionPageState createState() => _QuestionPageState(question);
+  _QuestionPageState createState() => _QuestionPageState();
 }
 
 class _QuestionPageState extends State<QuestionPage> {
-  final Question question;
+  Question question;
+  bool showLoadingIndicator = false;
+  ScrollController scrollController;
 
-  _QuestionPageState(this.question);
+  @override
+  void initState() {
+    super.initState();
+    this.refreshModel(true);
+  }
+
+  Future<void> refreshModel(bool showIndicator) async {
+    Stopwatch sw = Stopwatch()..start();
+    setState(() {
+      showLoadingIndicator = showIndicator;
+    });
+    question = await widget._firestore
+        .getQuestion(await widget._questionReference.get());
+    if (this.mounted)
+      setState(() {
+        showLoadingIndicator = false;
+      });
+    print("Question fetch time: " + sw.elapsed.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    if (question == null) {
+      return Scaffold(
         appBar: AppBar(
           title: Text("Question Thread"),
           centerTitle: true,
         ),
-        body: Column(
-          children: <Widget>[
-            buildQuestion(),
-            Divider(
-                height: 10,
-                thickness: 3,
-                color: Colors.grey.shade400,
-                indent: 10,
-                endIndent: 10),
-            Expanded(child: buildComments())
-          ],
-        ));
+        body: Visibility(visible: showLoadingIndicator, child: LinearProgressIndicator())
+      );
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text("Question Thread"),
+            centerTitle: true,
+          ),
+          body: Column(
+            children: <Widget>[
+              buildQuestion(),
+              Divider(
+                  height: 10,
+                  thickness: 3,
+                  color: Colors.grey.shade400,
+                  indent: 10,
+                  endIndent: 10),
+              Expanded(child: buildComments())
+            ],
+          ));
+    }
   }
 
   Widget buildComments() {
@@ -64,6 +98,7 @@ class _QuestionPageState extends State<QuestionPage> {
         itemCount: question.comments.length,
         itemBuilder: (BuildContext context, int index) {
           Comment comment = question.comments[index];
+          final f = new DateFormat('dd-MM-yyy HH:mm');
           return Card(
             color: Colors.blue.shade100,
             child: Padding(
@@ -81,10 +116,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                              comment.date.hour.toString() +
-                                  ":" +
-                                  comment.date.minute.toString(),
+                          Text(f.format(comment.date),
                               style: new TextStyle(
                                   fontSize: 14.0, color: Colors.grey.shade700)),
                           if (!comment.isFromHost)
@@ -107,6 +139,7 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Widget buildQuestion() {
+    final f = new DateFormat('dd-MM-yyy HH:mm');
     return Container(
       padding: EdgeInsets.all(2.0),
       child: Card(
@@ -130,7 +163,8 @@ class _QuestionPageState extends State<QuestionPage> {
                   endIndent: 40),
               Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Text("Tagged Slide: ", style: new TextStyle(fontSize: 18.0)),
+                child: Text("Tagged Slide: ",
+                    style: new TextStyle(fontSize: 18.0)),
               ),
               Divider(
                   height: 5,
@@ -148,10 +182,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     Text(question.comments.length.toString() + " comments",
                         style: new TextStyle(
                             fontSize: 14.0, color: Colors.grey.shade700)),
-                    Text(
-                        question.date.hour.toString() +
-                            ":" +
-                            question.date.minute.toString(),
+                    Text(f.format(question.date),
                         style: new TextStyle(
                             fontSize: 14.0, color: Colors.grey.shade700))
                   ],

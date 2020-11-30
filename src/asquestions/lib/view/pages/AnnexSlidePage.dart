@@ -1,64 +1,32 @@
 import 'package:asquestions/view/pages/AddQuestionPage.dart';
-import '../../model/Presentation.dart';
+import 'package:asquestions/controller/CloudFirestoreController.dart';
+import '../../model/Talk.dart';
 import '../../model/Question.dart';
 import 'package:flutter/material.dart';
 
-class MyAnnexQuestionForm extends StatefulWidget {
-  @override
-  _MyAnnexQuestionFormState createState() => _MyAnnexQuestionFormState();
-}
-
-class _MyAnnexQuestionFormState extends State<MyAnnexQuestionForm> {
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    myController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-          child: TextFormField(
-        controller: myController,
-        maxLines: 1,
-        decoration: InputDecoration(
-          hintText: "What slides do you want to tag?",
-        ),
-        style: TextStyle(height: 1),
-      )),
-    );
-  }
-}
-
 class AnnexSlidePage extends StatefulWidget {
-  Question question;
-  AnnexSlidePage(this.question);
+  final CloudFirestoreController _firestore;
+  Question _question;
+  Talk _talk;
+  AnnexSlidePage(this._firestore);
 
   @override
-  _AnnexSlidePageState createState() => _AnnexSlidePageState(this.question);
+  _AnnexSlidePageState createState() => _AnnexSlidePageState();
 }
 
 class _AnnexSlidePageState extends State<AnnexSlidePage> {
-  Question question;
-  _AnnexSlidePageState(this.question);
-
-  // pseudo-database, just to test code
-  Presentation presentation =
-      Presentation("Presentation 1", ["assets/pp1.png"]);
+  _AnnexSlidePageState();
 
   @override
   Widget build(BuildContext context) {
     Widget slidesInput;
-    if (presentation.slides.length == 0) {
+    if (widget._talk.slides.length == 0) {
       slidesInput = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [MyAnnexQuestionForm()]);
     } else {
       slidesInput = ListView.builder(
-          itemCount: presentation.slides.length,
+          itemCount: widget._talk.slides.length,
           itemBuilder: (BuildContext context, int index) =>
               buildSlideCard(context, index));
     }
@@ -69,14 +37,15 @@ class _AnnexSlidePageState extends State<AnnexSlidePage> {
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-                icon: Icon(Icons.check_sharp),
+                icon: Icon(Icons.check_rounded),
                 iconSize: 25,
                 color: Colors.white,
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddQuestionPage()));
+                          builder: (context) =>
+                              AddQuestionPage(widget._firestore)));
                 })
           ],
         ),
@@ -87,8 +56,8 @@ class _AnnexSlidePageState extends State<AnnexSlidePage> {
   }
 
   Widget buildSlideCard(BuildContext context, int index) {
-    final slide = presentation.slides[index];
-    return SlideCard(widget.question, index, slide, presentation.slides.length);
+    final slide = widget._talk.slides[index];
+    return SlideCard(widget._question, index, slide, widget._talk.slides.length);
   }
 }
 
@@ -139,6 +108,36 @@ class _SlideCardState extends State<SlideCard> {
               ? const EdgeInsets.only(bottom: 10)
               : const EdgeInsets.all(0)),
           child: Card(child: slideWidget)),
+    );
+  }
+}
+
+class MyAnnexQuestionForm extends StatefulWidget {
+  @override
+  _MyAnnexQuestionFormState createState() => _MyAnnexQuestionFormState();
+}
+
+class _MyAnnexQuestionFormState extends State<MyAnnexQuestionForm> {
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox(
+          child: TextFormField(
+        controller: myController,
+        maxLines: 1,
+        decoration: InputDecoration(
+          hintText: "What slides do you want to tag?",
+        ),
+        style: TextStyle(height: 1),
+      )),
     );
   }
 }

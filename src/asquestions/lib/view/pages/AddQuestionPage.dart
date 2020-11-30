@@ -1,41 +1,13 @@
 import 'package:asquestions/view/pages/AnnexSlidePage.dart';
+import 'package:asquestions/view/pages/ConferenceQuestionsPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';
 import '../../model/Question.dart';
 
-class MyCustomForm extends StatefulWidget {
-  @override
-  _MyCustomFormState createState() => _MyCustomFormState();
-}
-
-class _MyCustomFormState extends State<MyCustomForm> {
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    myController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-          child: TextFormField(
-        controller: myController,
-        keyboardType: TextInputType.multiline,
-        maxLines: 15,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: "Write your question",
-        ),
-        style: TextStyle(height: 1),
-      )),
-    );
-  }
-}
-
 class AddQuestionPage extends StatefulWidget {
-  AddQuestionPage();
+  final CloudFirestoreController _firestore;
+  AddQuestionPage(this._firestore);
 
   @override
   _AddQuestionPageState createState() => _AddQuestionPageState();
@@ -60,8 +32,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AnnexSlidePage(Question(
-                              null, null, null, null, null, null, []))));
+                          builder: (context) => AnnexSlidePage(widget._firestore)));
                 })
           ],
         ),
@@ -98,7 +69,12 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                 children: [
                   Expanded(
                       child: TextButton(
-                    onPressed: null,
+                    onPressed: (){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ConferenceQuestionsPage(widget._firestore)));
+                    },
                     child:
                         Text("Submit", style: TextStyle(color: Colors.white)),
                     style: ButtonStyle(
@@ -110,5 +86,38 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
             ],
           ),
         ));
+  }
+}
+
+
+class MyCustomForm extends StatefulWidget {
+  @override
+  _MyCustomFormState createState() => _MyCustomFormState();
+}
+
+class _MyCustomFormState extends State<MyCustomForm> {
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox(
+          child: TextFormField(
+        controller: myController,
+        keyboardType: TextInputType.multiline,
+        maxLines: 15,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: "Write your question",
+        ),
+        style: TextStyle(height: 1),
+      )),
+    );
   }
 }
