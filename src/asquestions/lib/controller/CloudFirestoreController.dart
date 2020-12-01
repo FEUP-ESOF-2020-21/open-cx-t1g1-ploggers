@@ -5,6 +5,7 @@ import 'package:asquestions/model/Question.dart';
 
 class CloudFirestoreController {
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  static User _currentUser;
 
   Future<User> _makeUserFromSnapshot(DocumentSnapshot snapshot) async {
     String username = snapshot.get('username');
@@ -34,7 +35,8 @@ class CloudFirestoreController {
     List slidesDynamic = snapshot.get('slides');
     List<int> slides = slidesDynamic.cast<int>();
     DocumentReference reference = snapshot.reference;
-    Question question = Question(title, user, date, votes, comments, voted, slides, reference);
+    Question question =
+        Question(title, user, date, votes, comments, voted, slides, reference);
     return question;
   }
 
@@ -78,5 +80,25 @@ class CloudFirestoreController {
         .get();
     if (snapshot.docs.length == 0) return null;
     return await snapshot.docs[0].reference;
+  }
+
+  User getCurrentUser() {
+    return _currentUser;
+  }
+
+  void setCurrentUser(User user) {
+    _currentUser = user;
+  }
+
+  void addQuestion(String content) {
+    firestore.collection("questions").add({
+      "comments": [], 
+      "date": Timestamp.fromDate(DateTime.now()),
+      "slides": [],
+      "title": content,
+      "user": _currentUser.reference,
+      "voted": 1,
+      "votes": 1,
+    });
   }
 }
