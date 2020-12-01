@@ -296,28 +296,27 @@ To better understand the context of the software system, it is very useful to ha
 
 ## Architecture and Design
 
-The architecture of a software system encompasses the set of key decisions about its overall organization.
-
-A well written architecture document is brief but reduces the amount of time it takes new programmers to a project to understand the code to feel able to make modifications and enhancements.
-
-To document the architecture requires describing the decomposition of the system in their parts (high-level components) and the key behaviors and collaborations between them.
-
-In this section you should start by briefly describing the overall components of the project and their interrelations. You should also describe how you solved typical problems you may have encountered, pointing to well-known architectural and design patterns, if applicable.
+The architecture of a software system encompasses the set of key decisions about its overall organization. The following sections show the connection between the technologies and modules used in this project.
 
 ### Logical architecture
 
-The purpose of this subsection is to document the high-level logical structure of the code, using a UML diagram with logical packages, without the worry of allocating to components, processes or machines.
+![logical_architecture](./img/logical_architecture.png)
 
-It can be beneficial to present the system both in a horizontal or vertical decomposition:
+Our high-level logical structure of the code will follow the Architectural Pattern - MVC (Model-View-Controller), since it is an industry standard and usually recommended for this type of project. This pattern splits the code in three different parts, keeping them independent of each other.
 
-- horizontal decomposition may define layers and implementation concepts, such as the user interface, business logic and concepts;
-- vertical decomposition can define a hierarchy of subsystems that cover all layers of implementation.
+- The first one is the **Model** which contains all the application data, such as information about each talk, question or user, etc.
+- The **View** displays the information from the Model to the users and sends input information to the Controller.
+- The **Controller** links the other parts, deciding how the data from the Model will change according to the actions made by the user and reported by the View.
 
 ### Physical architecture
 
-The goal of this subsection is to document the high-level physical structure of the software system (machines, connections, software components installed, and their dependencies) using UML deployment diagrams or component diagrams (separate or integrated), showing the physical structure of the system.
+![physical_architecture](./img/physical_architecture.png)
 
-It should describe also the technologies considered and justify the selections made. Examples of technologies relevant for openCX are, for example, frameworks for mobile applications (Flutter vs ReactNative vs ...), languages to program with microbit, and communication with things (beacons, sensors, etc.).
+For this project we are using Flutter, a software development kit created by Google as our mobile application framework since it is one of the most used mobile development frameworks and it was recommended to us by our teacher.
+
+For the app's database, we decided to use Firebase since both Firebase and Flutter were developed by Google, which makes its integration on the project simple. This database server is used to save all needed data such as users, talks, questions and comments, etc.
+
+The communication between both sides of the application is done over HTTPS, retrieving/storing all information needed from the database.
 
 ### Prototype
 
