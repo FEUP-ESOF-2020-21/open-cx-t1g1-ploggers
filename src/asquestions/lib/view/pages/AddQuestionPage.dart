@@ -1,48 +1,21 @@
 import 'package:asquestions/view/pages/AnnexSlidePage.dart';
+import 'package:asquestions/view/pages/ConferenceQuestionsPage.dart';
+import 'package:asquestions/model/Question.dart';
+import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';
-import '../../model/Question.dart';
-
-class MyCustomForm extends StatefulWidget {
-  @override
-  _MyCustomFormState createState() => _MyCustomFormState();
-}
-
-class _MyCustomFormState extends State<MyCustomForm> {
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    myController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-          child: TextFormField(
-        controller: myController,
-        keyboardType: TextInputType.multiline,
-        maxLines: 15,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: "Write your question",
-        ),
-        style: TextStyle(height: 1),
-      )),
-    );
-  }
-}
 
 class AddQuestionPage extends StatefulWidget {
-  AddQuestionPage();
+  final CloudFirestoreController _firestore;
+  AddQuestionPage(this._firestore);
 
   @override
   _AddQuestionPageState createState() => _AddQuestionPageState();
 }
 
 class _AddQuestionPageState extends State<AddQuestionPage> {
-  _AddQuestionPageState();
+  String _content;
+  final myController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,19 +33,19 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AnnexSlidePage(Question(
-                              null, null, null, null, null, null, []))));
+                          builder: (context) =>
+                              AnnexSlidePage(widget._firestore)));
                 })
           ],
         ),
         body: Padding(
           padding:
-              const EdgeInsets.only(top: 10, bottom: 10, left: 35, right: 35),
+              const EdgeInsets.only(top: 20, bottom: 0, left: 35, right: 35),
           child: Column(
             children: <Widget>[
               Image(
-                image: AssetImage("assets/avatar1.png"),
-                width: 120,
+                image: AssetImage(widget._firestore.getCurrentUser().picture),
+                width: 150,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -83,7 +56,8 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Text("Atendee Six", style: new TextStyle(fontSize: 20.0)),
+                child: Text(widget._firestore.getCurrentUser().name,
+                    style: new TextStyle(fontSize: 20.0)),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
@@ -92,23 +66,50 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                   color: Colors.blue.shade200,
                 ),
               ),
-              MyCustomForm(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                      child: TextButton(
-                    onPressed: null,
-                    child:
-                        Text("Submit", style: TextStyle(color: Colors.white)),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.blue)),
-                  )),
-                ],
-              )
+              Form(
+                key: formKey,
+                child: Column(children: [
+                  Center(
+                    child: SizedBox(
+                        child: TextFormField(
+                      controller: myController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 15,
+                      validator: (input) =>
+                          input.length < 10 ? "Invalid Question" : null,
+                      onSaved: (input) => _content = input,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Write your question",
+                      ),
+                      style: TextStyle(height: 1),
+                    )),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                          child: TextButton(
+                        onPressed: _submit,
+                        child: Text("Submit",
+                            style: TextStyle(color: Colors.white)),
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue)),
+                      )),
+                    ],
+                  )
+                ]),
+              ),
             ],
           ),
         ));
+  }
+
+  void _submit() {
+    if (formKey.currentState.validate()) {
+      formKey.currentState.save();
+      widget._firestore.addQuestion(_content);
+    }
   }
 }

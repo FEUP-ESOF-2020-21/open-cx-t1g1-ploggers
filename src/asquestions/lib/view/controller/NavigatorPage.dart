@@ -1,23 +1,44 @@
+import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:asquestions/view/pages/ConferenceQuestionsPage.dart';
 import 'package:asquestions/view/pages/HomePage.dart';
 import 'package:asquestions/view/pages/UserProfilePage.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:asquestions/model/User.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NavigatorPage extends StatefulWidget {
+  final CloudFirestoreController _firestore;
+
+  NavigatorPage(this._firestore); 
+
   @override
   _NavigatorPageState createState() => _NavigatorPageState();
 }
 
 class _NavigatorPageState extends State<NavigatorPage> {
-  User user = new User(
-      'Attendee 1',
-      'attende1@gmail.com',
-      'Atendee One',
-      'assets/avatar1.png',
-      'example_bio example_bio example_bio example_bio',
-      '1234');
+  DocumentReference _userReference;
+  bool showLoadingIndicator = false;
+  ScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    this.refreshModel(true);
+  }
+
+  Future<void> refreshModel(bool showIndicator) async {
+    Stopwatch sw = Stopwatch()..start();
+    setState(() {
+      showLoadingIndicator = showIndicator;
+    });
+    _userReference = await widget._firestore.getUserReferenceByUsername("Username1");  //At this point current user should already be loaded -> test
+    widget._firestore.setCurrentUser(await widget._firestore.getUser(await _userReference.get()));
+    if (this.mounted)
+      setState(() {
+        showLoadingIndicator = false;
+      });
+    print("User Reference fetch time: " + sw.elapsed.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +46,23 @@ class _NavigatorPageState extends State<NavigatorPage> {
     PageController _pageController = PageController();
     List<Widget> _screens = [
       HomePage(),
-      ConferenceQuestionsPage(),
-      UserProfilePage(user)
+      ConferenceQuestionsPage(widget._firestore),
+      UserProfilePage(
+          widget._firestore, widget._firestore.getCurrentUser().reference)
     ];
 
     void _onPageChanged(int index) {
       _pageController.jumpToPage(index);
+      _currentIndex = index;
     }
 
     return Scaffold(
-        body: PageView(
-          controller: _pageController,
-          children: _screens,
-          onPageChanged: _onPageChanged,
-        ),
-        bottomNavigationBar: CurvedNavigationBar(
+      body: PageView(
+        controller: _pageController,
+        children: _screens,
+        onPageChanged: _onPageChanged,
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
         color: Colors.blue,
         backgroundColor: Colors.white,
         buttonBackgroundColor: Colors.blue,
@@ -56,7 +79,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
           Icon(Icons.question_answer_rounded, size: 30, color: Colors.white),
           Icon(Icons.person_rounded, size: 30, color: Colors.white)
         ],
-        ),
-      );
+      ),
+    );
   }
 }

@@ -1,12 +1,48 @@
-import 'package:asquestions/view/controller/NavigatorPage.dart';
+import 'package:asquestions/controller/CloudFirestoreController.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:asquestions/view/controller/NavigatorPage.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(StartApp());
 }
 
-class MyApp extends StatelessWidget {
+class StartApp extends StatelessWidget {
+  // Create the initialization Future outside of `build`:
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          return Container(
+            child: Text("Error initializing Firebase"),
+            decoration: BoxDecoration(color: Colors.red),
+          );
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return AsQuestionsApp();
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return Container(
+          decoration: BoxDecoration(color: Colors.blue),
+        );
+      },
+    );
+  }
+}
+
+class AsQuestionsApp extends StatelessWidget {
   // This widget is the root of your application.
+  final CloudFirestoreController firestore = CloudFirestoreController();
 
   //example user
   @override
@@ -29,7 +65,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: NavigatorPage()
+      home: NavigatorPage(firestore)
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'Comment.dart';
 import 'User.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Question {
   String title;
@@ -9,9 +10,10 @@ class Question {
   List<Comment> comments;
   int voted; //0 is not voted, 1 is upvoted, 2 is downvoted
   List<int> annexedSlides;
+  DocumentReference reference;
 
   Question(this.title, this.user, this.date, this.votes, this.comments,
-      this.voted, this.annexedSlides);
+      this.voted, this.annexedSlides, this.reference);
 
   void triggerUpvote() {
     if (this.voted == 0) {
