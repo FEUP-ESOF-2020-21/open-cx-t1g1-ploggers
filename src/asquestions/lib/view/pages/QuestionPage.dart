@@ -17,6 +17,7 @@ class QuestionPage extends StatefulWidget {
 
 class _QuestionPageState extends State<QuestionPage> {
   Question question;
+  List<Comment> comments;
   bool showLoadingIndicator = false;
   ScrollController scrollController;
 
@@ -31,8 +32,8 @@ class _QuestionPageState extends State<QuestionPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    question = await widget._firestore
-        .getQuestion(await widget._questionReference.get());
+    question = await widget._firestore.getQuestion(await widget._questionReference.get());
+    comments = await widget._firestore.getCommentsFromQuestionReference(widget._questionReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -44,12 +45,12 @@ class _QuestionPageState extends State<QuestionPage> {
   Widget build(BuildContext context) {
     if (question == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text("Question Thread"),
-          centerTitle: true,
-        ),
-        body: Visibility(visible: showLoadingIndicator, child: LinearProgressIndicator())
-      );
+          appBar: AppBar(
+            title: Text("Question Thread"),
+            centerTitle: true,
+          ),
+          body: Visibility(
+              visible: showLoadingIndicator, child: LinearProgressIndicator()));
     } else {
       return Scaffold(
           appBar: AppBar(
@@ -72,7 +73,7 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Widget buildComments() {
-    if (question.comments.isEmpty) {
+    if (comments.isEmpty) {
       return Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: SizedBox(
@@ -95,9 +96,9 @@ class _QuestionPageState extends State<QuestionPage> {
       );
     }
     return ListView.builder(
-        itemCount: question.comments.length,
+        itemCount: comments.length,
         itemBuilder: (BuildContext context, int index) {
-          Comment comment = question.comments[index];
+          Comment comment = comments[index];
           final f = new DateFormat('dd-MM-yyy HH:mm');
           return Card(
             color: Colors.blue.shade100,
@@ -109,14 +110,14 @@ class _QuestionPageState extends State<QuestionPage> {
                       leading: Image(image: AssetImage(comment.user.picture)),
                       title: Text(comment.user.name,
                           style: new TextStyle(fontSize: 20.0)),
-                      subtitle: Text(comment.text,
+                      subtitle: Text(comment.content,
                           style: new TextStyle(fontSize: 18.0))),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(f.format(comment.date),
+                          Text(comment.getAgeString(),
                               style: new TextStyle(
                                   fontSize: 14.0, color: Colors.grey.shade700)),
                           if (!comment.isFromHost)
@@ -139,7 +140,6 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Widget buildQuestion() {
-    final f = new DateFormat('dd-MM-yyy HH:mm');
     return Container(
       padding: EdgeInsets.all(2.0),
       child: Card(
@@ -151,7 +151,7 @@ class _QuestionPageState extends State<QuestionPage> {
               ListTile(
                 leading: Image(image: AssetImage(question.user.picture)),
                 title:
-                    Text(question.title, style: new TextStyle(fontSize: 25.0)),
+                    Text(question.content, style: new TextStyle(fontSize: 25.0)),
                 subtitle: Text("Asked by: " + question.user.name,
                     style: new TextStyle(fontSize: 18.0)),
               ),
@@ -179,10 +179,10 @@ class _QuestionPageState extends State<QuestionPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(question.comments.length.toString() + " comments",
+                    Text(comments.length.toString() + " comments",
                         style: new TextStyle(
                             fontSize: 14.0, color: Colors.grey.shade700)),
-                    Text(f.format(question.date),
+                    Text(question.getAgeString(),
                         style: new TextStyle(
                             fontSize: 14.0, color: Colors.grey.shade700))
                   ],

@@ -4,18 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:intl/intl.dart';
 import '../../model/Question.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../view/widgets/CustomListView.dart';
 
-class ConferenceQuestionsPage extends StatefulWidget {
+class TalkQuestionsPage extends StatefulWidget {
   final CloudFirestoreController _firestore;
+  final DocumentReference _talkReference;
 
-  ConferenceQuestionsPage(this._firestore);
+  TalkQuestionsPage(this._firestore, this._talkReference);
 
   @override
-  _ConferenceQuestionsState createState() => _ConferenceQuestionsState();
+  _TalkQuestionsState createState() => _TalkQuestionsState();
 }
 
-class _ConferenceQuestionsState extends State<ConferenceQuestionsPage> {
+class _TalkQuestionsState extends State<TalkQuestionsPage> {
   List<Question> questions = new List();
   bool showLoadingIndicator = false;
   ScrollController scrollController;
@@ -31,7 +33,7 @@ class _ConferenceQuestionsState extends State<ConferenceQuestionsPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    questions = await widget._firestore.getQuestions();
+    questions = await widget._firestore.getQuestionsFromTalkReference(widget._talkReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -62,29 +64,28 @@ class _ConferenceQuestionsState extends State<ConferenceQuestionsPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add_sharp),
-            iconSize: 28,
-            color: Colors.white,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                    AddQuestionPage(widget._firestore)));
-            }
-          )
+              icon: Icon(Icons.add_sharp),
+              iconSize: 28,
+              color: Colors.white,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddQuestionPage(widget._firestore)));
+              })
         ],
       ),
       body: Column(
         children: [
-          Visibility(visible: showLoadingIndicator, child: LinearProgressIndicator()),
+          Visibility(
+              visible: showLoadingIndicator, child: LinearProgressIndicator()),
           Expanded(
             child: CustomListView(
-            onRefresh: () => refreshModel(false),
-            controller: scrollController,
-            itemCount: questions.length,
-            itemBuilder: (BuildContext context, int index) =>
-                buildQuestionCard(context, index)),
+                onRefresh: () => refreshModel(false),
+                controller: scrollController,
+                itemCount: questions.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    buildQuestionCard(context, index)),
           ),
         ],
       ),
@@ -95,8 +96,10 @@ class _ConferenceQuestionsState extends State<ConferenceQuestionsPage> {
     final question = questions[index];
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => QuestionPage(widget._firestore, question.reference)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => QuestionPage(widget._firestore, question.reference)));
       },
       child: Container(
         padding: const EdgeInsets.all(2.0),
@@ -121,16 +124,13 @@ class _ConferenceQuestionsState extends State<ConferenceQuestionsPage> {
   }
 
   Widget buildCard(Question question) {
-    final f = new DateFormat('dd-MM-yyy HH:mm');
-
     return Flexible(
       child: Padding(
         padding: EdgeInsets.only(left: 15.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(question.title, style: new TextStyle(fontSize: 20.0)),
-            Text(question.user.name, style: new TextStyle(fontSize: 15.0)),
+            Text(question.content, style: new TextStyle(fontSize: 20.0)),
             Container(
               height: 10,
             ),
@@ -141,12 +141,10 @@ class _ConferenceQuestionsState extends State<ConferenceQuestionsPage> {
                 indent: 0,
                 endIndent: 40),
             Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(f.format(question.date),
-                  style: new TextStyle(fontSize: 12.0)),
+              padding: const EdgeInsets.only(top: 6.0, bottom: 10.0),
+              child: Text("By: " + question.user.name, style: new TextStyle(fontSize: 15.0)),
             ),
-            Text(question.comments.length.toString() + " comments",
-                style: new TextStyle(fontSize: 12.0)),
+            Text(question.getAgeString()),
           ],
         ),
       ),

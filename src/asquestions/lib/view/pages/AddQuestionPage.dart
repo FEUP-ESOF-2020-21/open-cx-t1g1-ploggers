@@ -1,5 +1,5 @@
 import 'package:asquestions/view/pages/AnnexSlidePage.dart';
-import 'package:asquestions/view/pages/ConferenceQuestionsPage.dart';
+import 'package:asquestions/view/pages/TalkQuestionsPage.dart';
 import 'package:asquestions/model/Question.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';

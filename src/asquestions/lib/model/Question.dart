@@ -1,19 +1,17 @@
-import 'Comment.dart';
-import 'User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'User.dart';
+import 'Slide.dart';
+import 'Post.dart';
 
-class Question {
-  String title;
-  User user;
-  DateTime date;
+class Question extends Post{
   int votes;
-  List<Comment> comments;
   int voted; //0 is not voted, 1 is upvoted, 2 is downvoted
-  List<int> annexedSlides;
-  DocumentReference reference;
+  List<Slide> slides;
+  DocumentReference talk;
 
-  Question(this.title, this.user, this.date, this.votes, this.comments,
-      this.voted, this.annexedSlides, this.reference);
+ Question(User user, String content, DateTime date, this.votes, this.voted, this.slides, this.talk, DocumentReference reference): super(user, content, date, reference);
+
+ Question.fromNew(User user, String content, DateTime date, this.votes, this.slides, this.voted, this.talk): super.fromNew(user, content, date);
 
   void triggerUpvote() {
     if (this.voted == 0) {
@@ -42,9 +40,9 @@ class Question {
   }
 
   void toggleAnnexSlide(slideIndex) {
-    if (this.annexedSlides.contains(slideIndex))
-      this.annexedSlides.remove(slideIndex);
+    if (this.slides.contains(slideIndex))
+      this.slides.remove(slideIndex);
     else
-      this.annexedSlides.add(slideIndex);
+      this.slides.add(slideIndex);
   }
 }

@@ -18,7 +18,9 @@ class _AnnexSlidePageState extends State<AnnexSlidePage> {
   _AnnexSlidePageState();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {}
+}
+/*
     Widget slidesInput;
     if (widget._talk.slides.length == 0) {
       slidesInput = Column(
@@ -141,3 +143,4 @@ class _MyAnnexQuestionFormState extends State<MyAnnexQuestionForm> {
     );
   }
 }
+*/

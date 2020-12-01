@@ -1,7 +1,8 @@
 import 'package:asquestions/controller/CloudFirestoreController.dart';
-import 'package:asquestions/view/pages/ConferenceQuestionsPage.dart';
+import 'package:asquestions/view/pages/TalkQuestionsPage.dart';
 import 'package:asquestions/view/pages/HomePage.dart';
 import 'package:asquestions/view/pages/UserProfilePage.dart';
+import 'package:asquestions/view/pages/UserSettingsPage.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,10 +46,9 @@ class _NavigatorPageState extends State<NavigatorPage> {
     int _currentIndex = 0;
     PageController _pageController = PageController();
     List<Widget> _screens = [
-      HomePage(),
-      ConferenceQuestionsPage(widget._firestore),
-      UserProfilePage(
-          widget._firestore, widget._firestore.getCurrentUser().reference)
+      HomePage(widget._firestore),
+      UserProfilePage(widget._firestore, widget._firestore.getCurrentUser().reference),
+      UserSettingsPage()
     ];
 
     void _onPageChanged(int index) {
@@ -75,9 +75,9 @@ class _NavigatorPageState extends State<NavigatorPage> {
           });
         },
         items: <Widget>[
-          Icon(Icons.home_rounded, size: 30, color: Colors.white),
           Icon(Icons.question_answer_rounded, size: 30, color: Colors.white),
-          Icon(Icons.person_rounded, size: 30, color: Colors.white)
+          Icon(Icons.person_rounded, size: 30, color: Colors.white),
+          Icon(Icons.settings_rounded, size: 30, color: Colors.white)
         ],
       ),
     );

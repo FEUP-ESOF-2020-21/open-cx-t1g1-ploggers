@@ -85,20 +85,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           border: Border.all(
                               color: Colors.lightBlue.shade300, width: 4)),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(_user.name,
-                            style: TextStyle(
-                              fontSize: 36,
-                              fontWeight: FontWeight.w300,
-                            )),
-                        IconButton(
-                          icon: Icon(Icons.settings_rounded),
-                          color: Colors.black,
-                          onPressed: () {},
-                        )
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                      child: Text(_user.name,
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.w300,
+                      )),
                     ),
                     getItems(_user),
                   ],
