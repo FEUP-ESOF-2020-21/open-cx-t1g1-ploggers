@@ -4,11 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class Authenticator {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  //Authenticator();
-
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
-
-  //User get CurrentUser => _firebaseAuth.currentUser;
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
@@ -20,6 +16,16 @@ class Authenticator {
           email: email, password: password);
       return "Signed in";
     } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
+
+  Future<String> signUp(String email, String password, String name) async {
+    try{
+      await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password);
+        return 'Signed up';
+    }on FirebaseAuthException catch (e) {
       return e.message;
     }
   }

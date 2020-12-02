@@ -92,30 +92,10 @@ class HomePage extends StatelessWidget {
     final firebaseUser = context.watch<User>();
 
     if (firebaseUser != null) {
-      return SignOutPage(_firestore); //NavigatorPage(_firestore);
+      return NavigatorPage(_firestore); //NavigatorPage(_firestore);
     } else
       return LoginPage(_firestore);
   }
 }
 
-class SignOutPage extends StatelessWidget {
-  final CloudFirestoreController _firestore;
 
-  SignOutPage(this._firestore);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-      child: Column(
-        children: <Widget>[
-          RaisedButton(
-            onPressed: () {
-              context.read<Authenticator>().signOut();
-            },
-            child: Text("Sign out"),
-          )
-        ],
-      ),
-    ));
-  }
-}

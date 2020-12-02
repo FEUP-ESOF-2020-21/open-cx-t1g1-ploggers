@@ -48,7 +48,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
     List<Widget> _screens = [
       HomePage(widget._firestore),
       UserProfilePage(widget._firestore, widget._firestore.getCurrentUser().reference),
-      UserSettingsPage()
+      UserSettingsPage(widget._firestore)
     ];
 
     void _onPageChanged(int index) {
