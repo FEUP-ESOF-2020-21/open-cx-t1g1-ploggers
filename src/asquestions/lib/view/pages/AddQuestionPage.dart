@@ -1,12 +1,14 @@
 import 'package:asquestions/view/pages/AnnexSlidePage.dart';
 import 'package:asquestions/view/pages/TalkQuestionsPage.dart';
-import 'package:asquestions/model/Question.dart';
+import 'package:asquestions/model/Slide.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';
 
 class AddQuestionPage extends StatefulWidget {
   final CloudFirestoreController _firestore;
-  AddQuestionPage(this._firestore);
+  final DocumentReference _talkReference;
+  AddQuestionPage(this._firestore, this._talkReference);
 
   @override
   _AddQuestionPageState createState() => _AddQuestionPageState();
@@ -30,11 +32,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                 iconSize: 25,
                 color: Colors.white,
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              AnnexSlidePage(widget._firestore)));
+                  //Navigator.push(context,MaterialPageRoute(builder: (context) =>AnnexSlidePage(widget._firestore, _newQuestion)));
                 })
           ],
         ),
@@ -108,8 +106,9 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
 
   void _submit() {
     if (formKey.currentState.validate()) {
+      List<Slide> slides = new List();
       formKey.currentState.save();
-      widget._firestore.addQuestion(_content);
+      widget._firestore.addQuestion(_content, slides, widget._talkReference);
     }
   }
 }

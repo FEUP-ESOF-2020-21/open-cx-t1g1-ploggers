@@ -1,34 +1,53 @@
 import 'package:asquestions/view/pages/AddQuestionPage.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
-import '../../model/Talk.dart';
+import '../../model/Slide.dart';
 import '../../model/Question.dart';
 import 'package:flutter/material.dart';
 
 class AnnexSlidePage extends StatefulWidget {
   final CloudFirestoreController _firestore;
-  Question _question;
-  Talk _talk;
-  AnnexSlidePage(this._firestore);
+  final Question _question;
+  AnnexSlidePage(this._firestore, this._question);
 
   @override
   _AnnexSlidePageState createState() => _AnnexSlidePageState();
 }
 
 class _AnnexSlidePageState extends State<AnnexSlidePage> {
-  _AnnexSlidePageState();
+  List<Slide> _slides = new List();
+  bool showLoadingIndicator = false;
+  ScrollController scrollController;
 
   @override
-  Widget build(BuildContext context) {}
-}
-/*
+  void initState() {
+    super.initState();
+    this.refreshModel(true);
+  }
+
+  Future<void> refreshModel(bool showIndicator) async {
+    Stopwatch sw = Stopwatch()..start();
+    setState(() {
+      showLoadingIndicator = showIndicator;
+    });
+    _slides = await widget._firestore.getSlidesFromTalkReference(widget._question.talk);
+    if (this.mounted)
+      setState(() {
+        showLoadingIndicator = false;
+      });
+    print("Slides fetch time: " + sw.elapsed.toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     Widget slidesInput;
-    if (widget._talk.slides.length == 0) {
+    if (_slides.length == 0) {
       slidesInput = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [MyAnnexQuestionForm()]);
     } else {
       slidesInput = ListView.builder(
-          itemCount: widget._talk.slides.length,
+          itemCount: _slides.length,
           itemBuilder: (BuildContext context, int index) =>
               buildSlideCard(context, index));
     }
@@ -43,11 +62,12 @@ class _AnnexSlidePageState extends State<AnnexSlidePage> {
                 iconSize: 25,
                 color: Colors.white,
                 onPressed: () {
+                  /*
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              AddQuestionPage(widget._firestore)));
+                              AddQuestionPage(widget._firestore, widget._talk)));*/
                 })
           ],
         ),
@@ -58,19 +78,18 @@ class _AnnexSlidePageState extends State<AnnexSlidePage> {
   }
 
   Widget buildSlideCard(BuildContext context, int index) {
-    final slide = widget._talk.slides[index];
-    return SlideCard(widget._question, index, slide, widget._talk.slides.length);
+    final slide = _slides[index];
+    return SlideCard(widget._question, index, slide, _slides.length);
   }
 }
 
 class SlideCard extends StatefulWidget {
   Question question;
   int slideIndex;
-  String slide;
+  Slide slide;
   int presentationLength;
 
-  SlideCard(
-      this.question, this.slideIndex, this.slide, this.presentationLength);
+  SlideCard(this.question, this.slideIndex, this.slide, this.presentationLength);
 
   @override
   _SlideCardState createState() {
@@ -83,7 +102,7 @@ class _SlideCardState extends State<SlideCard> {
   Widget build(BuildContext context) {
     print(widget.slideIndex);
     Widget slideWidget = Stack(children: [
-      Image(image: AssetImage(widget.slide)),
+      Image(image: AssetImage("assets/" + widget.slide.imageName)),
       Container(
           margin: const EdgeInsets.all(5),
           color: Colors.grey.withOpacity(0.5),
@@ -103,7 +122,7 @@ class _SlideCardState extends State<SlideCard> {
       child: Container(
           // add a margin when selected
           decoration: BoxDecoration(
-              border: (widget.question.annexedSlides.contains(widget.slideIndex)
+              border: (widget.question.slides.contains(widget.slideIndex)
                   ? Border.all(width: 1.0, color: Colors.blue)
                   : Border.all(width: 0.0))),
           margin: (widget.slideIndex != widget.presentationLength - 1
@@ -143,4 +162,4 @@ class _MyAnnexQuestionFormState extends State<MyAnnexQuestionForm> {
     );
   }
 }
-*/
+

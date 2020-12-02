@@ -2,7 +2,6 @@ import 'package:asquestions/view/pages/QuestionPage.dart';
 import 'package:asquestions/view/pages/AddQuestionPage.dart';
 import 'package:flutter/material.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
-import 'package:intl/intl.dart';
 import '../../model/Question.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../view/widgets/CustomListView.dart';
@@ -33,7 +32,8 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    questions = await widget._firestore.getQuestionsFromTalkReference(widget._talkReference);
+    questions = await widget._firestore
+        .getQuestionsFromTalkReference(widget._talkReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -43,13 +43,15 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
 
   void _toggleUpvote(Question question) {
     setState(() {
-      question.triggerUpvote();
+      question.triggerUpvote(widget._firestore.getCurrentUser());
+      widget._firestore.refreshQuestionVotes(question);
     });
   }
 
   void _toggleDownvote(Question question) {
     setState(() {
-      question.triggerDownvote();
+      question.triggerDownvote(widget._firestore.getCurrentUser());
+      widget._firestore.refreshQuestionVotes(question);
     });
   }
 
@@ -57,7 +59,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    questions.sort((a, b) => b.votes.compareTo(a.votes));
+    questions.sort((a, b) => b.getVotes().compareTo(a.getVotes()));
     return Scaffold(
       appBar: AppBar(
         title: Text('Talk Questions'),
@@ -71,7 +73,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddQuestionPage(widget._firestore)));
+                        builder: (context) => AddQuestionPage(widget._firestore, widget._talkReference)));
               })
         ],
       ),
@@ -99,7 +101,8 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => QuestionPage(widget._firestore, question.reference)));
+                builder: (context) =>
+                    QuestionPage(widget._firestore, question.reference)));
       },
       child: Container(
         padding: const EdgeInsets.all(2.0),
@@ -142,7 +145,8 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                 endIndent: 40),
             Padding(
               padding: const EdgeInsets.only(top: 6.0, bottom: 10.0),
-              child: Text("By: " + question.user.name, style: new TextStyle(fontSize: 15.0)),
+              child: Text("By: " + question.user.name,
+                  style: new TextStyle(fontSize: 15.0)),
             ),
             Text(question.getAgeString()),
           ],
@@ -160,18 +164,23 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
             scale: 2.0,
             child: IconButton(
                 icon: Icon(Icons.keyboard_arrow_up_outlined),
-                color: (question.voted == 1 ? Colors.green : Colors.black),
+                color: (question.hasUpvoted(widget._firestore.getCurrentUser())
+                    ? Colors.green
+                    : Colors.black),
                 onPressed: () {
                   _toggleUpvote(question);
                 }),
           ),
-          Text((question.votes).toString(),
+          Text((question.getVotes()).toString(),
               style: new TextStyle(fontSize: 18.0)),
           Transform.scale(
             scale: 2.0,
             child: IconButton(
                 icon: Icon(Icons.keyboard_arrow_down_outlined),
-                color: (question.voted == 2 ? Colors.red : Colors.black),
+                color:
+                    (question.hasDownvoted(widget._firestore.getCurrentUser())
+                        ? Colors.red
+                        : Colors.black),
                 onPressed: () {
                   _toggleDownvote(question);
                 }),

@@ -37,10 +37,27 @@ class CloudFirestoreController {
     DocumentReference userRef = snapshot.get('user');
     User user = await _makeUserFromSnapshot(await userRef.get());
     DateTime date = snapshot.get('date').toDate();
-    int votes = snapshot.get('votes');
-    int voted = snapshot.get('voted');
+    List upvotesDynamic = snapshot.get('upvotes');
+    List downvotesDynamic = snapshot.get('downvotes');
     List slidesDynamic = snapshot.get('slides');
+    List<DocumentReference> upvotesRef =
+        upvotesDynamic.cast<DocumentReference>();
+    List<DocumentReference> downvotesRef =
+        downvotesDynamic.cast<DocumentReference>();
     List<DocumentReference> slidesRef = slidesDynamic.cast<DocumentReference>();
+
+    List<User> upvotes = new List();
+    for (DocumentReference upvote in upvotesRef) {
+      User upvoteUser = await _makeUserFromSnapshot(await upvote.get());
+      upvotes.add(upvoteUser);
+    }
+
+    List<User> downvotes = new List();
+    for (DocumentReference downvote in downvotesRef) {
+      User downvoteUser = await _makeUserFromSnapshot(await downvote.get());
+      downvotes.add(downvoteUser);
+    }
+
     List<Slide> slides = new List();
     for (DocumentReference slideRef in slidesRef) {
       Slide newSlide = await _makeSlideFromSnapshot(await slideRef.get());
@@ -48,13 +65,15 @@ class CloudFirestoreController {
     }
     DocumentReference talk = snapshot.get('talk');
     DocumentReference reference = snapshot.reference;
-    Question question = Question(user, content, date, votes, voted, slides, talk, reference);
+    Question question = Question(
+        user, content, date, upvotes, downvotes, slides, talk, reference);
     return question;
   }
 
   Future<List<Talk>> getTalks() async {
     List<Future<Talk>> talks = new List();
-    QuerySnapshot snapshot = await firestore.collection("talks").orderBy('startDate').get();
+    QuerySnapshot snapshot =
+        await firestore.collection("talks").orderBy('startDate').get();
     for (DocumentSnapshot document in snapshot.docs) {
       talks.add(_makeTalkFromDoc(document));
     }
@@ -86,8 +105,7 @@ class CloudFirestoreController {
     return slide;
   }
 
-  Future<List<Question>> getQuestionsFromTalkReference(
-      DocumentReference talk) async {
+  Future<List<Question>> getQuestionsFromTalkReference(DocumentReference talk) async {
     List<Future<Question>> questions = new List();
     QuerySnapshot snapshot = await firestore
         .collection("questions")
@@ -98,6 +116,16 @@ class CloudFirestoreController {
     }
     if (snapshot.docs.length == 0) return [];
     return await Future.wait(questions);
+  }
+
+  Future<List<Slide>> getSlidesFromTalkReference(DocumentReference talk) async {
+    List<Future<Slide>> slides = new List();
+    QuerySnapshot snapshot = await firestore.collection("slides").where('talk', isEqualTo: talk).get();
+    for (DocumentSnapshot document in snapshot.docs) {
+      slides.add(_makeSlideFromSnapshot(document));
+    }
+    if (snapshot.docs.length == 0) return [];
+    return await Future.wait(slides);
   }
 
   Future<List<Comment>> getCommentsFromQuestionReference(
@@ -124,7 +152,6 @@ class CloudFirestoreController {
     return await question;
   }
 
-
   Future<DocumentReference> getUserReferenceByUsername(String username) async {
     QuerySnapshot snapshot = await firestore
         .collection("users")
@@ -143,15 +170,34 @@ class CloudFirestoreController {
     _currentUser = user;
   }
 
-  void addQuestion(String content) {
+  void addQuestion(String content, List<Slide> slides, DocumentReference talk) {
+    List<DocumentReference> slidesRef = new List();
+    for (Slide slide in slides) {
+      slidesRef.add(slide.reference);
+    }
+
     firestore.collection("questions").add({
-      "comments": [],
       "date": Timestamp.fromDate(DateTime.now()),
-      "slides": [],
+      "slides": slidesRef,
       "content": content,
+      "talk": talk,
       "user": _currentUser.reference,
-      "voted": 1,
-      "votes": 1,
+      "upvotes": [],
+      "downvotes": [],
     });
+  }
+
+  Future<void> refreshQuestionVotes(Question question) async {
+    List<DocumentReference> upvotesRef = new List();
+    for (User upvote in question.upvotes) {
+      upvotesRef.add(upvote.reference);
+    }
+
+    List<DocumentReference> downvotesRef = new List();
+    for (User downvote in question.downvotes) {
+      downvotesRef.add(downvote.reference);
+    }
+
+    await question.reference.update({'upvotes': upvotesRef, 'downvotes': downvotesRef});
   }
 }
