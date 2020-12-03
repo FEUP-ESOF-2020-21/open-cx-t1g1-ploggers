@@ -1,6 +1,6 @@
 import 'package:asquestions/controller/Authenticator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:asquestions/model/User.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,14 +16,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    TextEditingController _email = TextEditingController();
-    TextEditingController _password = TextEditingController();
     bool _hidePassword = true;
     return Scaffold(
+        appBar: AppBar(),
         resizeToAvoidBottomPadding: false,
         body: Column(
           children: <Widget>[
@@ -64,23 +65,24 @@ class _LoginPageState extends State<LoginPage> {
                       left: size.width * 0.1,
                       right: size.width * 0.1,
                       bottom: 20),
-                  child: TextFormField(
+                  child: TextField(
                     controller: _email,
-                    decoration: const InputDecoration(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
                         icon: Icon(Icons.account_circle),
                         hintText: "Email",
                         labelText: "Email"),
-                    validator: (String value) {
+                    /*validator: (String value) {
                       if (!value.contains('@')) return 'Invalid email.';
                       return null;
-                    },
+                    },*/
                   ),
                 ),
                 Container(
                   height: 50,
                   padding: EdgeInsets.only(
                       top: 20, left: size.width * 0.1, right: size.width * 0.1),
-                  child: TextFormField(
+                  child: TextField(
                     controller: _password,
                     obscureText: _hidePassword,
                     decoration: const InputDecoration(
@@ -104,7 +106,41 @@ class SigninButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
+    return Padding(
+      padding: const EdgeInsets.only(top: 50.0),
+      child: ButtonTheme(
+          minWidth: 350.0,
+          height: 50.0,
+          child: RaisedButton(
+              highlightElevation: 0.0,
+              splashColor: Colors.blue[800],
+              highlightColor: Colors.blue,
+              elevation: 0.0,
+              color: Colors.blue,
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 4.0, color: Colors.blue[800]),
+                  borderRadius: new BorderRadius.circular(30.0)),
+              child: Text("Sign In",
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white)),
+              onPressed: () {
+                //print(email.text);
+                context
+                    .read<Authenticator>()
+                    .signIn(email.text.trim(), password.text.trim())
+                    .then((value) {
+                  Scaffold.of(context).removeCurrentSnackBar(
+                      reason: SnackBarClosedReason.remove);
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text(value)));
+                });
+                Navigator.pop(context);
+              })),
+    );
+
+    /*return RaisedButton(
       onPressed: () {
         print(email.text);
         context
@@ -117,6 +153,6 @@ class SigninButton extends StatelessWidget {
         });
       },
       child: Text("Login"),
-    );
+    );*/
   }
 }

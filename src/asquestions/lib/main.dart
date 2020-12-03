@@ -1,4 +1,6 @@
 import 'package:asquestions/controller/CloudFirestoreController.dart';
+import 'package:asquestions/view/pages/HomePage.dart';
+import 'package:asquestions/view/pages/InitialPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -77,25 +79,23 @@ class AsQuestionsApp extends StatelessWidget {
             // closer together (more dense) than on mobile platforms.
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: HomePage(firestore)),
+          home: /*InitialPage(firestore)),*/ MainPage(firestore)),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class MainPage extends StatelessWidget {
   final CloudFirestoreController _firestore;
 
-  HomePage(this._firestore);
+  MainPage(this._firestore);
 
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
 
     if (firebaseUser != null) {
-      return NavigatorPage(_firestore); //NavigatorPage(_firestore);
+      return NavigatorPage(_firestore);
     } else
-      return LoginPage(_firestore);
+      return InitialPage(_firestore); //LoginPage(_firestore);
   }
 }
-
-

@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class NavigatorPage extends StatefulWidget {
   final CloudFirestoreController _firestore;
 
-  NavigatorPage(this._firestore); 
+  NavigatorPage(this._firestore);
 
   @override
   _NavigatorPageState createState() => _NavigatorPageState();
@@ -32,8 +32,10 @@ class _NavigatorPageState extends State<NavigatorPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    _userReference = await widget._firestore.getUserReferenceByUsername("Username1");  //At this point current user should already be loaded -> test
-    widget._firestore.setCurrentUser(await widget._firestore.getUser(await _userReference.get()));
+    _userReference = await widget._firestore.getUserReferenceByUsername(
+        "Username1"); //At this point current user should already be loaded -> test
+    widget._firestore.setCurrentUser(
+        await widget._firestore.getUser(await _userReference.get()));
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -47,7 +49,8 @@ class _NavigatorPageState extends State<NavigatorPage> {
     PageController _pageController = PageController();
     List<Widget> _screens = [
       HomePage(widget._firestore),
-      UserProfilePage(widget._firestore, widget._firestore.getCurrentUser().reference),
+      UserProfilePage(
+          widget._firestore, widget._firestore.getCurrentUser().reference),
       UserSettingsPage(widget._firestore)
     ];
 
