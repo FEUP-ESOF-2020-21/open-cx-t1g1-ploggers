@@ -169,7 +169,9 @@ class SignUpButton extends StatelessWidget {
                       reason: SnackBarClosedReason.remove);
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text(value)));
-                  firestore.addUser(name.text, username.text, email.text);
+                  if (value == 'Signed up') {
+                    firestore.addUser(name.text, username.text, email.text);
+                  }
                 });
                 //Navigator.pop(context);
               })),
