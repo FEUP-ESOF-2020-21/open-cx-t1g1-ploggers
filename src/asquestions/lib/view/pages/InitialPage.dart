@@ -1,5 +1,6 @@
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:asquestions/view/pages/LoginPage.dart';
+import 'package:asquestions/view/pages/SignUpPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -84,7 +85,12 @@ class _InitialPageState extends State<InitialPage> {
                       fontSize: 30,
                       fontWeight: FontWeight.w400,
                       color: Colors.white)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SignUpPage(widget._firestore)));
+              },
             ),
           ),
         )
