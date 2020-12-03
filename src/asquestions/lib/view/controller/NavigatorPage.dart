@@ -32,8 +32,9 @@ class _NavigatorPageState extends State<NavigatorPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    _userReference = await widget._firestore.getUserReferenceByUsername(
-        "Username1"); //At this point current user should already be loaded -> test
+    _userReference = await widget._firestore.getUserReferenceByEmail(widget
+        ._firestore
+        .getCurrentUserEmail()); //At this point current user should already be loaded -> test
     widget._firestore.setCurrentUser(
         await widget._firestore.getUser(await _userReference.get()));
     if (this.mounted)
@@ -45,44 +46,50 @@ class _NavigatorPageState extends State<NavigatorPage> {
 
   @override
   Widget build(BuildContext context) {
-    int _currentIndex = 0;
-    PageController _pageController = PageController();
-    List<Widget> _screens = [
-      HomePage(widget._firestore),
-      UserProfilePage(
-          widget._firestore, widget._firestore.getCurrentUser().reference),
-      UserSettingsPage(widget._firestore)
-    ];
+    if (widget._firestore.getCurrentUser() != null) {
+      int _currentIndex = 0;
+      PageController _pageController = PageController();
+      List<Widget> _screens = [
+        HomePage(widget._firestore),
+        UserProfilePage(
+            widget._firestore, widget._firestore.getCurrentUser().reference),
+        UserSettingsPage(widget._firestore)
+      ];
 
-    void _onPageChanged(int index) {
-      _pageController.jumpToPage(index);
-      _currentIndex = index;
+      void _onPageChanged(int index) {
+        _pageController.jumpToPage(index);
+        _currentIndex = index;
+      }
+
+      return Scaffold(
+        body: PageView(
+          controller: _pageController,
+          children: _screens,
+          onPageChanged: _onPageChanged,
+        ),
+        bottomNavigationBar: CurvedNavigationBar(
+          color: Colors.blue,
+          backgroundColor: Colors.white,
+          buttonBackgroundColor: Colors.blue,
+          animationDuration: Duration(milliseconds: 300),
+          height: 50,
+          onTap: (int index) {
+            setState(() {
+              _currentIndex = index;
+              _pageController.jumpToPage(_currentIndex);
+            });
+          },
+          items: <Widget>[
+            Icon(Icons.question_answer_rounded, size: 30, color: Colors.white),
+            Icon(Icons.person_rounded, size: 30, color: Colors.white),
+            Icon(Icons.settings_rounded, size: 30, color: Colors.white)
+          ],
+        ),
+      );
+    } else {
+      return Scaffold(
+        body: Center(child: Image.asset("assets/logo.png",width: 450, height: 250, fit: BoxFit.contain))
+      );
     }
-
-    return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        children: _screens,
-        onPageChanged: _onPageChanged,
-      ),
-      bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.blue,
-        backgroundColor: Colors.white,
-        buttonBackgroundColor: Colors.blue,
-        animationDuration: Duration(milliseconds: 300),
-        height: 50,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-            _pageController.jumpToPage(_currentIndex);
-          });
-        },
-        items: <Widget>[
-          Icon(Icons.question_answer_rounded, size: 30, color: Colors.white),
-          Icon(Icons.person_rounded, size: 30, color: Colors.white),
-          Icon(Icons.settings_rounded, size: 30, color: Colors.white)
-        ],
-      ),
-    );
   }
 }

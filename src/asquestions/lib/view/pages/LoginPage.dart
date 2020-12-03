@@ -79,7 +79,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Container(
-                  height: 50,
                   padding: EdgeInsets.only(
                       top: 20, left: size.width * 0.1, right: size.width * 0.1),
                   child: TextField(
@@ -136,7 +135,7 @@ class SigninButton extends StatelessWidget {
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text(value)));
                 });
-                Navigator.pop(context);
+                //Navigator.pop(context);
               })),
     );
 
