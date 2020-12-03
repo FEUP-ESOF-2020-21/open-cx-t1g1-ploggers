@@ -93,7 +93,6 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
     if (firebaseUser != null) {
-      print(firebaseUser);
       _firestore.setCurrentUserEmail(firebaseUser.email);
       return NavigatorPage(_firestore);
     } else {
