@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     bool _hidePassword = true;
+    widget._firestore.needsAuth();
     return Scaffold(
         appBar: AppBar(),
         resizeToAvoidBottomPadding: false,

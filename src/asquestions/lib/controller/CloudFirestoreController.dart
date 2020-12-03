@@ -9,6 +9,24 @@ class CloudFirestoreController {
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
   static User _currentUser;
   static String _currentUserEmail;
+  static bool _needAuth = false;
+  static bool _register = false;
+
+  void needsAuth() {
+    _needAuth = true;
+  }
+
+  bool getAuth() {
+    return _needAuth;
+  }
+
+  void setRegister(bool value) {
+    _register = value;
+  }
+
+  bool getRegister() {
+    return _register;
+  }
 
   Future<Talk> _makeTalkFromDoc(DocumentSnapshot snapshot) async {
     String title = snapshot.get('title');
@@ -197,6 +215,17 @@ class CloudFirestoreController {
       "user": _currentUser.reference,
       "upvotes": [],
       "downvotes": [],
+    });
+  }
+
+  void addUser(String name, String username, String email) {
+    firestore.collection("users").add({
+      "username": username,
+      "bio": "",
+      "email": email,
+      "name": name,
+      "picture": "assets/avatar1.png",
+      "password": "12345678",
     });
   }
 
