@@ -35,10 +35,7 @@ class Question extends Post {
     return false;
   }
 
-
-  void removeUser(User user){
-    
-  }
+  void removeUser(User user) {}
 
   void triggerUpvote(User user) {
     if (!hasUpvoted(user) && hasDownvoted(user)) {
@@ -62,10 +59,10 @@ class Question extends Post {
     }
   }
 
-  void toggleAnnexSlide(slideIndex) {
-    if (this.slides.contains(slideIndex))
-      this.slides.remove(slideIndex);
+  void toggleAnnexSlide(Slide slide) {
+    if (this.slides.contains(slide))
+      this.slides.remove(slide);
     else
-      this.slides.add(slideIndex);
+      this.slides.add(slide);
   }
 }

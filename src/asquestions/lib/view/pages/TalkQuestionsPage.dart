@@ -73,7 +73,8 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddQuestionPage(widget._firestore, widget._talkReference)));
+                        builder: (context) => AddQuestionPage(
+                            widget._firestore, widget._talkReference)));
               })
         ],
       ),
