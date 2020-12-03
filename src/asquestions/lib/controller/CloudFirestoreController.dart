@@ -10,6 +10,7 @@ class CloudFirestoreController {
   static User _currentUser;
   static String _currentUserEmail;
   static bool _needAuth = false;
+  static bool _register = false;
 
   void needsAuth() {
     _needAuth = true;
@@ -17,6 +18,14 @@ class CloudFirestoreController {
 
   bool getAuth() {
     return _needAuth;
+  }
+
+  void setRegister(bool value) {
+    _register = value;
+  }
+
+  bool getRegister() {
+    return _register;
   }
 
   Future<Talk> _makeTalkFromDoc(DocumentSnapshot snapshot) async {

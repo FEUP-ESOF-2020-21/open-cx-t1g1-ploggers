@@ -95,7 +95,9 @@ class MainPage extends StatelessWidget {
     if (firebaseUser != null) {
       print(firebaseUser);
       if (_firestore.getAuth()) {
-        Navigator.pop(context);
+        WidgetsBinding.instance.addPostFrameCallback((_){
+          Navigator.pop(context);
+        });      
       }
       _firestore.setCurrentUserEmail(firebaseUser.email);
       return NavigatorPage(_firestore);
