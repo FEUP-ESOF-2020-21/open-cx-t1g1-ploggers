@@ -287,6 +287,106 @@ Value: Should Have
 
 Effort: L
 
+---
+#### **Story #10**
+
+As a user, I want a Sign In/Sign Up page.
+
+_User interface mockups_
+
+![User story #10 mockup12](./img/mockup12.png)
+
+_Acceptance Tests_
+
+```gherkin
+Scenario: Choosing between signing in and signing up
+	Given I just opened the app and I'm currently logged off of any account
+	When I click Sign In
+	Then the app takes me to a Sign In/Login page, where I can log in to the application
+	When I click Sign Up
+	Then the app takes me to a Sign Up/Register page, where I can fill in data and create an account
+```
+
+_Value/Effort_
+
+Value: Must Have
+
+Effort: L
+
+---
+#### **Story #11**
+
+As a user, if I don't currently have an account, I want to be able to Sign Up/Register.
+
+_User interface mockups_
+
+![User story #11 mockup13](./img/mockup13.png)
+
+_Acceptance Tests_
+
+```gherkin
+Scenario: Creating a new account
+	Given I'm currently on the Sign Up/Register page
+	When I fill in all the required information
+	Then the app creates my account using the data provided and let's me Sign In with that info
+```
+
+_Value/Effort_
+
+Value: Must Have
+
+Effort: L
+
+---
+#### **Story #12**
+
+As a user, I want to be able to log in to my account
+
+_User interface mockups_
+
+![User story #12 mockup14](./img/mockup14.png)
+
+_Acceptance Tests_
+
+```gherkin
+Scenario: Logging in to an existing account
+	Given I'm currently on the Sign Up/Login page
+	When I fill in my email and password
+	Then the app logs me in to my account and takes me to the Home Page
+```
+
+_Value/Effort_
+
+Value: Must Have
+
+Effort: L
+
+---
+#### **Story #13**
+
+As a user, I want to see, join and search for different talks.
+
+_User interface mockups_
+
+![User story #13 mockup15](./img/mockup15.png)
+
+_Acceptance Tests_
+
+```gherkin
+Scenario: Browsing different talks
+	Given I'm currently in the Home Page screen
+	When I click on one of the talks shown in the page
+	Then the app takes me to the talk's respective forum
+```
+
+_Value/Effort_
+
+Value: Must Have
+
+Effort: L
+
+---
+
 
 ### Domain model
 
