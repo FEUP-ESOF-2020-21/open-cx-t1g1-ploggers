@@ -175,9 +175,9 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
 
   void _submit() {
     if (formKey.currentState.validate()) {
-      List<Slide> slides = new List();
       formKey.currentState.save();
-      widget._firestore.addQuestion(_content, slides, widget._talkReference);
+      widget._firestore
+          .addQuestion(_content, _temp_question.slides, widget._talkReference);
       Navigator.push(
           context,
           MaterialPageRoute(
