@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import '../../model/Question.dart';
@@ -52,6 +51,12 @@ class _QuestionPageState extends State<QuestionPage> {
           body: Visibility(
               visible: showLoadingIndicator, child: LinearProgressIndicator()));
     } else {
+      Widget questionCard;
+      if (question.slides.length == 0)
+        questionCard = buildQuestionWithoutSlide();
+      else
+        questionCard = buildQuestionWithSlide();
+      
       return Scaffold(
           appBar: AppBar(
             title: Text("Question Thread"),
@@ -59,7 +64,7 @@ class _QuestionPageState extends State<QuestionPage> {
           ),
           body: Column(
             children: <Widget>[
-              buildQuestion(),
+              questionCard,
               Divider(
                   height: 10,
                   thickness: 3,
@@ -99,7 +104,6 @@ class _QuestionPageState extends State<QuestionPage> {
         itemCount: comments.length,
         itemBuilder: (BuildContext context, int index) {
           Comment comment = comments[index];
-          final f = new DateFormat('dd-MM-yyy HH:mm');
           return Card(
             color: Colors.blue.shade100,
             child: Padding(
@@ -139,7 +143,7 @@ class _QuestionPageState extends State<QuestionPage> {
         });
   }
 
-  Widget buildQuestion() {
+  Widget buildQuestionWithSlide() {
     return Container(
       padding: EdgeInsets.all(2.0),
       child: Card(
@@ -150,8 +154,8 @@ class _QuestionPageState extends State<QuestionPage> {
             children: <Widget>[
               ListTile(
                 leading: Image(image: AssetImage(question.user.picture)),
-                title:
-                    Text(question.content, style: new TextStyle(fontSize: 25.0)),
+                title: Text(question.content,
+                    style: new TextStyle(fontSize: 25.0)),
                 subtitle: Text("Asked by: " + question.user.name,
                     style: new TextStyle(fontSize: 18.0)),
               ),
@@ -172,7 +176,50 @@ class _QuestionPageState extends State<QuestionPage> {
                   color: Colors.blue.shade200,
                   indent: 40,
                   endIndent: 40),
-              Image(image: AssetImage('assets/pp1.png')),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                child: Image(
+                    image:
+                        AssetImage('assets/' + question.slides[0].imageName)),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(comments.length.toString() + " comments",
+                        style: new TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade700)),
+                    Text(question.getAgeString(),
+                        style: new TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade700))
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildQuestionWithoutSlide() {
+    return Container(
+      padding: EdgeInsets.all(2.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Image(image: AssetImage(question.user.picture)),
+                title: Text(question.content,
+                    style: new TextStyle(fontSize: 25.0)),
+                subtitle: Text("Asked by: " + question.user.name,
+                    style: new TextStyle(fontSize: 18.0)),
+              ),
               Padding(
                 padding:
                     const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 5.0),

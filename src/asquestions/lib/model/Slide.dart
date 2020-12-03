@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'Talk.dart';
 
 class Slide {
   int number;
