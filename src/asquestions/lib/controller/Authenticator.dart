@@ -20,12 +20,12 @@ class Authenticator {
     }
   }
 
-  Future<String> signUp(String email, String password, String name) async {
-    try{
+  Future<String> signUp(String email, String password) async {
+    try {
       await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password);
-        return 'Signed up';
-    }on FirebaseAuthException catch (e) {
+          email: email, password: password);
+      return 'Signed up';
+    } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
