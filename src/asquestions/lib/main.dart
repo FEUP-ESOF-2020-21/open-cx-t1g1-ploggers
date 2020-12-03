@@ -92,10 +92,12 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
-
     if (firebaseUser != null) {
+      print(firebaseUser);
+      _firestore.setCurrentUserEmail(firebaseUser.email);
       return NavigatorPage(_firestore);
-    } else
-      return InitialPage(_firestore); //LoginPage(_firestore);
+    } else {
+      return LoginPage(_firestore); //LoginPage(_firestore);
+    }
   }
 }

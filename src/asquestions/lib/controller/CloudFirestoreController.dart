@@ -8,6 +8,7 @@ import 'package:asquestions/model/Slide.dart';
 class CloudFirestoreController {
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
   static User _currentUser;
+  static String _currentUserEmail;
 
   Future<Talk> _makeTalkFromDoc(DocumentSnapshot snapshot) async {
     String title = snapshot.get('title');
@@ -105,7 +106,8 @@ class CloudFirestoreController {
     return slide;
   }
 
-  Future<List<Question>> getQuestionsFromTalkReference(DocumentReference talk) async {
+  Future<List<Question>> getQuestionsFromTalkReference(
+      DocumentReference talk) async {
     List<Future<Question>> questions = new List();
     QuerySnapshot snapshot = await firestore
         .collection("questions")
@@ -120,7 +122,10 @@ class CloudFirestoreController {
 
   Future<List<Slide>> getSlidesFromTalkReference(DocumentReference talk) async {
     List<Future<Slide>> slides = new List();
-    QuerySnapshot snapshot = await firestore.collection("slides").where('talk', isEqualTo: talk).get();
+    QuerySnapshot snapshot = await firestore
+        .collection("slides")
+        .where('talk', isEqualTo: talk)
+        .get();
     for (DocumentSnapshot document in snapshot.docs) {
       slides.add(_makeSlideFromSnapshot(document));
     }
@@ -152,10 +157,10 @@ class CloudFirestoreController {
     return await question;
   }
 
-  Future<DocumentReference> getUserReferenceByUsername(String username) async {
+  Future<DocumentReference> getUserReferenceByEmail(String email) async {
     QuerySnapshot snapshot = await firestore
         .collection("users")
-        .where("username", isEqualTo: username)
+        .where("email", isEqualTo: email)
         .limit(1)
         .get();
     if (snapshot.docs.length == 0) return null;
@@ -168,6 +173,14 @@ class CloudFirestoreController {
 
   void setCurrentUser(User user) {
     _currentUser = user;
+  }
+
+  String getCurrentUserEmail() {
+    return _currentUserEmail;
+  }
+
+  void setCurrentUserEmail(String email) {
+    _currentUserEmail = email;
   }
 
   void addQuestion(String content, List<Slide> slides, DocumentReference talk) {
@@ -198,6 +211,7 @@ class CloudFirestoreController {
       downvotesRef.add(downvote.reference);
     }
 
-    await question.reference.update({'upvotes': upvotesRef, 'downvotes': downvotesRef});
+    await question.reference
+        .update({'upvotes': upvotesRef, 'downvotes': downvotesRef});
   }
 }
