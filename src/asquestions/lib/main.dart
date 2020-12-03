@@ -94,10 +94,13 @@ class MainPage extends StatelessWidget {
     final firebaseUser = context.watch<User>();
     if (firebaseUser != null) {
       print(firebaseUser);
+      if (_firestore.getAuth()) {
+        Navigator.pop(context);
+      }
       _firestore.setCurrentUserEmail(firebaseUser.email);
       return NavigatorPage(_firestore);
     } else {
-      return LoginPage(_firestore); //LoginPage(_firestore);
+      return InitialPage(_firestore); //LoginPage(_firestore);
     }
   }
 }

@@ -23,6 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    widget._firestore.needsAuth();
     return Scaffold(
         appBar: AppBar(),
         resizeToAvoidBottomPadding: false,
@@ -124,7 +125,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       username: _username,
                       name: _name,
                       email: _email,
-                      password: _password)
+                      password: _password,
+                      firestore: widget._firestore)
                 ]))
           ],
         ));
@@ -132,8 +134,10 @@ class _SignUpPageState extends State<SignUpPage> {
 }
 
 class SignUpButton extends StatelessWidget {
+  final CloudFirestoreController firestore;
   final TextEditingController username, name, email, password;
-  SignUpButton({this.username, this.name, this.email, this.password});
+  SignUpButton(
+      {this.username, this.name, this.email, this.password, this.firestore});
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +169,7 @@ class SignUpButton extends StatelessWidget {
                       reason: SnackBarClosedReason.remove);
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text(value)));
+                  firestore.addUser(name.text, username.text, email.text);
                 });
                 //Navigator.pop(context);
               })),
