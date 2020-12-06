@@ -26,8 +26,8 @@ class _LoginPageState extends State<LoginPage> {
     widget._firestore.needsAuth();
     return Scaffold(
         appBar: AppBar(),
-        resizeToAvoidBottomPadding: false,
-        body: ListView(
+        body: SingleChildScrollView(
+            child: Column(
           children: <Widget>[
             Container(
               alignment: Alignment.topCenter,
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
               ]),
             )
           ],
-        ));
+        )));
   }
 }
 

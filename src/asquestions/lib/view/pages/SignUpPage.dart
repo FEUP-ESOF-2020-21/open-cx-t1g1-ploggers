@@ -26,8 +26,8 @@ class _SignUpPageState extends State<SignUpPage> {
     widget._firestore.needsAuth();
     return Scaffold(
         appBar: AppBar(),
-        resizeToAvoidBottomPadding: false,
-        body: ListView(
+        body: SingleChildScrollView(
+            child: Column(
           children: <Widget>[
             Container(
               alignment: Alignment.topCenter,
@@ -56,87 +56,86 @@ class _SignUpPageState extends State<SignUpPage> {
               thickness: 7,
               color: Colors.blue[500],
             ),
-            SingleChildScrollView(
-                child: Form(
-                    key: formKey,
-                    child: Column(children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                          left: size.width * 0.1,
-                          right: size.width * 0.1,
-                          /*bottom: 20*/
-                        ),
-                        child: TextField(
-                          controller: _username,
-                          decoration: InputDecoration(
-                              icon: Icon(Icons.account_circle),
-                              hintText: "Username",
-                              labelText: "Username"),
-                        ),
+            Form(
+                key: formKey,
+                child: Column(children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                      left: size.width * 0.1,
+                      right: size.width * 0.1,
+                      /*bottom: 20*/
+                    ),
+                    child: TextField(
+                      controller: _username,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.account_circle),
+                          hintText: "Username",
+                          labelText: "Username"),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                      left: size.width * 0.1,
+                      right: size.width * 0.1,
+                      /*bottom: 20*/
+                    ),
+                    child: TextField(
+                      controller: _name,
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.person),
+                          hintText: "Name",
+                          labelText: "Name"),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                      left: size.width * 0.1,
+                      right: size.width * 0.1,
+                      /*bottom: 20*/
+                    ),
+                    child: TextField(
+                      controller: _email,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.email),
+                          hintText: "Email",
+                          labelText: "Email"),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 10,
+                        left: size.width * 0.1,
+                        right: size.width * 0.1),
+                    child: TextField(
+                      controller: _password,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.lock),
+                          hintText: "Password",
+                          labelText: "Password"),
+                    ),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.1,
+                        right: size.width * 0.1,
+                        /*bottom: 20*/
                       ),
-                      Container(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                          left: size.width * 0.1,
-                          right: size.width * 0.1,
-                          /*bottom: 20*/
-                        ),
-                        child: TextField(
-                          controller: _name,
-                          keyboardType: TextInputType.name,
-                          decoration: InputDecoration(
-                              icon: Icon(Icons.person),
-                              hintText: "Name",
-                              labelText: "Name"),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                          left: size.width * 0.1,
-                          right: size.width * 0.1,
-                          /*bottom: 20*/
-                        ),
-                        child: TextField(
-                          controller: _email,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                              icon: Icon(Icons.email),
-                              hintText: "Email",
-                              labelText: "Email"),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(
-                            top: 10,
-                            left: size.width * 0.1,
-                            right: size.width * 0.1),
-                        child: TextField(
-                          controller: _password,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                              icon: Icon(Icons.lock),
-                              hintText: "Password",
-                              labelText: "Password"),
-                        ),
-                      ),
-                      Container(
-                          margin: const EdgeInsets.only(bottom: 20),
-                          padding: EdgeInsets.only(
-                            left: size.width * 0.1,
-                            right: size.width * 0.1,
-                            /*bottom: 20*/
-                          ),
-                          child: SignUpButton(
-                              username: _username,
-                              name: _name,
-                              email: _email,
-                              password: _password,
-                              firestore: widget._firestore))
-                    ])))
+                      child: SignUpButton(
+                          username: _username,
+                          name: _name,
+                          email: _email,
+                          password: _password,
+                          firestore: widget._firestore))
+                ]))
           ],
-        ));
+        )));
   }
 }
 

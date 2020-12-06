@@ -60,7 +60,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ]));
     } else {
       return Scaffold(
-        body: Stack(
+          body: SingleChildScrollView(
+        child: Stack(
           children: <Widget>[
             ClipPath(
               clipper: MyCustomClipper(),
@@ -97,7 +98,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
           ],
         ),
-      );
+      ));
     }
   }
 
