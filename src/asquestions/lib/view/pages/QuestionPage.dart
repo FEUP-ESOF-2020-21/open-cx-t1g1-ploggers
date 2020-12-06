@@ -31,8 +31,10 @@ class _QuestionPageState extends State<QuestionPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    question = await widget._firestore.getQuestion(await widget._questionReference.get());
-    comments = await widget._firestore.getCommentsFromQuestionReference(widget._questionReference);
+    question = await widget._firestore
+        .getQuestion(await widget._questionReference.get());
+    comments = await widget._firestore
+        .getCommentsFromQuestionReference(widget._questionReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -56,24 +58,100 @@ class _QuestionPageState extends State<QuestionPage> {
         questionCard = buildQuestionWithoutSlide();
       else
         questionCard = buildQuestionWithSlide();
-      
       return Scaffold(
-          appBar: AppBar(
-            title: Text("Question Thread"),
-            centerTitle: true,
+        appBar: AppBar(
+          title: Text("Question Thread"),
+          centerTitle: true,
+        ),
+        body: ListView.builder(
+          itemCount: (comments.length == 0 ? 3 : comments.length + 2),
+          itemBuilder: (context, index) {
+            return listPageBuilder(context, index);
+          },
+        ),
+      );
+    }
+  }
+
+  Widget listPageBuilder(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        Widget questionCard;
+        if (question.slides.length == 0)
+          questionCard = buildQuestionWithoutSlide();
+        else
+          questionCard = buildQuestionWithSlide();
+        return questionCard;
+      case 1:
+        return Divider(
+            height: 10,
+            thickness: 3,
+            color: Colors.grey.shade400,
+            indent: 10,
+            endIndent: 10);
+      case 2:
+        if (comments.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: SizedBox(
+              height: 500,
+              width: 300,
+              child: Column(
+                children: <Widget>[
+                  Text("Looks like no one answered this question yet!",
+                      style: new TextStyle(fontSize: 14.0, color: Colors.blue)),
+                  Icon(
+                    Icons.question_answer_rounded,
+                    size: 80,
+                    color: Colors.lightBlue.shade300,
+                  ),
+                  Text("Be the first!",
+                      style: new TextStyle(fontSize: 14.0, color: Colors.blue)),
+                ],
+              ),
+            ),
+          );
+        }
+        continue hasComments;
+      hasComments:
+      default:
+        Comment comment = comments[index - 2];
+        return Card(
+          color: Colors.blue.shade100,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                ListTile(
+                    leading: Image(image: AssetImage(comment.user.picture)),
+                    title: Text(comment.user.name,
+                        style: new TextStyle(fontSize: 20.0)),
+                    subtitle: Text(comment.content,
+                        style: new TextStyle(fontSize: 18.0))),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(comment.getAgeString(),
+                            style: new TextStyle(
+                                fontSize: 14.0, color: Colors.grey.shade700)),
+                        if (!comment.isFromHost)
+                          Icon(
+                            Icons.person_rounded,
+                            color: Colors.grey.shade600,
+                          )
+                        else
+                          Icon(
+                            Icons.mic_rounded,
+                            color: Colors.yellow.shade800,
+                          )
+                      ]),
+                )
+              ],
+            ),
           ),
-          body: Column(
-            children: <Widget>[
-              questionCard,
-              Divider(
-                  height: 10,
-                  thickness: 3,
-                  color: Colors.grey.shade400,
-                  indent: 10,
-                  endIndent: 10),
-              Expanded(child: buildComments())
-            ],
-          ));
+        );
     }
   }
 

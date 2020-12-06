@@ -26,12 +26,11 @@ class _LoginPageState extends State<LoginPage> {
     widget._firestore.needsAuth();
     return Scaffold(
         appBar: AppBar(),
-        resizeToAvoidBottomPadding: false,
-        body: Column(
+        body: SingleChildScrollView(
+            child: Column(
           children: <Widget>[
             Container(
               alignment: Alignment.topCenter,
-              padding: EdgeInsets.only(top: 50),
               child: SizedBox(
                 child: Image.asset("assets/logo.png",
                     width: 450, height: 250, fit: BoxFit.contain),
@@ -91,12 +90,17 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: "Password"),
                   ),
                 ),
-                SigninButton(email: _email, password: _password),
+                Container(
+                  padding: EdgeInsets.only(
+                      left: size.width * 0.1, right: size.width * 0.1),
+                  margin: const EdgeInsets.only(bottom: 20),
+                  child: SigninButton(email: _email, password: _password),
+                )
                 //Container(padding: EdgeInsets.all(20), child: SigninButton({email: _email, password: _password})),
               ]),
             )
           ],
-        ));
+        )));
   }
 }
 

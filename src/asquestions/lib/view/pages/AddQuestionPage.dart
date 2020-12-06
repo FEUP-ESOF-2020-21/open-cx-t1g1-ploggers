@@ -56,20 +56,20 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
         [],
         widget._talkReference); // this object is helping to tag slides
     return Scaffold(
-        resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           title: Text("New Question"),
           centerTitle: true,
         ),
-        body: Padding(
+        body: SingleChildScrollView(
+            child: Padding(
           padding:
               const EdgeInsets.only(top: 20, bottom: 0, left: 35, right: 35),
           child: Column(
             children: <Widget>[
-              // Image(
-              //   image: AssetImage(widget._firestore.getCurrentUser().picture),
-              //   width: 150,
-              // ),
+              Image(
+                image: AssetImage(widget._firestore.getCurrentUser().picture),
+                width: 150,
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Divider(
@@ -142,7 +142,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
               ),
             ],
           ),
-        ));
+        )));
   }
 
   Widget buildSlidesInput() {

@@ -26,12 +26,11 @@ class _SignUpPageState extends State<SignUpPage> {
     widget._firestore.needsAuth();
     return Scaffold(
         appBar: AppBar(),
-        resizeToAvoidBottomPadding: false,
-        body: Column(
+        body: SingleChildScrollView(
+            child: Column(
           children: <Widget>[
             Container(
               alignment: Alignment.topCenter,
-              //padding: EdgeInsets.only(top: 20),
               child: SizedBox(
                 child: Image.asset("assets/logo.png",
                     width: 450, height: 250, fit: BoxFit.contain),
@@ -121,15 +120,22 @@ class _SignUpPageState extends State<SignUpPage> {
                           labelText: "Password"),
                     ),
                   ),
-                  SignUpButton(
-                      username: _username,
-                      name: _name,
-                      email: _email,
-                      password: _password,
-                      firestore: widget._firestore)
+                  Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.1,
+                        right: size.width * 0.1,
+                        /*bottom: 20*/
+                      ),
+                      child: SignUpButton(
+                          username: _username,
+                          name: _name,
+                          email: _email,
+                          password: _password,
+                          firestore: widget._firestore))
                 ]))
           ],
-        ));
+        )));
   }
 }
 

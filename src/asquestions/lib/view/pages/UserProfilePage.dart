@@ -42,28 +42,26 @@ class _UserProfilePageState extends State<UserProfilePage> {
     Size size = MediaQuery.of(context).size;
     if (_user == null) {
       return Scaffold(
-        body: Stack(
-        children: <Widget>[
-          ClipPath(
-            clipper: MyCustomClipper(),
-            child: Container(
-                height: 250,
-                decoration: new BoxDecoration(color: Colors.blue)),
-          ),
-          Center(
-            child: 
-              SizedBox(
-                height: 150,
-                width: 150,
-                child: Visibility(visible: showLoadingIndicator, child: CircularProgressIndicator(backgroundColor: Colors.lightBlue.shade300))
-              ),
-            )
-        ]
+          body: Stack(children: <Widget>[
+        ClipPath(
+          clipper: MyCustomClipper(),
+          child: Container(
+              height: 250, decoration: new BoxDecoration(color: Colors.blue)),
+        ),
+        Center(
+          child: SizedBox(
+              height: 150,
+              width: 150,
+              child: Visibility(
+                  visible: showLoadingIndicator,
+                  child: CircularProgressIndicator(
+                      backgroundColor: Colors.lightBlue.shade300))),
         )
-      );
+      ]));
     } else {
       return Scaffold(
-        body: Stack(
+          body: SingleChildScrollView(
+        child: Stack(
           children: <Widget>[
             ClipPath(
               clipper: MyCustomClipper(),
@@ -91,7 +89,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           style: TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.w300,
-                      )),
+                          )),
                     ),
                     getItems(_user),
                   ],
@@ -100,7 +98,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
           ],
         ),
-      );
+      ));
     }
   }
 
