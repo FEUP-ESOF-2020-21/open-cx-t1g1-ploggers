@@ -4,6 +4,7 @@ import 'package:asquestions/controller/CloudFirestoreController.dart';
 import '../../model/Question.dart';
 import '../../model/Comment.dart';
 import '../../view/pages/AddCommentPage.dart';
+import '../../view/widgets/CustomListView.dart';
 
 class QuestionPage extends StatefulWidget {
   final CloudFirestoreController _firestore;
@@ -32,10 +33,14 @@ class _QuestionPageState extends State<QuestionPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    question = await widget._firestore
-        .getQuestion(await widget._questionReference.get());
-    comments = await widget._firestore
-        .getCommentsFromQuestionReference(widget._questionReference);
+    question = await widget._firestore.getQuestion(await widget._questionReference.get());
+    comments = await widget._firestore.getCommentsFromQuestionReference(widget._questionReference);
+    comments.sort((a, b) {
+    if(b.isFromHost) {
+      return 1;
+    }
+    return -1;
+    });
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -58,7 +63,9 @@ class _QuestionPageState extends State<QuestionPage> {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AddCommentPage(widget._firestore, widget._questionReference)));
+                        MaterialPageRoute(
+                            builder: (context) => AddCommentPage(
+                                widget._firestore, widget._questionReference)));
                   })
             ],
           ),
@@ -71,10 +78,10 @@ class _QuestionPageState extends State<QuestionPage> {
       else
         questionCard = buildQuestionWithSlide();
       return Scaffold(
-        appBar: AppBar(
-          title: Text("Question Thread"),
-          centerTitle: true,
-          actions: <Widget>[
+          appBar: AppBar(
+            title: Text("Question Thread"),
+            centerTitle: true,
+            actions: <Widget>[
               IconButton(
                   icon: Icon(Icons.add_sharp),
                   iconSize: 28,
@@ -82,17 +89,18 @@ class _QuestionPageState extends State<QuestionPage> {
                   onPressed: () {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AddCommentPage(widget._firestore, widget._questionReference)));
+                        MaterialPageRoute(
+                            builder: (context) => AddCommentPage(
+                                widget._firestore, widget._questionReference)));
                   })
-          ],
-        ),
-        body: ListView.builder(
-          itemCount: (comments.length == 0 ? 3 : comments.length + 2),
-          itemBuilder: (context, index) {
-            return listPageBuilder(context, index);
-          },
-        ),
-      );
+            ],
+          ),
+          body: CustomListView(
+              onRefresh: () => refreshModel(false),
+              controller: scrollController,
+              itemCount: (comments.length == 0 ? 3 : comments.length + 2),
+              itemBuilder: (BuildContext context, int index) =>
+                  listPageBuilder(context, index)));
     }
   }
 

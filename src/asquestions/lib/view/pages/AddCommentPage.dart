@@ -1,7 +1,5 @@
-import 'package:asquestions/model/Comment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
-import 'package:asquestions/view/pages/QuestionPage.dart';
 import 'package:flutter/material.dart';
 
 class AddCommentPage extends StatefulWidget {
@@ -115,8 +113,8 @@ class _AddCommentPageState extends State<AddCommentPage> {
                     Expanded(
                         child: TextButton(
                       onPressed: () => _submit(),
-                      child: Text("Submit",
-                          style: TextStyle(color: Colors.white)),
+                      child:
+                          Text("Submit", style: TextStyle(color: Colors.white)),
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all<Color>(Colors.blue)),
@@ -132,13 +130,8 @@ class _AddCommentPageState extends State<AddCommentPage> {
   void _submit() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      widget._firestore
-          .addComment(_content, isFromHost, widget._questionReference);
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  QuestionPage(widget._firestore, widget._questionReference)));
+      widget._firestore.addComment(_content, isFromHost, widget._questionReference);
+      Navigator.pop(context);
     }
   }
 }

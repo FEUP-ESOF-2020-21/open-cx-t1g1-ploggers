@@ -77,7 +77,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     Container(
                       height: 150,
                       width: 150,
-                      child: Image.asset("assets/avatar1.png"),
+                      child: Image.asset(_user.picture),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
