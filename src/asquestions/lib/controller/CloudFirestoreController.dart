@@ -229,6 +229,16 @@ class CloudFirestoreController {
     });
   }
 
+  void addComment(String content, bool isFromHost, DocumentReference question) {
+    firestore.collection("comments").add({
+      "date": Timestamp.fromDate(DateTime.now()),
+      "content": content,
+      "isFromHost": isFromHost,
+      "question": question,
+      "user": _currentUser.reference,
+    });
+  }
+
   Future<void> refreshQuestionVotes(Question question) async {
     List<DocumentReference> upvotesRef = new List();
     for (User upvote in question.upvotes) {
@@ -242,5 +252,14 @@ class CloudFirestoreController {
 
     await question.reference
         .update({'upvotes': upvotesRef, 'downvotes': downvotesRef});
+  }
+
+  Future<bool> isHost(User user, DocumentReference question) async {
+    DocumentSnapshot questionSnap = await question.get();
+    DocumentReference talkRef = questionSnap.get("talk");
+    DocumentSnapshot talkSnap = await talkRef.get();
+    DocumentReference hostRef = talkSnap.get("host");
+
+    return hostRef.id == user.reference.id;
   }
 }

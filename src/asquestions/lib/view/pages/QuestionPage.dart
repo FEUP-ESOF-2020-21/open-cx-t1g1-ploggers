@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import '../../model/Question.dart';
 import '../../model/Comment.dart';
+import '../../view/pages/AddCommentPage.dart';
+import '../../view/widgets/CustomListView.dart';
 
 class QuestionPage extends StatefulWidget {
   final CloudFirestoreController _firestore;
@@ -31,10 +33,14 @@ class _QuestionPageState extends State<QuestionPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    question = await widget._firestore
-        .getQuestion(await widget._questionReference.get());
-    comments = await widget._firestore
-        .getCommentsFromQuestionReference(widget._questionReference);
+    question = await widget._firestore.getQuestion(await widget._questionReference.get());
+    comments = await widget._firestore.getCommentsFromQuestionReference(widget._questionReference);
+    comments.sort((a, b) {
+    if(b.isFromHost) {
+      return 1;
+    }
+    return -1;
+    });
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -49,6 +55,19 @@ class _QuestionPageState extends State<QuestionPage> {
           appBar: AppBar(
             title: Text("Question Thread"),
             centerTitle: true,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.add_sharp),
+                  iconSize: 28,
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddCommentPage(
+                                widget._firestore, widget._questionReference)));
+                  })
+            ],
           ),
           body: Visibility(
               visible: showLoadingIndicator, child: LinearProgressIndicator()));
@@ -59,17 +78,29 @@ class _QuestionPageState extends State<QuestionPage> {
       else
         questionCard = buildQuestionWithSlide();
       return Scaffold(
-        appBar: AppBar(
-          title: Text("Question Thread"),
-          centerTitle: true,
-        ),
-        body: ListView.builder(
-          itemCount: (comments.length == 0 ? 3 : comments.length + 2),
-          itemBuilder: (context, index) {
-            return listPageBuilder(context, index);
-          },
-        ),
-      );
+          appBar: AppBar(
+            title: Text("Question Thread"),
+            centerTitle: true,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.add_sharp),
+                  iconSize: 28,
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddCommentPage(
+                                widget._firestore, widget._questionReference)));
+                  })
+            ],
+          ),
+          body: CustomListView(
+              onRefresh: () => refreshModel(false),
+              controller: scrollController,
+              itemCount: (comments.length == 0 ? 3 : comments.length + 2),
+              itemBuilder: (BuildContext context, int index) =>
+                  listPageBuilder(context, index)));
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:asquestions/model/Slide.dart';
 import 'package:asquestions/model/Question.dart';
-import 'package:asquestions/view/pages/TalkQuestionsPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +102,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                       onSaved: (input) => _content = input,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "Write your question",
+                        hintText: "Write your Question",
                       ),
                       style: TextStyle(height: 1),
                     )),
@@ -178,11 +177,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
       formKey.currentState.save();
       widget._firestore
           .addQuestion(_content, _temp_question.slides, widget._talkReference);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  TalkQuestionsPage(widget._firestore, widget._talkReference)));
+      Navigator.pop(context);
     }
   }
 }
