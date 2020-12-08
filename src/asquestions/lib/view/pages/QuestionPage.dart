@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import '../../model/Question.dart';
 import '../../model/Comment.dart';
+import '../../view/pages/AddCommentPage.dart';
 
 class QuestionPage extends StatefulWidget {
   final CloudFirestoreController _firestore;
@@ -49,6 +50,17 @@ class _QuestionPageState extends State<QuestionPage> {
           appBar: AppBar(
             title: Text("Question Thread"),
             centerTitle: true,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.add_sharp),
+                  iconSize: 28,
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddCommentPage(widget._firestore, widget._questionReference)));
+                  })
+            ],
           ),
           body: Visibility(
               visible: showLoadingIndicator, child: LinearProgressIndicator()));
@@ -62,6 +74,17 @@ class _QuestionPageState extends State<QuestionPage> {
         appBar: AppBar(
           title: Text("Question Thread"),
           centerTitle: true,
+          actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.add_sharp),
+                  iconSize: 28,
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddCommentPage(widget._firestore, widget._questionReference)));
+                  })
+          ],
         ),
         body: ListView.builder(
           itemCount: (comments.length == 0 ? 3 : comments.length + 2),

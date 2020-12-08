@@ -103,7 +103,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                       onSaved: (input) => _content = input,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "Write your question",
+                        hintText: "Write your Question",
                       ),
                       style: TextStyle(height: 1),
                     )),
@@ -178,7 +178,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
       formKey.currentState.save();
       widget._firestore
           .addQuestion(_content, _temp_question.slides, widget._talkReference);
-      Navigator.push(
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) =>
