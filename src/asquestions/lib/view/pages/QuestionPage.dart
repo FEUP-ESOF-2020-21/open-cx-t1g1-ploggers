@@ -148,7 +148,7 @@ class _QuestionPageState extends State<QuestionPage> {
       default:
         Comment comment = comments[index - 2];
         return Card(
-          color: Colors.blue.shade100,
+          color: Colors.grey.shade200,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
