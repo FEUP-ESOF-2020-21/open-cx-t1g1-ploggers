@@ -131,7 +131,7 @@ class SigninButton extends StatelessWidget {
               elevation: 0.0,
               color: Colors.blue,
               shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 4.0, color: Colors.blue[900]),
+                  side: BorderSide(width: 4.0, color: Colors.blue[500]),
                   borderRadius: new BorderRadius.circular(30.0)),
               child: Text("Sign In",
                   style: TextStyle(

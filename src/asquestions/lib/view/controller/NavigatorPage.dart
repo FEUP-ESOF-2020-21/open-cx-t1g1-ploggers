@@ -1,5 +1,4 @@
 import 'package:asquestions/controller/CloudFirestoreController.dart';
-import 'package:asquestions/view/pages/TalkQuestionsPage.dart';
 import 'package:asquestions/view/pages/HomePage.dart';
 import 'package:asquestions/view/pages/UserProfilePage.dart';
 import 'package:asquestions/view/pages/UserSettingsPage.dart';
@@ -88,7 +87,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
       );
     } else {
       return Scaffold(
-        body: Center(child: Image.asset("assets/logo.png",width: 450, height: 250, fit: BoxFit.contain))
+        body: Center(child: Image.asset("assets/logo.png",width: 350, height: 150, fit: BoxFit.contain))
       );
     }
   }

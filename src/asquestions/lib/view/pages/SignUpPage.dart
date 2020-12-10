@@ -69,7 +69,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Column(children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(
-                      top: 10,
                       left: size.width * 0.1,
                       right: size.width * 0.1,
                       /*bottom: 20*/
@@ -86,7 +85,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   Container(
                     padding: EdgeInsets.only(
-                      top: 10,
                       left: size.width * 0.1,
                       right: size.width * 0.1,
                       /*bottom: 20*/
@@ -104,7 +102,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   Container(
                     padding: EdgeInsets.only(
-                      top: 10,
                       left: size.width * 0.1,
                       right: size.width * 0.1,
                       /*bottom: 20*/
@@ -122,7 +119,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   Container(
                     padding: EdgeInsets.only(
-                        top: 10,
                         left: size.width * 0.1,
                         right: size.width * 0.1),
                     child: TextFieldContainer(
@@ -175,7 +171,7 @@ class SignUpButton extends StatelessWidget {
               elevation: 0.0,
               color: Colors.blue,
               shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 4.0, color: Colors.blue[900]),
+                  side: BorderSide(width: 4.0, color: Colors.blue[500]),
                   borderRadius: new BorderRadius.circular(30.0)),
               child: Text("Sign Up",
                   style: TextStyle(
