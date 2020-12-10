@@ -1,5 +1,6 @@
 import 'package:asquestions/controller/Authenticator.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
+import 'package:asquestions/view/widgets/TextFieldContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -25,99 +26,110 @@ class _SignUpPageState extends State<SignUpPage> {
     Size size = MediaQuery.of(context).size;
     widget._firestore.needsAuth();
     return Scaffold(
-        appBar: AppBar(),
         body: SingleChildScrollView(
             child: Column(
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: size.height*0.036),
+              child: Container(
+                alignment: Alignment.topLeft,
+                child: BackButton(color: Colors.blue)),
+            ),
             Container(
               alignment: Alignment.topCenter,
               child: SizedBox(
-                child: Image.asset("assets/logo.png",
-                    width: 450, height: 250, fit: BoxFit.contain),
+                child: Image.asset("assets/logo.png", width: size.width*0.7, height: size.height*0.22, fit: BoxFit.cover),
               ),
             ),
-            Divider(
-              indent: 20,
-              endIndent: 20,
-              thickness: 7,
-              color: Colors.blue[500],
+            Padding(
+              padding: EdgeInsets.only(top: size.height * 0.005),
+              child: Divider(
+                indent: size.width*0.1,
+                endIndent: size.width*0.1,
+                height: 20,
+                color: Colors.blue[900],
+              ),
             ),
             Text(
               "Sign Up",
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 30,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w300,
                   color: Colors.blue[600]),
             ),
             Divider(
-              indent: 20,
-              endIndent: 20,
-              thickness: 7,
-              color: Colors.blue[500],
+              indent: size.width*0.1,
+              endIndent: size.width*0.1,
+              height: 20,
+              color: Colors.blue[900],
             ),
             Form(
                 key: formKey,
                 child: Column(children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(
-                      top: 10,
                       left: size.width * 0.1,
                       right: size.width * 0.1,
                       /*bottom: 20*/
                     ),
-                    child: TextField(
-                      controller: _username,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.account_circle),
-                          hintText: "Username",
-                          labelText: "Username"),
+                    child: TextFieldContainer(
+                        child: TextField(
+                        controller: _username,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.alternate_email_rounded, color: Colors.blue[900]),
+                            hintText: "Username",
+                            border: InputBorder.none),
+                      ),
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(
-                      top: 10,
                       left: size.width * 0.1,
                       right: size.width * 0.1,
                       /*bottom: 20*/
                     ),
-                    child: TextField(
-                      controller: _name,
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.person),
-                          hintText: "Name",
-                          labelText: "Name"),
+                    child: TextFieldContainer(
+                      child: TextField(
+                        controller: _name,
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.person_rounded, color: Colors.blue[900]),
+                            hintText: "Name",
+                            border: InputBorder.none),
+                      ),
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(
-                      top: 10,
                       left: size.width * 0.1,
                       right: size.width * 0.1,
                       /*bottom: 20*/
                     ),
-                    child: TextField(
-                      controller: _email,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.email),
-                          hintText: "Email",
-                          labelText: "Email"),
+                    child: TextFieldContainer(
+                      child: TextField(
+                        controller: _email,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.email_rounded, color: Colors.blue[900]),
+                            hintText: "Email",
+                            border: InputBorder.none),
+                      ),
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(
-                        top: 10,
                         left: size.width * 0.1,
                         right: size.width * 0.1),
-                    child: TextField(
-                      controller: _password,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                          icon: Icon(Icons.lock),
-                          hintText: "Password",
-                          labelText: "Password"),
+                    child: TextFieldContainer(
+                      child: TextField(
+                        controller: _password,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.lock_rounded, color: Colors.blue[900]),
+                            hintText: "Password",
+                            border: InputBorder.none),
+                      ),
                     ),
                   ),
                   Container(
@@ -148,7 +160,7 @@ class SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 50.0),
+      padding: const EdgeInsets.only(top: 20.0),
       child: ButtonTheme(
           minWidth: 350.0,
           height: 50.0,
@@ -159,12 +171,12 @@ class SignUpButton extends StatelessWidget {
               elevation: 0.0,
               color: Colors.blue,
               shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 4.0, color: Colors.blue[800]),
+                  side: BorderSide(width: 4.0, color: Colors.blue[500]),
                   borderRadius: new BorderRadius.circular(30.0)),
               child: Text("Sign Up",
                   style: TextStyle(
                       fontSize: 30,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w300,
                       color: Colors.white)),
               onPressed: () {
                 context
@@ -179,7 +191,6 @@ class SignUpButton extends StatelessWidget {
                     firestore.addUser(name.text, username.text, email.text);
                   }
                 });
-                //Navigator.pop(context);
               })),
     );
   }

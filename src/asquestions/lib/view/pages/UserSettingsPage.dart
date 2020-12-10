@@ -26,17 +26,20 @@ class SignOutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
+        body: Padding(
+          padding: const EdgeInsets.only(top: 200.0),
+          child: Center(
       child: Column(
-        children: <Widget>[
-          RaisedButton(
-            onPressed: () {
-              context.read<Authenticator>().signOut();
-            },
-            child: Text("Sign out"),
-          )
-        ],
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () {
+                context.read<Authenticator>().signOut();
+              },
+              child: Text("Sign out"),
+            )
+          ],
       ),
-    ));
+    ),
+        ));
   }
 }
