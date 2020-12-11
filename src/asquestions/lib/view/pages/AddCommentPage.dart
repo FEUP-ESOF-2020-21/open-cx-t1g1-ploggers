@@ -16,7 +16,6 @@ class _AddCommentPageState extends State<AddCommentPage> {
   String _content;
   final myController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  bool _sortedSlides = false;
   bool showLoadingIndicator = false;
   ScrollController scrollController;
   bool isFromHost;
@@ -32,8 +31,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    isFromHost = await widget._firestore
-        .isHost(widget._firestore.getCurrentUser(), widget._questionReference);
+    isFromHost = await widget._firestore.isHost(widget._firestore.getCurrentUser(), widget._questionReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;

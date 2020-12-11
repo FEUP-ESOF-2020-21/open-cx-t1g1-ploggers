@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:asquestions/view/pages/TalkQuestionsPage.dart';
+import 'package:asquestions/view/pages/AddTalkPage.dart';
 import '../../view/widgets/CustomListView.dart';
 import '../../model/Talk.dart';
 import 'package:intl/intl.dart';
@@ -43,7 +44,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Talks Page'),
-        centerTitle: true),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add_sharp),
+              iconSize: 28,
+              color: Colors.white,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddTalkPage(widget._firestore)));
+              })
+        ],
+      ),
       body: Column(
         children: [
           Visibility(
