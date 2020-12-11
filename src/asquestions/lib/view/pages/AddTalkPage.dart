@@ -61,7 +61,6 @@ class _AddTalkPageState extends State<AddTalkPage> {
                     padding: EdgeInsets.only(
                       left: size.width * 0.1,
                       right: size.width * 0.1,
-                      /*bottom: 20*/
                     ),
                     child: TextFieldContainer(
                       child: TextField(

@@ -2,6 +2,7 @@ import 'package:asquestions/model/Slide.dart';
 import 'package:asquestions/model/Question.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
+import 'package:asquestions/view/widgets/TextFieldContainer.dart';
 import 'package:flutter/material.dart';
 
 class AddQuestionPage extends StatefulWidget {
@@ -67,7 +68,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
             children: <Widget>[
               Image(
                 image: AssetImage(widget._firestore.getCurrentUser().picture),
-                width: 150,
+                width: 100,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -78,7 +79,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Text(widget._firestore.getCurrentUser().name,
+                child: Text("New Question by: " + widget._firestore.getCurrentUser().name,
                     style: new TextStyle(fontSize: 20.0)),
               ),
               Padding(
@@ -93,26 +94,46 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                 child: Column(children: [
                   Center(
                     child: SizedBox(
+                      child: TextFieldContainer(
                         child: TextFormField(
-                      controller: myController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 5,
-                      validator: (input) =>
-                          input.length < 10 ? "Invalid Question" : null,
-                      onSaved: (input) => _content = input,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Write your Question",
-                      ),
-                      style: TextStyle(height: 1),
-                    )),
+                          controller: myController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                          validator: (input) =>
+                                input.length < 10 ? "Invalid Question: Too Short!" : null,
+                          onSaved: (input) => _content = input,
+                          decoration: InputDecoration(
+                            suffix: Icon(Icons.question_answer_rounded, color: Colors.blue[900]),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                              hintText: "Write your Question",
+                          ),
+                        style: TextStyle(height: 1),
+                    ),
+                        )),
                   ),
-                  Container(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        'Choose Slides to Tag:',
-                        style: TextStyle(fontSize: 19),
-                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Divider(
+                      thickness: 3.0,
+                      color: Colors.blue.shade200,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Text("Choose slides to attach: ",
+                        style: new TextStyle(fontSize: 20.0)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Divider(
+                      thickness: 3.0,
+                      color: Colors.blue.shade200,
+                    ),
+                  ),
                   _slides != null
                       ? SizedBox(height: 200, child: buildSlidesInput())
                       : Center(
