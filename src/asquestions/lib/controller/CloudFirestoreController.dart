@@ -84,8 +84,10 @@ class CloudFirestoreController {
     }
     DocumentReference talk = snapshot.get('talk');
     DocumentReference reference = snapshot.reference;
-    Question question = Question(
-        user, content, date, upvotes, downvotes, slides, talk, reference);
+
+    bool highlighted = snapshot.get('highlighted');
+    Question question = Question(user, content, date, upvotes, downvotes,
+        slides, highlighted, talk, reference);
     return question;
   }
 
@@ -106,11 +108,12 @@ class CloudFirestoreController {
     String content = snapshot.get('content');
     DateTime date = snapshot.get('date').toDate();
     bool isFromHost = snapshot.get('isFromHost');
+    bool isFromModerator = snapshot.get('isFromModerator');
     DocumentReference question = snapshot.get('question');
     DocumentReference reference = snapshot.reference;
 
-    Comment comment =
-        Comment(user, content, date, isFromHost, question, reference);
+    Comment comment = Comment(
+        user, content, date, isFromHost, isFromModerator, question, reference);
     return comment;
   }
 
@@ -229,11 +232,13 @@ class CloudFirestoreController {
     });
   }
 
-  void addComment(String content, bool isFromHost, DocumentReference question) {
+  void addComment(String content, bool isFromHost, bool isFromModerator,
+      DocumentReference question) {
     firestore.collection("comments").add({
       "date": Timestamp.fromDate(DateTime.now()),
       "content": content,
       "isFromHost": isFromHost,
+      "isFromModerator": isFromModerator,
       "question": question,
       "user": _currentUser.reference,
     });
@@ -254,6 +259,30 @@ class CloudFirestoreController {
         .update({'upvotes': upvotesRef, 'downvotes': downvotesRef});
   }
 
+  Future<void> refreshHighLighted(Question question) async {
+    bool highlighted = question.highlighted;
+    await question.reference.update({'highlighted': highlighted});
+  }
+
+  Future<void> removeQuestion(DocumentReference question) async {
+    String document = question.toString().split('/')[1];
+    print(document);
+    List<Comment> comments =
+        await this.getCommentsFromQuestionReference(question);
+    for (var comment in comments) {
+      //print(comment);
+      String commentDocument = comment.reference.toString().split('/')[1];
+      await firestore
+          .collection("comments")
+          .doc(commentDocument.substring(0, commentDocument.length - 1))
+          .delete();
+    }
+    await firestore
+        .collection("questions")
+        .doc(document.substring(0, document.length - 1))
+        .delete();
+  }
+
   Future<bool> isHost(User user, DocumentReference question) async {
     DocumentSnapshot questionSnap = await question.get();
     DocumentReference talkRef = questionSnap.get("talk");
@@ -261,5 +290,23 @@ class CloudFirestoreController {
     DocumentReference hostRef = talkSnap.get("host");
 
     return hostRef.id == user.reference.id;
+  }
+
+  Future<bool> isModerator(User user, DocumentReference question) async {
+    DocumentSnapshot questionSnap = await question.get();
+    DocumentReference talkRef = questionSnap.get("talk");
+    DocumentSnapshot talkSnap = await talkRef.get();
+    DocumentReference moderatorRef = talkSnap.get("moderator");
+
+    return moderatorRef.id == user.reference.id;
+  }
+
+  Future<bool> isModeratorOrHost(User user, DocumentReference talkRef) async {
+    DocumentSnapshot talkSnap = await talkRef.get();
+    DocumentReference moderatorRef = talkSnap.get("moderator");
+    DocumentReference hostRef = talkSnap.get("host");
+
+    return moderatorRef.id == user.reference.id ||
+        hostRef.id == user.reference.id;
   }
 }

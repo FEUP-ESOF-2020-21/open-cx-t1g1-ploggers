@@ -33,13 +33,21 @@ class _QuestionPageState extends State<QuestionPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    question = await widget._firestore.getQuestion(await widget._questionReference.get());
-    comments = await widget._firestore.getCommentsFromQuestionReference(widget._questionReference);
+    question = await widget._firestore
+        .getQuestion(await widget._questionReference.get());
+    comments = await widget._firestore
+        .getCommentsFromQuestionReference(widget._questionReference);
     comments.sort((a, b) {
-    if(b.isFromHost) {
-      return 1;
-    }
-    return -1;
+      if (b.isFromModerator) {
+        return 1;
+      }
+      return -1;
+    });
+    comments.sort((a, b) {
+      if (b.isFromHost) {
+        return 1;
+      }
+      return -1;
     });
     if (this.mounted)
       setState(() {
@@ -167,10 +175,15 @@ class _QuestionPageState extends State<QuestionPage> {
                         Text(comment.getAgeString(),
                             style: new TextStyle(
                                 fontSize: 14.0, color: Colors.grey.shade700)),
-                        if (!comment.isFromHost)
+                        if (!comment.isFromHost && !comment.isFromModerator)
                           Icon(
                             Icons.person_rounded,
                             color: Colors.grey.shade600,
+                          )
+                        else if (!comment.isFromHost && comment.isFromModerator)
+                          Icon(
+                            Icons.security_rounded,
+                            color: Colors.lightBlue,
                           )
                         else
                           Icon(

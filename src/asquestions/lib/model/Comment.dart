@@ -5,10 +5,14 @@ import 'User.dart';
 
 class Comment extends Post {
   bool isFromHost;
+  bool isFromModerator;
   DocumentReference question;
 
-  Comment(User user, String content, DateTime date, this.isFromHost, this.question, DocumentReference reference): super(user, content, date, reference);
+  Comment(User user, String content, DateTime date, this.isFromHost,
+      this.isFromModerator, this.question, DocumentReference reference)
+      : super(user, content, date, reference);
 
-  Comment.fromNew(User user, String content, DateTime date, this.isFromHost, this.question): super.fromNew(user, content, date);
-
+  Comment.fromNew(User user, String content, DateTime date, this.isFromHost,
+      this.isFromModerator, this.question)
+      : super.fromNew(user, content, date);
 }
