@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';
 import 'package:asquestions/view/widgets/TextFieldContainer.dart';
@@ -19,6 +19,16 @@ class _AddTalkPageState extends State<AddTalkPage> {
   TextEditingController _description = TextEditingController();
   DateTime _startDate;
   String _dateSelector = "Start Date";
+  List<Asset> _images;
+
+  Future getImages() async{
+    await MultiImagePicker.pickImages(maxImages: 100).then((images){
+      setState(() {
+        _images = images;
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +150,24 @@ class _AddTalkPageState extends State<AddTalkPage> {
                             )),
                       ],
                     )),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      left: size.width * 0.1,
+                      right: size.width * 0.1,
+                      /*bottom: 20*/
+                    ),
+                    child: TextFieldContainer(
+                        child: Row(
+                          children: [
+                            Icon(Icons.add_a_photo_rounded,
+                                color: Colors.blue[900]),
+                            FlatButton(
+                                onPressed: getImages,
+                                child: Text("Attach Slides", style: TextStyle(color: Colors.grey.shade700,fontWeight: FontWeight.w400,fontSize: 16),
+                            )),
+                          ],
+                        )),
                   ),
                   Container(
                       margin: const EdgeInsets.only(bottom: 20),
