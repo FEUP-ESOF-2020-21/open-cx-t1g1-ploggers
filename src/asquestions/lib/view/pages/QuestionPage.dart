@@ -20,6 +20,7 @@ class _QuestionPageState extends State<QuestionPage> {
   Question question;
   List<Comment> comments;
   bool showLoadingIndicator = false;
+  bool isModeratorOrHost;
   ScrollController scrollController;
 
   @override
@@ -37,6 +38,10 @@ class _QuestionPageState extends State<QuestionPage> {
         .getQuestion(await widget._questionReference.get());
     comments = await widget._firestore
         .getCommentsFromQuestionReference(widget._questionReference);
+    DocumentReference talkRef = await widget._firestore
+        .getTalkFromQuestionReference(widget._questionReference);
+    isModeratorOrHost = await widget._firestore
+        .isModeratorOrHost(widget._firestore.getCurrentUser(), talkRef);
     comments.sort((a, b) {
       if (b.isFromModerator) {
         return 1;
@@ -54,6 +59,12 @@ class _QuestionPageState extends State<QuestionPage> {
         showLoadingIndicator = false;
       });
     print("Question fetch time: " + sw.elapsed.toString());
+  }
+
+  void _toggleDeleteComment(Comment comment) {
+    setState(() {
+      widget._firestore.removeComment(comment.reference);
+    });
   }
 
   @override
@@ -155,6 +166,64 @@ class _QuestionPageState extends State<QuestionPage> {
       hasComments:
       default:
         Comment comment = comments[index - 2];
+        if (isModeratorOrHost) {
+          return Card(
+            color: Colors.grey.shade200,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Container(
+                      //height: 5,
+                      //color: Colors.black,
+                      child: IconButton(
+                          icon: Icon(Icons.close_rounded),
+                          color: Colors.red,
+                          onPressed: () {
+                            //_toggleDeleteQuestion(question);
+                            _toggleDeleteComment(comment);
+                          },
+                          iconSize: 20),
+                    ),
+                  ]),
+                  ListTile(
+                      leading: Image(image: AssetImage(comment.user.picture)),
+                      title: Text(comment.user.name,
+                          style: new TextStyle(fontSize: 20.0)),
+                      subtitle: Text(comment.content,
+                          style: new TextStyle(fontSize: 18.0))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(comment.getAgeString(),
+                              style: new TextStyle(
+                                  fontSize: 14.0, color: Colors.grey.shade700)),
+                          if (!comment.isFromHost && !comment.isFromModerator)
+                            Icon(
+                              Icons.person_rounded,
+                              color: Colors.grey.shade600,
+                            )
+                          else if (!comment.isFromHost &&
+                              comment.isFromModerator)
+                            Icon(
+                              Icons.security_rounded,
+                              color: Colors.lightBlue,
+                            )
+                          else
+                            Icon(
+                              Icons.mic_rounded,
+                              color: Colors.yellow.shade800,
+                            )
+                        ]),
+                  )
+                ],
+              ),
+            ),
+          );
+        }
         return Card(
           color: Colors.grey.shade200,
           child: Padding(

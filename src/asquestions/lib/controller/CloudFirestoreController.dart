@@ -168,6 +168,14 @@ class CloudFirestoreController {
     return await Future.wait(comments);
   }
 
+  Future<DocumentReference> getTalkFromQuestionReference(
+      DocumentReference questionRef) async {
+    DocumentSnapshot questionSnap = await questionRef.get();
+    DocumentReference talkRef = await questionSnap.get('talk');
+
+    return talkRef;
+  }
+
   Future<User> getUser(DocumentSnapshot snapshot) async {
     Future<User> user = _makeUserFromSnapshot(snapshot);
     return await user;
@@ -266,7 +274,6 @@ class CloudFirestoreController {
 
   Future<void> removeQuestion(DocumentReference question) async {
     String document = question.toString().split('/')[1];
-    print(document);
     List<Comment> comments =
         await this.getCommentsFromQuestionReference(question);
     for (var comment in comments) {
@@ -279,6 +286,14 @@ class CloudFirestoreController {
     }
     await firestore
         .collection("questions")
+        .doc(document.substring(0, document.length - 1))
+        .delete();
+  }
+
+  Future<void> removeComment(DocumentReference comment) async {
+    String document = comment.toString().split('/')[1];
+    await firestore
+        .collection("comments")
         .doc(document.substring(0, document.length - 1))
         .delete();
   }

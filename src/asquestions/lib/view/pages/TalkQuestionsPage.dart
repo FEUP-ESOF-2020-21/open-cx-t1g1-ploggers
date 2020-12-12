@@ -254,7 +254,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                 onPressed: () {
                   _toggleHighLighted(question);
                 },
-                iconSize: 20),
+                iconSize: 16),
           ),
           Text((question.getVotes()).toString(),
               style: new TextStyle(fontSize: 18.0)),
@@ -266,7 +266,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                 onPressed: () {
                   _toggleDeleteQuestion(question);
                 },
-                iconSize: 20),
+                iconSize: 16),
           ),
         ],
       ),
