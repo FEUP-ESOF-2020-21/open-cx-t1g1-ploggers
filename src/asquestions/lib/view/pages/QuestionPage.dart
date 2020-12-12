@@ -289,7 +289,7 @@ class _QuestionPageState extends State<QuestionPage> {
                 padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 child: Image(
                     image:
-                        AssetImage('assets/' + question.slides[0].imageName)),
+                        AssetImage('assets/' + question.slides[0].url)),
               ),
               Padding(
                 padding:

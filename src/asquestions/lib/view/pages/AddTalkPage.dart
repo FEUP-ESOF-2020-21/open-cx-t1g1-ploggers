@@ -19,16 +19,24 @@ class _AddTalkPageState extends State<AddTalkPage> {
   TextEditingController _description = TextEditingController();
   DateTime _startDate;
   String _dateSelector = "Start Date";
-  List<Asset> _images;
+  List<Asset> _images = [];
+  String _imagesString = "0";
 
-  Future getImages() async{
-    await MultiImagePicker.pickImages(maxImages: 100).then((images){
+  Future getImages() async {
+    await MultiImagePicker.pickImages(maxImages: 100,
+    materialOptions: MaterialOptions(
+      actionBarColor: "#2296f3",
+      actionBarTitle: "Attach Slides",
+      allViewTitle: "Attach Slides",
+      useDetailsView: false,
+      selectCircleStrokeColor: "#2296f3",
+    )).then((images) {
       setState(() {
         _images = images;
+        _imagesString = images.length.toString();
       });
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,7 @@ class _AddTalkPageState extends State<AddTalkPage> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-          child: Column(
+            child: Column(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: size.height * 0.01),
@@ -159,15 +167,22 @@ class _AddTalkPageState extends State<AddTalkPage> {
                     ),
                     child: TextFieldContainer(
                         child: Row(
-                          children: [
-                            Icon(Icons.add_a_photo_rounded,
-                                color: Colors.blue[900]),
-                            FlatButton(
-                                onPressed: getImages,
-                                child: Text("Attach Slides", style: TextStyle(color: Colors.grey.shade700,fontWeight: FontWeight.w400,fontSize: 16),
+                      children: [
+                        Icon(Icons.attach_file_rounded,
+                            color: Colors.blue[900]),
+                        FlatButton(
+                            onPressed: getImages,
+                            child: Text(
+                              "Attach Slides: " +
+                                  _imagesString +
+                                  " slides attached",
+                              style: TextStyle(
+                                  color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16),
                             )),
-                          ],
-                        )),
+                      ],
+                    )),
                   ),
                   Container(
                       margin: const EdgeInsets.only(bottom: 20),
@@ -181,7 +196,8 @@ class _AddTalkPageState extends State<AddTalkPage> {
                           room: _room,
                           description: _description,
                           startDate: _startDate,
-                          firestore: widget._firestore))
+                          firestore: widget._firestore,
+                          slides: _images))
                 ]))
           ],
         )));
@@ -191,13 +207,17 @@ class _AddTalkPageState extends State<AddTalkPage> {
 class Button extends StatelessWidget {
   final CloudFirestoreController firestore;
   final TextEditingController title, room, description;
+  final List<Asset> slides;
   DateTime startDate;
-  Button(
-      {this.title,
-      this.room,
-      this.description,
-      this.startDate,
-      this.firestore});
+  Button({
+    this.title,
+    this.room,
+    this.description,
+    this.startDate,
+    this.firestore,
+    this.slides,
+  });
+  
 
   @override
   Widget build(BuildContext context) {

@@ -1,11 +1,9 @@
 import 'package:asquestions/controller/CloudFirestoreController.dart';
-import 'package:asquestions/view/pages/HomePage.dart';
 import 'package:asquestions/view/pages/InitialPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:asquestions/view/controller/NavigatorPage.dart';
-import 'package:asquestions/view/pages/LoginPage.dart';
 import 'package:provider/provider.dart';
 import 'controller/Authenticator.dart';
 
