@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';
@@ -23,14 +24,15 @@ class _AddTalkPageState extends State<AddTalkPage> {
   String _imagesString = "0";
 
   Future getImages() async {
-    await MultiImagePicker.pickImages(maxImages: 100,
-    materialOptions: MaterialOptions(
-      actionBarColor: "#2296f3",
-      actionBarTitle: "Attach Slides",
-      allViewTitle: "Attach Slides",
-      useDetailsView: false,
-      selectCircleStrokeColor: "#2296f3",
-    )).then((images) {
+    await MultiImagePicker.pickImages(
+        maxImages: 100,
+        materialOptions: MaterialOptions(
+          actionBarColor: "#2296f3",
+          actionBarTitle: "Attach Slides",
+          allViewTitle: "Attach Slides",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#2296f3",
+        )).then((images) {
       setState(() {
         _images = images;
         _imagesString = images.length.toString();
@@ -217,7 +219,6 @@ class Button extends StatelessWidget {
     this.firestore,
     this.slides,
   });
-  
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +241,17 @@ class Button extends StatelessWidget {
                       fontSize: 30,
                       fontWeight: FontWeight.w300,
                       color: Colors.white)),
-              onPressed: () {})),
+              onPressed: () async {
+                print("here");
+                DocumentReference talkRef = await firestore.addTalk(
+                    title.text,
+                    room.text,
+                    description.text,
+                    firestore.getCurrentUser(),
+                    startDate);
+                firestore.addSlidesFromImagePicker(slides, talkRef);
+                Navigator.pop(context);
+              })),
     );
   }
 }

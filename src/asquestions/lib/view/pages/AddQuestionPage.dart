@@ -19,7 +19,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
   String _content;
   final myController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  List<Slide> _slides = null;
+  List<Slide> _slides;
   bool _sortedSlides = false;
   bool showLoadingIndicator = false;
   ScrollController scrollController;
