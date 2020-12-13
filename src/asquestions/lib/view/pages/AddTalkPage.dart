@@ -18,10 +18,12 @@ class _AddTalkPageState extends State<AddTalkPage> {
   TextEditingController _title = TextEditingController();
   TextEditingController _room = TextEditingController();
   TextEditingController _description = TextEditingController();
+  TextEditingController _moderator = TextEditingController();
   DateTime _startDate;
   String _dateSelector = "Start Date";
   List<Asset> _images = [];
   String _imagesString = "0";
+  var emailValidator;
 
   Future getImages() async {
     await MultiImagePicker.pickImages(
@@ -49,208 +51,216 @@ class _AddTalkPageState extends State<AddTalkPage> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-            child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: size.height * 0.01),
-              child: Divider(
-                indent: size.width * 0.1,
-                endIndent: size.width * 0.1,
-                height: 20,
-                color: Colors.blue[900],
-              ),
-            ),
-            Text(
-              "Talk by: " + widget._firestore.getCurrentUser().name,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.blue[600]),
-            ),
-            Divider(
-              indent: size.width * 0.1,
-              endIndent: size.width * 0.1,
-              height: 20,
-              color: Colors.blue[900],
-            ),
-            Form(
+            child: Column(children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: size.height* 0.05),
+            child: Form(
                 key: formKey,
-                child: Column(children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: size.width * 0.1,
-                      right: size.width * 0.1,
-                    ),
-                    child: TextFieldContainer(
-                      child: TextField(
-                        controller: _title,
-                        decoration: InputDecoration(
-                            icon: Icon(Icons.question_answer_rounded,
-                                color: Colors.blue[900]),
-                            hintText: "Title",
-                            border: InputBorder.none),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.1,
+                        right: size.width * 0.1,
+                      ),
+                      child: TextFieldContainer(
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value.length < 10) {
+                              return "Title is too short!";
+                            } else
+                              return null;
+                          },
+                          controller: _title,
+                          decoration: InputDecoration(
+                              icon: Icon(Icons.question_answer_rounded,
+                                  color: Colors.blue[900]),
+                              hintText: "Title",
+                              border: InputBorder.none),
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: size.width * 0.1,
-                      right: size.width * 0.1,
-                      /*bottom: 20*/
-                    ),
-                    child: TextFieldContainer(
-                      child: TextField(
-                        controller: _room,
-                        decoration: InputDecoration(
-                            icon: Icon(Icons.home_work_rounded,
-                                color: Colors.blue[900]),
-                            hintText: "Room",
-                            border: InputBorder.none),
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.1,
+                        right: size.width * 0.1,
+                      ),
+                      child: TextFieldContainer(
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value.length < 1) {
+                              return "Invalid Room";
+                            } else
+                              return null;
+                          },
+                          controller: _room,
+                          decoration: InputDecoration(
+                              icon: Icon(Icons.home_work_rounded,
+                                  color: Colors.blue[900]),
+                              hintText: "Room",
+                              border: InputBorder.none),
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: size.width * 0.1,
-                      right: size.width * 0.1,
-                      /*bottom: 20*/
-                    ),
-                    child: TextFieldContainer(
-                      child: TextField(
-                        controller: _description,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                            suffix: Icon(Icons.description_rounded,
-                                color: Colors.blue[900]),
-                            hintText: "Description",
-                            border: InputBorder.none),
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.1,
+                        right: size.width * 0.1,
+                        /*bottom: 20*/
+                      ),
+                      child: TextFieldContainer(
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value.length < 20) {
+                              return "Description is too short!";
+                            } else
+                              return null;
+                          },
+                          controller: _description,
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                              suffix: Icon(Icons.description_rounded,
+                                  color: Colors.blue[900]),
+                              hintText: "Description",
+                              border: InputBorder.none),
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: size.width * 0.1,
-                      right: size.width * 0.1,
-                      /*bottom: 20*/
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.1,
+                        right: size.width * 0.1,
+                        /*bottom: 20*/
+                      ),
+                      child: TextFieldContainer(
+                        child: TextFormField(
+                          validator: (value) {
+                            return emailValidator;
+                          },
+                          controller: _moderator,
+                          decoration: InputDecoration(
+                              icon: Icon(Icons.security_rounded,
+                                  color: Colors.blue[900]),
+                              hintText: "Moderator Email",
+                              border: InputBorder.none),
+                        ),
+                      ),
                     ),
-                    child: TextFieldContainer(
-                        child: Row(
-                      children: [
-                        Icon(Icons.calendar_today_rounded,
-                            color: Colors.blue[900]),
-                        FlatButton(
-                            onPressed: () {
-                              DatePicker.showDateTimePicker(context,
-                                  showTitleActions: true,
-                                  minTime: DateTime.now(),
-                                  onChanged: (date) {}, onConfirm: (date) {
-                                setState(() {
-                                  _startDate = date;
-                                  _dateSelector = date.toString();
-                                });
-                              }, currentTime: DateTime.now());
-                            },
-                            child: Text(
-                              _dateSelector,
-                              style: TextStyle(
-                                  color: Colors.grey.shade700,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16),
-                            )),
-                      ],
-                    )),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      left: size.width * 0.1,
-                      right: size.width * 0.1,
-                      /*bottom: 20*/
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.1,
+                        right: size.width * 0.1,
+                        /*bottom: 20*/
+                      ),
+                      child: TextFieldContainer(
+                          child: Row(
+                        children: [
+                          Icon(Icons.calendar_today_rounded,
+                              color: Colors.blue[900]),
+                          FlatButton(
+                              onPressed: () {
+                                DatePicker.showDateTimePicker(context,
+                                    showTitleActions: true,
+                                    minTime: DateTime.now(),
+                                    onChanged: (date) {}, onConfirm: (date) {
+                                  setState(() {
+                                    _startDate = date;
+                                    _dateSelector = date.toString();
+                                  });
+                                }, currentTime: DateTime.now());
+                              },
+                              child: Text(
+                                _dateSelector,
+                                style: TextStyle(
+                                    color: Colors.grey.shade700,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16),
+                              )),
+                        ],
+                      )),
                     ),
-                    child: TextFieldContainer(
-                        child: Row(
-                      children: [
-                        Icon(Icons.attach_file_rounded,
-                            color: Colors.blue[900]),
-                        FlatButton(
-                            onPressed: getImages,
-                            child: Text(
-                              "Attach Slides: " +
-                                  _imagesString +
-                                  " slides attached",
-                              style: TextStyle(
-                                  color: Colors.grey.shade700,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16),
-                            )),
-                      ],
-                    )),
-                  ),
-                  Container(
+                    Container(
+                      padding: EdgeInsets.only(
+                        left: size.width * 0.1,
+                        right: size.width * 0.1,
+                        /*bottom: 20*/
+                      ),
+                      child: TextFieldContainer(
+                          child: Row(
+                        children: [
+                          Icon(Icons.attach_file_rounded,
+                              color: Colors.blue[900]),
+                          FlatButton(
+                              onPressed: getImages,
+                              child: Text(
+                                "Attach Slides: " +
+                                    _imagesString +
+                                    " slides attached",
+                                style: TextStyle(
+                                    color: Colors.grey.shade700,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16),
+                              )),
+                        ],
+                      )),
+                    ),
+                    Container(
                       margin: const EdgeInsets.only(bottom: 20),
                       padding: EdgeInsets.only(
                         left: size.width * 0.1,
                         right: size.width * 0.1,
                         /*bottom: 20*/
                       ),
-                      child: Button(
-                          title: _title,
-                          room: _room,
-                          description: _description,
-                          startDate: _startDate,
-                          firestore: widget._firestore,
-                          slides: _images))
-                ]))
-          ],
-        )));
-  }
-}
+                      child: Padding(
+                        padding: EdgeInsets.only(top: size.height* 0.03),
+                        child: ButtonTheme(
+                            minWidth: 350.0,
+                            height: 50.0,
+                            child: RaisedButton(
+                                highlightElevation: 0.0,
+                                splashColor: Colors.blue[800],
+                                highlightColor: Colors.blue,
+                                elevation: 0.0,
+                                color: Colors.blue,
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        width: 4.0, color: Colors.blue[500]),
+                                    borderRadius: new BorderRadius.circular(30.0)),
+                                child: Text("Create Talk",
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.white)),
+                                onPressed: () async {
+                                  var response;
+                                  DocumentReference user = await widget._firestore
+                                      .getUserReferenceByEmail(
+                                          this._moderator.text);
+                                  if (user == null) {
+                                    response = "User not found!";
+                                  }
 
-class Button extends StatelessWidget {
-  final CloudFirestoreController firestore;
-  final TextEditingController title, room, description;
-  final List<Asset> slides;
-  DateTime startDate;
-  Button({
-    this.title,
-    this.room,
-    this.description,
-    this.startDate,
-    this.firestore,
-    this.slides,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: ButtonTheme(
-          minWidth: 350.0,
-          height: 50.0,
-          child: RaisedButton(
-              highlightElevation: 0.0,
-              splashColor: Colors.blue[800],
-              highlightColor: Colors.blue,
-              elevation: 0.0,
-              color: Colors.blue,
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 4.0, color: Colors.blue[500]),
-                  borderRadius: new BorderRadius.circular(30.0)),
-              child: Text("Create Talk",
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white)),
-              onPressed: () async {
-                DocumentReference talkRef = await firestore.addTalk(
-                    title.text,
-                    room.text,
-                    description.text,
-                    firestore.getCurrentUser(),
-                    startDate);
-                firestore.addSlidesFromImagePicker(slides, talkRef);
-                Navigator.pop(context);
-              })),
-    );
+                                  setState(() {
+                                    this.emailValidator = response;
+                                  });
+                                  if (formKey.currentState.validate()) {
+                                    DocumentReference talkRef =
+                                        await widget._firestore.addTalk(
+                                            _title.text,
+                                            _room.text,
+                                            _description.text,
+                                            user,
+                                            _startDate);
+                                    widget._firestore
+                                        .addSlidesFromImagePicker(_images, talkRef);
+                                    Navigator.pop(context);
+                                  }
+                                })),
+                      ),
+                    )
+                  ],
+                )),
+          ),
+        ])));
   }
 }
