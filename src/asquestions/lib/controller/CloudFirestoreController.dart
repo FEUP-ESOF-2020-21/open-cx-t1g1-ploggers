@@ -232,6 +232,7 @@ class CloudFirestoreController {
       "user": _currentUser.reference,
       "upvotes": [],
       "downvotes": [],
+      "highlighted": false,
     });
   }
 
