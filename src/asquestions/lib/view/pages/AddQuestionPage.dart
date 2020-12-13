@@ -54,6 +54,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
         [],
         [],
         [],
+        false,
         widget._talkReference); // this object is helping to tag slides
     return Scaffold(
         appBar: AppBar(

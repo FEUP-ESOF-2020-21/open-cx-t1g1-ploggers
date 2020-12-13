@@ -22,6 +22,8 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
   bool showLoadingIndicator = false;
   ScrollController scrollController;
 
+  bool isModeratorOrHost;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +37,8 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
     });
     questions = await widget._firestore
         .getQuestionsFromTalkReference(widget._talkReference);
+    isModeratorOrHost = await widget._firestore.isModeratorOrHost(
+        widget._firestore.getCurrentUser(), widget._talkReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -56,11 +60,30 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
     });
   }
 
+  void _toggleHighLighted(Question question) {
+    setState(() {
+      question.triggerHighlighted();
+      widget._firestore.refreshHighLighted(question);
+    });
+  }
+
+  void _toggleDeleteQuestion(Question question) {
+    setState(() {
+      widget._firestore.removeQuestion(question.reference);
+    });
+  }
+
   void openPage() {}
 
   @override
   Widget build(BuildContext context) {
     questions.sort((a, b) => b.getVotes().compareTo(a.getVotes()));
+    questions.sort((a, b) {
+      if (b.highlighted) {
+        return 1;
+      }
+      return -1;
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text('Talk Questions'),
@@ -98,43 +121,74 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
 
   Widget buildQuestionCard(BuildContext context, int index) {
     final question = questions[index];
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    QuestionPage(widget._firestore, question.reference)));
-      },
-      child: Container(
-        padding: const EdgeInsets.all(2.0),
-        child: Card(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child:GestureDetector(
-                  onTap:  (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
+    if (!isModeratorOrHost) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      QuestionPage(widget._firestore, question.reference)));
+        },
+        child: Container(
+          padding: const EdgeInsets.all(2.0),
+          child: Card(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child:GestureDetector(
+                    onTap:  (){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
                           builder: (context) =>
-                              UserProfilePage(widget._firestore, question.user.reference)));
+                          UserProfilePage(widget._firestore, question.user.reference)));
                   },
                   child: SizedBox(
                       width: 80,
                       height: 80,
                       child: Image(image: AssetImage(question.user.picture))),
+                  ),
                 ),
-              ),
-              buildCard(question),
-              buildVotes(question),
-            ],
+                buildCard(question),
+                buildVotes(question),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      QuestionPage(widget._firestore, question.reference)));
+        },
+        child: Container(
+          padding: const EdgeInsets.all(2.0),
+          child: Card(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Image(image: AssetImage(question.user.picture))),
+                ),
+                buildCard(question),
+                buildPreferenceDelete(question),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   Widget buildCard(Question question) {
@@ -195,6 +249,40 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                 onPressed: () {
                   _toggleDownvote(question);
                 }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPreferenceDelete(Question question) {
+    return Padding(
+      padding: EdgeInsets.only(right: 10),
+      child: Column(
+        children: <Widget>[
+          Transform.scale(
+            scale: 2.0,
+            child: IconButton(
+                icon: (question.isHighlighted()
+                    ? Icon(Icons.star_rate_rounded)
+                    : Icon(Icons.star_border_rounded)),
+                color: Colors.orange,
+                onPressed: () {
+                  _toggleHighLighted(question);
+                },
+                iconSize: 16),
+          ),
+          Text((question.getVotes()).toString(),
+              style: new TextStyle(fontSize: 18.0)),
+          Transform.scale(
+            scale: 2.0,
+            child: IconButton(
+                icon: Icon(Icons.close_rounded),
+                color: Colors.red,
+                onPressed: () {
+                  _toggleDeleteQuestion(question);
+                },
+                iconSize: 16),
           ),
         ],
       ),

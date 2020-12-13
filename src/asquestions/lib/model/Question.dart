@@ -7,14 +7,23 @@ class Question extends Post {
   List<User> upvotes;
   List<User> downvotes;
   List<Slide> slides;
+  bool highlighted;
   DocumentReference talk;
 
-  Question(User user, String content, DateTime date, this.upvotes,
-      this.downvotes, this.slides, this.talk, DocumentReference reference)
+  Question(
+      User user,
+      String content,
+      DateTime date,
+      this.upvotes,
+      this.downvotes,
+      this.slides,
+      this.highlighted,
+      this.talk,
+      DocumentReference reference)
       : super(user, content, date, reference);
 
   Question.fromNew(User user, String content, DateTime date, this.upvotes,
-      this.downvotes, this.slides, this.talk)
+      this.downvotes, this.slides, this.highlighted, this.talk)
       : super.fromNew(user, content, date);
 
   int getVotes() {
@@ -64,5 +73,17 @@ class Question extends Post {
       this.slides.remove(slide);
     else
       this.slides.add(slide);
+  }
+
+  bool isHighlighted() {
+    return this.highlighted;
+  }
+
+  void triggerHighlighted() {
+    if (this.highlighted) {
+      this.highlighted = false;
+    } else {
+      this.highlighted = true;
+    }
   }
 }
