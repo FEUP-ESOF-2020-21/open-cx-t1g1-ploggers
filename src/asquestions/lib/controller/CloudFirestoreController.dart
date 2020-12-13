@@ -260,6 +260,12 @@ class CloudFirestoreController {
         .update({'upvotes': upvotesRef, 'downvotes': downvotesRef});
   }
 
+  Future<void> updateUser(String username, String name, String bio) async {
+    await _currentUser.reference
+        .update({'username': username, 'bio': bio, 'name': name});
+    _currentUser = await getUser(await _currentUser.reference.get());
+  }
+
   Future<bool> isHost(User user, DocumentReference question) async {
     DocumentSnapshot questionSnap = await question.get();
     DocumentReference talkRef = questionSnap.get("talk");
