@@ -52,6 +52,121 @@ Clearing up the audience's doubts during a talk is often a difficult task for th
 
 ![Use case diagram](./img/use_cases.png)
 
+#### Ask Questions:
+
+*  **Actor**. Attendee.
+
+*  **Description**. This use case exists so that the attendee can post their questions into the database to later be answered.
+
+*  **Preconditions and Postconditions**.  To post a question the attendee must first join a talk’s page, being previously logged in. In the end, the user's question will be added to the database, and displayed on the forum.
+  
+*  **Normal Flow**. 
+	1. The attendee presses the button to add a question to the talk.
+	2. The attendee types his question.
+	3. The attendee selects a slide to anex to the question.
+	4. If the question have the allowed length, the system saves the question to the database, and displays it on the talk page.
+
+*  **Alternative Flows and Exceptions**. 
+	1. The attendee presses the button to add a question to the talk.
+	2. The attendee types his question.
+	3. The attendee selects a slide to anex to the question.
+	4. If the question is too short, the system will respond with an error message.
+	5. The user can then retype his question, and proceed as normal.
+
+#### Upvote/Downvote Questions:
+
+*  **Actor**. Attendee.
+
+*  **Description**. This use case exists for filter questions, making the most requested to the top of the list.
+
+*  **Preconditions and Postconditions**.  To upvote or downvote a question the attendee must first join a talk’s page, being previously logged in. After voting, the vote will then be added to the total count.
+
+*  **Normal Flow**. 
+	1. The attendee presses the up or downvote button.
+	2. The system adds the vote to the respective count or removes it if the button had been pressed earlier.
+
+#### Answer Questions:
+
+*  **Actor**. All Users
+
+*  **Description**. This use case exists so that the users can answer each other's questions.
+
+*  **Preconditions and Postconditions**.  To make an answer the user must first join a talk's page, being previously logged in. In the end, the user's answer will be added to the database, and displayed as a reply to the chosen question.
+
+*  **Normal Flow**. 
+	1. The user selects a question he wants to answer.
+	2. The user types his answer.
+	3. If it's within the allowed length, the system saves the answer to the database, and displays it as a reply to the selected question.
+
+*  **Alternative Flows and Exceptions**. 
+	1. The attendee selects a question he wants to answer.
+	2. The attendee types his answer.
+	3. If the answer is shorter than the character limit, the system sends an error message.
+	4. The user can then retype his answer and proceed as normal.
+
+#### Create a talk page:
+
+*  **Actor**. Speaker
+
+*  **Description**. This use case exists so that the speaker can create a talk page where the users can interact.
+
+*  **Preconditions and Postconditions**.  To create a talk page the only precondition is to the user be logged in. In the end, the speaker talk page  will be added to the database, and displayed as talk.
+
+*  **Normal Flow**. 
+	1. The speaker presses the create a talk button.
+	2. The speaker creates is talk.
+	3. The system saves it to the database and displays it on the talks page.
+
+#### Delete Questions:
+
+*  **Actor**. Moderator.
+
+*  **Description**. This use case exists so talk moderators can delete questions that are not relevant to the topic at hand.
+
+*  **Preconditions and Postconditions**.  To delete a question the user must first join a talk's page, being previously logged in as a moderator. In the end, the selected question will be removed.
+
+*  **Normal Flow**. 
+	1. The moderator chooses a question.
+	2.  The moderator signals the system to remove it.
+	3. The system removes the question from the database.
+
+#### Prioritize Questions:
+
+*  **Actor**. Moderator
+
+*  **Description**. This use case exists so that the moderator can make it easy for the speaker to see the most relevant user's questions.
+
+*  **Preconditions and Postconditions**.  To prioritize a question the user must first join a talk's page, being previously logged in as a moderator. In the end, the user's question prioritized will be rearranged to the database and displayed as the top of the list of questions on that talk page.
+
+*  **Normal Flow**. 
+	1. The moderator selects a question he wants to prioritize.
+	2. The moderator selects the send question to speaker button.
+	3. The system rearranges the questions on the database and displays the prioritized questions on top of the talk page.
+
+#### Merge Questions:
+
+*  **Actor**. Moderator
+
+*  **Description**. This use case exists so that the moderator can merge similar questions.
+
+*  **Preconditions and Postconditions**.  To merge a question the user must first join a talk's page, being previously logged in as a moderator. In the end, the user's questions merged will be rearranged to the database and displayed in the list of questions on that talk page.
+
+*  **Normal Flow**. 
+	1. The moderator selects the questions he wants to merge.
+	2. The moderator selects the merge question button.
+	3. The system rearranges the questions on the database and displays the new list of questions on the talks page.
+
+#### Check User Profiles:
+
+*  **Actor**. All users.
+
+*  **Description**. This use case exists so that users can check each other profiles.
+
+*  **Preconditions and Postconditions**.  To check a profile the user has to have the app installed on the device, be logged in, and be in a talk page. 
+
+*  **Normal Flow**. 
+	1. The user selects one profile in the talk page questions.
+	2. The system displays the user profile stored in the database.
 ---
 
 ### User Stories
