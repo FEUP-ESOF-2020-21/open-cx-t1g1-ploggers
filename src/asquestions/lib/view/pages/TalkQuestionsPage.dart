@@ -77,6 +77,12 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
   @override
   Widget build(BuildContext context) {
     questions.sort((a, b) => b.getVotes().compareTo(a.getVotes()));
+    questions.sort((a, b) {
+      if (b.highlighted) {
+        return 1;
+      }
+      return -1;
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text('Talk Questions'),
