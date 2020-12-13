@@ -34,13 +34,15 @@ class _QuestionPageState extends State<QuestionPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    question = await widget._firestore.getQuestion(await widget._questionReference.get());
-    comments = await widget._firestore.getCommentsFromQuestionReference(widget._questionReference);
+    question = await widget._firestore
+        .getQuestion(await widget._questionReference.get());
+    comments = await widget._firestore
+        .getCommentsFromQuestionReference(widget._questionReference);
     comments.sort((a, b) {
-    if(b.isFromHost) {
-      return 1;
-    }
-    return -1;
+      if (b.isFromHost) {
+        return 1;
+      }
+      return -1;
     });
     if (this.mounted)
       setState(() {
@@ -73,11 +75,6 @@ class _QuestionPageState extends State<QuestionPage> {
           body: Visibility(
               visible: showLoadingIndicator, child: LinearProgressIndicator()));
     } else {
-      Widget questionCard;
-      if (question.slides.length == 0)
-        questionCard = buildQuestionWithoutSlide();
-      else
-        questionCard = buildQuestionWithSlide();
       return Scaffold(
           appBar: AppBar(
             title: Text("Question Thread"),
@@ -155,19 +152,19 @@ class _QuestionPageState extends State<QuestionPage> {
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(widget._firestore,  comment.user.reference)));
+                            builder: (context) => UserProfilePage(
+                                widget._firestore, comment.user.reference)));
                   },
-                    child: ListTile(
-                    leading: Image(image: AssetImage(comment.user.picture)),
-                    title: Text(comment.user.name,
-                        style: new TextStyle(fontSize: 20.0)),
-                    subtitle: Text(comment.content,
-                        style: new TextStyle(fontSize: 18.0))),
+                  child: ListTile(
+                      leading: Image(image: AssetImage(comment.user.picture)),
+                      title: Text(comment.user.name,
+                          style: new TextStyle(fontSize: 20.0)),
+                      subtitle: Text(comment.content,
+                          style: new TextStyle(fontSize: 18.0))),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -230,19 +227,19 @@ class _QuestionPageState extends State<QuestionPage> {
               child: Column(
                 children: [
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(widget._firestore,  comment.user.reference)));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserProfilePage(
+                                  widget._firestore, comment.user.reference)));
                     },
-                      child: ListTile(
-                      leading: Image(image: AssetImage(comment.user.picture)),
-                      title: Text(comment.user.name,
-                          style: new TextStyle(fontSize: 20.0)),
-                      subtitle: Text(comment.content,
-                          style: new TextStyle(fontSize: 18.0))),
+                    child: ListTile(
+                        leading: Image(image: AssetImage(comment.user.picture)),
+                        title: Text(comment.user.name,
+                            style: new TextStyle(fontSize: 20.0)),
+                        subtitle: Text(comment.content,
+                            style: new TextStyle(fontSize: 18.0))),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -272,23 +269,21 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Widget buildQuestionWithSlide() {
-    return Container(
-      padding: EdgeInsets.all(2.0),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(widget._firestore,  question.user.reference)));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfilePage(
+                              widget._firestore, question.user.reference)));
                 },
-                  child: ListTile(
+                child: ListTile(
                   leading: Image(image: AssetImage(question.user.picture)),
                   title: Text(question.content,
                       style: new TextStyle(fontSize: 25.0)),
@@ -314,9 +309,26 @@ class _QuestionPageState extends State<QuestionPage> {
                   indent: 40,
                   endIndent: 40),
               Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                child: Image.network(question.slides[0].url),
-              ),
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 3,
+                      child: question.slides.length != 1
+                          ? ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: question.slides.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: FittedBox(
+                                        child: Image.network(
+                                            question.slides[index].url),
+                                        fit: BoxFit.fill));
+                              })
+                          : Container(
+                              height: MediaQuery.of(context).size.height / 3,
+                              child: FittedBox(
+                                  child: Image.network(question.slides[0].url),
+                                  fit: BoxFit.fill)))),
               Padding(
                 padding:
                     const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 5.0),
@@ -349,14 +361,14 @@ class _QuestionPageState extends State<QuestionPage> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(widget._firestore,  question.user.reference)));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfilePage(
+                              widget._firestore, question.user.reference)));
                 },
-                  child: ListTile(
+                child: ListTile(
                   leading: Image(image: AssetImage(question.user.picture)),
                   title: Text(question.content,
                       style: new TextStyle(fontSize: 25.0)),

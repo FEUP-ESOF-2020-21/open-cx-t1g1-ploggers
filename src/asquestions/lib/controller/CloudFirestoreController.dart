@@ -266,6 +266,11 @@ class CloudFirestoreController {
     _currentUser = await getUser(await _currentUser.reference.get());
   }
 
+  Future<void> updateUserPicture(String picture) async {
+    await _currentUser.reference.update({'picture': picture});
+    _currentUser = await getUser(await _currentUser.reference.get());
+  }
+
   Future<bool> isHost(User user, DocumentReference question) async {
     DocumentSnapshot questionSnap = await question.get();
     DocumentReference talkRef = questionSnap.get("talk");
@@ -276,7 +281,7 @@ class CloudFirestoreController {
   }
 
   Future<DocumentReference> addTalk(String title, String room,
-    String description, User moderator, DateTime startDate) async {
+      String description, User moderator, DateTime startDate) async {
     firestore.collection("talks").add({
       "description": description,
       "title": title,
@@ -299,10 +304,11 @@ class CloudFirestoreController {
   }
 
   Future<void> addSlidesFromImagePicker(
-    List<Asset> images, DocumentReference reference) async {
+      List<Asset> images, DocumentReference reference) async {
     List<File> fileSlides = new List();
     for (Asset imageAsset in images) {
-      final filePath = await FlutterAbsolutePath.getAbsolutePath(imageAsset.identifier);
+      final filePath =
+          await FlutterAbsolutePath.getAbsolutePath(imageAsset.identifier);
 
       File tempFile = File(filePath);
       if (tempFile.existsSync()) {

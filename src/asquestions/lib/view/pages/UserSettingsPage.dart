@@ -23,24 +23,26 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     flagList = [flag1, flag2, flag3, flag4, flag5];
   }
 
-  void toggleAvatar(int index) {
-    String selectedAvatar = "assets/avatar" + index.toString() + ".png";
-    for (int i = 0; i < 5; i++) {
-      this.flagList[i] = false;
-      if (i + 1 == index) this.flagList[i] = true;
-    }
-    print(this.flagList[index - 1]);
-  }
-
   TextEditingController _username = TextEditingController();
   TextEditingController _name = TextEditingController();
   TextEditingController _bio = TextEditingController();
+
+  refreshState() {
+    setState(() {
+      widget._firestore.updateUserPicture(_user.picture);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     initState();
     _user = widget._firestore.getCurrentUser();
+
     Size size = MediaQuery.of(context).size;
+
+    final _controller = ScrollController(
+        initialScrollOffset: (_user.getAvatarNumber() - 1) * size.width);
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Settings Page"),
@@ -50,61 +52,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             child: Column(
           children: [
             Container(
-              height: 320,
-              child:
-                  ListView(scrollDirection: Axis.horizontal, children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      this.toggleAvatar(1);
-                      print(this.flagList[0]);
-                    });
-                  },
-                  child: Container(
-                      height: 200,
-                      width: 300,
-                      child: Image(image: AssetImage("assets/avatar1.png")),
-                      margin: new EdgeInsets.only(right: 30.0, left: 30.0),
-                      decoration: BoxDecoration(
-                        border: this.flagList[0] ? Border.all(width: 4) : null,
-                        shape: BoxShape.circle,
-                      )),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      toggleAvatar(2);
-                    });
-                  },
-                  child: Container(
-                      height: 200,
-                      width: 300,
-                      child: Image(image: AssetImage("assets/avatar2.png")),
-                      margin: new EdgeInsets.only(right: 30.0, left: 30.0),
-                      decoration: BoxDecoration(
-                        border: this.flagList[1] ? Border.all(width: 4) : null,
-                        shape: BoxShape.circle,
-                      )),
-                ),
-                Container(
-                  height: 200,
-                  width: 300,
-                  child: Image(image: AssetImage("assets/avatar3.png")),
-                  margin: new EdgeInsets.only(right: 30.0, left: 30.0),
-                ),
-                Container(
-                  height: 200,
-                  width: 300,
-                  child: Image(image: AssetImage("assets/avatar4.png")),
-                  margin: new EdgeInsets.only(right: 30.0, left: 30.0),
-                ),
-                Container(
-                  height: 200,
-                  width: 300,
-                  child: Image(image: AssetImage("assets/avatar5.png")),
-                  margin: new EdgeInsets.only(right: 30.0, left: 30.0),
-                ),
-              ]),
+              height: MediaQuery.of(context).size.height / 2.5,
+              child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  controller: _controller,
+                  children: <Widget>[
+                    Avatar(_user, 1, refreshState),
+                    Avatar(_user, 2, refreshState),
+                    Avatar(_user, 3, refreshState),
+                    Avatar(_user, 4, refreshState),
+                    Avatar(_user, 5, refreshState)
+                  ]),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
@@ -186,6 +144,46 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             SignOutPage(widget._firestore)
           ],
         )));
+  }
+}
+
+class Avatar extends StatefulWidget {
+  final VoidCallback refreshParent;
+  final int avatarNumber;
+  User user;
+
+  Avatar(this.user, this.avatarNumber, this.refreshParent);
+
+  @override
+  _AvatarState createState() {
+    return _AvatarState();
+  }
+}
+
+class _AvatarState extends State<Avatar> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          setState(() {
+            widget.user.toggleAvatar(widget.avatarNumber);
+            widget.refreshParent();
+          });
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.all(5),
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          // add a border when selected
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: (widget.user.picture ==
+                      "assets/avatar" + widget.avatarNumber.toString() + ".png")
+                  ? Border.all(width: 5.0, color: Colors.blue)
+                  : Border.all(width: 0.0)),
+          child: Image.asset(
+              "assets/avatar" + widget.avatarNumber.toString() + ".png"),
+        ));
   }
 }
 
