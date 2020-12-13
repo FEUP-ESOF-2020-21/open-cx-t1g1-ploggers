@@ -83,7 +83,8 @@ class _HomePageState extends State<HomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => TalkQuestionsPage(widget._firestore, _talk.reference)));
+                builder: (context) =>
+                    TalkQuestionsPage(widget._firestore, _talk.reference)));
       },
       child: Container(
         padding: const EdgeInsets.all(2.0),
@@ -91,23 +92,33 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              buildCard(_talk),
               Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child:GestureDetector(
-                  onTap:  (){
+                padding: const EdgeInsets.only(right: 10.0),
+                child: GestureDetector(
+                  onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(widget._firestore, _talk.host.reference)));
+                            builder: (context) => UserProfilePage(
+                                widget._firestore, _talk.host.reference)));
                   },
-                    child: SizedBox(
-                        width: 80,
-                        height: 80,
-                        child: Image(image: AssetImage(_talk.host.picture))),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: Colors.blue.shade500, width: 4),
+                      ),
+                      child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Image(image: AssetImage(_talk.host.picture))),
+                    ),
+                  ),
                 ),
               ),
-              buildCard(_talk),
             ],
           ),
         ),
@@ -115,30 +126,53 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+//need room and description
   Widget buildCard(Talk talk) {
-    final f = new DateFormat('dd-MM-yyy HH:mm');
+    final formattedStr = new DateFormat('dd-MM-yyy HH:mm');
 
     return Flexible(
       child: Padding(
-        padding: EdgeInsets.only(left: 15.0),
+        padding: EdgeInsets.only(left: 5.0, top: 10.0, bottom: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(talk.title, style: new TextStyle(fontSize: 20.0)),
-            Text(talk.host.name, style: new TextStyle(fontSize: 15.0)),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Text(talk.title, style: new TextStyle(fontSize: 20.0)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 1.0),
+              child: Text(talk.host.name, style: new TextStyle(fontSize: 15.0)),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 1.0),
+              child: SizedBox(
+                width: 235.0,
+                child: Text("Description: " + talk.description,
+                    style: new TextStyle(fontSize: 15.0)),
+              ),
+            ),
             Container(
               height: 10,
             ),
             Divider(
                 height: 0,
-                thickness: 3,
-                color: Colors.blue.shade200,
+                thickness: 2,
+                color: Colors.blue.shade500,
                 indent: 0,
                 endIndent: 40),
             Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(f.format(talk.startDate),
-                  style: new TextStyle(fontSize: 12.0)),
+              padding:
+                  const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 40.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(formattedStr.format(talk.startDate),
+                      style: new TextStyle(fontSize: 13.0)),
+                  Text("Room: " + talk.room,
+                      style: new TextStyle(fontSize: 13.0)),
+                ],
+              ),
             ),
           ],
         ),
