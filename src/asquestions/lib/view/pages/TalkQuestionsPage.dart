@@ -174,12 +174,21 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image(image: AssetImage(question.user.picture))),
+                GestureDetector(
+                    onTap:  (){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                          builder: (context) =>
+                          UserProfilePage(widget._firestore, question.user.reference)));
+                    },
+                    child: Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image(image: AssetImage(question.user.picture))),
+                  ),
                 ),
                 buildCard(question),
                 buildPreferenceDelete(question),

@@ -183,12 +183,21 @@ class _QuestionPageState extends State<QuestionPage> {
                           iconSize: 20),
                     ),
                   ]),
-                  ListTile(
-                      leading: Image(image: AssetImage(comment.user.picture)),
-                      title: Text(comment.user.name,
-                          style: new TextStyle(fontSize: 20.0)),
-                      subtitle: Text(comment.content,
-                          style: new TextStyle(fontSize: 18.0))),
+                  GestureDetector(
+                    onTap:  (){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                          builder: (context) =>
+                          UserProfilePage(widget._firestore, comment.user.reference)));
+                    },
+                        child: ListTile(
+                        leading: Image(image: AssetImage(comment.user.picture)),
+                        title: Text(comment.user.name,
+                            style: new TextStyle(fontSize: 20.0)),
+                        subtitle: Text(comment.content,
+                            style: new TextStyle(fontSize: 18.0))),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Row(
