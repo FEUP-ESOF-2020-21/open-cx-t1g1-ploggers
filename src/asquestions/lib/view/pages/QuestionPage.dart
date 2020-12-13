@@ -1,3 +1,4 @@
+import 'package:asquestions/view/pages/UserProfilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
@@ -153,12 +154,21 @@ class _QuestionPageState extends State<QuestionPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                ListTile(
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              UserProfilePage(widget._firestore,  comment.user.reference)));
+                  },
+                    child: ListTile(
                     leading: Image(image: AssetImage(comment.user.picture)),
                     title: Text(comment.user.name,
                         style: new TextStyle(fontSize: 20.0)),
                     subtitle: Text(comment.content,
                         style: new TextStyle(fontSize: 18.0))),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Row(
@@ -219,12 +229,21 @@ class _QuestionPageState extends State<QuestionPage> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  ListTile(
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              UserProfilePage(widget._firestore,  comment.user.reference)));
+                    },
+                      child: ListTile(
                       leading: Image(image: AssetImage(comment.user.picture)),
                       title: Text(comment.user.name,
                           style: new TextStyle(fontSize: 20.0)),
                       subtitle: Text(comment.content,
                           style: new TextStyle(fontSize: 18.0))),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Row(
@@ -261,12 +280,21 @@ class _QuestionPageState extends State<QuestionPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ListTile(
-                leading: Image(image: AssetImage(question.user.picture)),
-                title: Text(question.content,
-                    style: new TextStyle(fontSize: 25.0)),
-                subtitle: Text("Asked by: " + question.user.name,
-                    style: new TextStyle(fontSize: 18.0)),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              UserProfilePage(widget._firestore,  question.user.reference)));
+                },
+                  child: ListTile(
+                  leading: Image(image: AssetImage(question.user.picture)),
+                  title: Text(question.content,
+                      style: new TextStyle(fontSize: 25.0)),
+                  subtitle: Text("Asked by: " + question.user.name,
+                      style: new TextStyle(fontSize: 18.0)),
+                ),
               ),
               Divider(
                   height: 5,
@@ -320,12 +348,21 @@ class _QuestionPageState extends State<QuestionPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ListTile(
-                leading: Image(image: AssetImage(question.user.picture)),
-                title: Text(question.content,
-                    style: new TextStyle(fontSize: 25.0)),
-                subtitle: Text("Asked by: " + question.user.name,
-                    style: new TextStyle(fontSize: 18.0)),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              UserProfilePage(widget._firestore,  question.user.reference)));
+                },
+                  child: ListTile(
+                  leading: Image(image: AssetImage(question.user.picture)),
+                  title: Text(question.content,
+                      style: new TextStyle(fontSize: 25.0)),
+                  subtitle: Text("Asked by: " + question.user.name,
+                      style: new TextStyle(fontSize: 18.0)),
+                ),
               ),
               Padding(
                 padding:
