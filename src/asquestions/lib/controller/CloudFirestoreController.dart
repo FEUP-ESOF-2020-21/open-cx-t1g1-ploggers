@@ -343,12 +343,12 @@ class CloudFirestoreController {
   }
 
   Future<DocumentReference> addTalk(String title, String room,
-      String description, User moderator, DateTime startDate) async {
+      String description, DocumentReference moderator, DateTime startDate) async {
     firestore.collection("talks").add({
       "description": description,
       "title": title,
       "host": _currentUser.reference,
-      "moderator": moderator.reference,
+      "moderator": moderator,
       "room": room,
       "startDate": Timestamp.fromDate(startDate)
     });
@@ -357,7 +357,7 @@ class CloudFirestoreController {
         .where('description', isEqualTo: description)
         .where('title', isEqualTo: title)
         .where('host', isEqualTo: _currentUser.reference)
-        .where('moderator', isEqualTo: moderator.reference)
+        .where('moderator', isEqualTo: moderator)
         .where('room', isEqualTo: room)
         .where('startDate', isEqualTo: Timestamp.fromDate(startDate))
         .get();
