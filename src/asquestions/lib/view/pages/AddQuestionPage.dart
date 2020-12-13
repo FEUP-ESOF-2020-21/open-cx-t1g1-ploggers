@@ -19,7 +19,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
   String _content;
   final myController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  List<Slide> _slides = null;
+  List<Slide> _slides;
   bool _sortedSlides = false;
   bool showLoadingIndicator = false;
   ScrollController scrollController;
@@ -250,7 +250,7 @@ class _SlideCardState extends State<SlideCard> {
   @override
   Widget build(BuildContext context) {
     Widget slideWidget = Stack(children: [
-      Image.asset("assets/" + widget.slide.imageName,
+      Image.network(widget.slide.url,
           width: MediaQuery.of(context).size.width - 90, height: 200),
       Container(
           margin: const EdgeInsets.all(5),

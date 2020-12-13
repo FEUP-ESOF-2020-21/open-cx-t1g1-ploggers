@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:flutter/material.dart';
 import 'package:asquestions/view/widgets/TextFieldContainer.dart';
@@ -19,6 +20,25 @@ class _AddTalkPageState extends State<AddTalkPage> {
   TextEditingController _description = TextEditingController();
   DateTime _startDate;
   String _dateSelector = "Start Date";
+  List<Asset> _images = [];
+  String _imagesString = "0";
+
+  Future getImages() async {
+    await MultiImagePicker.pickImages(
+        maxImages: 100,
+        materialOptions: MaterialOptions(
+          actionBarColor: "#2296f3",
+          actionBarTitle: "Attach Slides",
+          allViewTitle: "Attach Slides",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#2296f3",
+        )).then((images) {
+      setState(() {
+        _images = images;
+        _imagesString = images.length.toString();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +49,7 @@ class _AddTalkPageState extends State<AddTalkPage> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-          child: Column(
+            child: Column(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: size.height * 0.01),
@@ -142,6 +162,31 @@ class _AddTalkPageState extends State<AddTalkPage> {
                     )),
                   ),
                   Container(
+                    padding: EdgeInsets.only(
+                      left: size.width * 0.1,
+                      right: size.width * 0.1,
+                      /*bottom: 20*/
+                    ),
+                    child: TextFieldContainer(
+                        child: Row(
+                      children: [
+                        Icon(Icons.attach_file_rounded,
+                            color: Colors.blue[900]),
+                        FlatButton(
+                            onPressed: getImages,
+                            child: Text(
+                              "Attach Slides: " +
+                                  _imagesString +
+                                  " slides attached",
+                              style: TextStyle(
+                                  color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16),
+                            )),
+                      ],
+                    )),
+                  ),
+                  Container(
                       margin: const EdgeInsets.only(bottom: 20),
                       padding: EdgeInsets.only(
                         left: size.width * 0.1,
@@ -153,7 +198,8 @@ class _AddTalkPageState extends State<AddTalkPage> {
                           room: _room,
                           description: _description,
                           startDate: _startDate,
-                          firestore: widget._firestore))
+                          firestore: widget._firestore,
+                          slides: _images))
                 ]))
           ],
         )));
@@ -163,13 +209,16 @@ class _AddTalkPageState extends State<AddTalkPage> {
 class Button extends StatelessWidget {
   final CloudFirestoreController firestore;
   final TextEditingController title, room, description;
+  final List<Asset> slides;
   DateTime startDate;
-  Button(
-      {this.title,
-      this.room,
-      this.description,
-      this.startDate,
-      this.firestore});
+  Button({
+    this.title,
+    this.room,
+    this.description,
+    this.startDate,
+    this.firestore,
+    this.slides,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +241,16 @@ class Button extends StatelessWidget {
                       fontSize: 30,
                       fontWeight: FontWeight.w300,
                       color: Colors.white)),
-              onPressed: () {})),
+              onPressed: () async {
+                DocumentReference talkRef = await firestore.addTalk(
+                    title.text,
+                    room.text,
+                    description.text,
+                    firestore.getCurrentUser(),
+                    startDate);
+                firestore.addSlidesFromImagePicker(slides, talkRef);
+                Navigator.pop(context);
+              })),
     );
   }
 }
