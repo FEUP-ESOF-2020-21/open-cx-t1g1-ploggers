@@ -29,9 +29,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
   refreshState() {
     setState(() {
-      widget._firestore.updateUserPicture(_user.picture).then((value) {
-        print("changed Database");
-      });
+      widget._firestore.updateUserPicture(_user.picture);
     });
   }
 
@@ -39,7 +37,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   Widget build(BuildContext context) {
     initState();
     _user = widget._firestore.getCurrentUser();
+
     Size size = MediaQuery.of(context).size;
+
+    final _controller = ScrollController(
+        initialScrollOffset: (_user.getAvatarNumber() - 1) * size.width);
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Settings Page"),
@@ -49,15 +52,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             child: Column(
           children: [
             Container(
-              height: 320,
-              child:
-                  ListView(scrollDirection: Axis.horizontal, children: <Widget>[
-                Avatar(_user, 1, refreshState),
-                Avatar(_user, 2, refreshState),
-                Avatar(_user, 3, refreshState),
-                Avatar(_user, 4, refreshState),
-                Avatar(_user, 5, refreshState)
-              ]),
+              height: MediaQuery.of(context).size.height / 2.5,
+              child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  controller: _controller,
+                  children: <Widget>[
+                    Avatar(_user, 1, refreshState),
+                    Avatar(_user, 2, refreshState),
+                    Avatar(_user, 3, refreshState),
+                    Avatar(_user, 4, refreshState),
+                    Avatar(_user, 5, refreshState)
+                  ]),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
@@ -163,7 +168,6 @@ class _AvatarState extends State<Avatar> {
           setState(() {
             widget.user.toggleAvatar(widget.avatarNumber);
             widget.refreshParent();
-            print(widget.user.picture);
           });
         },
         child: Container(

@@ -35,4 +35,8 @@ class User {
     String selectedAvatar = "assets/avatar" + index.toString() + ".png";
     this.picture = selectedAvatar;
   }
+
+  int getAvatarNumber() {
+    return int.parse(this.picture.substring(13, 14));
+  }
 }
