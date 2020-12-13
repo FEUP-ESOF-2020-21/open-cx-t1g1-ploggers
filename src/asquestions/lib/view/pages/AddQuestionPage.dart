@@ -250,7 +250,7 @@ class _SlideCardState extends State<SlideCard> {
   @override
   Widget build(BuildContext context) {
     Widget slideWidget = Stack(children: [
-      Image.asset("assets/" + widget.slide.url,
+      Image.network(widget.slide.url,
           width: MediaQuery.of(context).size.width - 90, height: 200),
       Container(
           margin: const EdgeInsets.all(5),

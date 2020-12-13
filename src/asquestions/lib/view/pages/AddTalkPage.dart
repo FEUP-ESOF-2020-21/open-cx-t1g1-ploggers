@@ -242,7 +242,6 @@ class Button extends StatelessWidget {
                       fontWeight: FontWeight.w300,
                       color: Colors.white)),
               onPressed: () async {
-                print("here");
                 DocumentReference talkRef = await firestore.addTalk(
                     title.text,
                     room.text,
