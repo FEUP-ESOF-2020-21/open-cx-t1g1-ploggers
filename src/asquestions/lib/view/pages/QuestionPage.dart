@@ -77,7 +77,7 @@ class _QuestionPageState extends State<QuestionPage> {
             centerTitle: true,
             actions: <Widget>[
               IconButton(
-                  icon: Icon(Icons.add_sharp),
+                  icon: Icon(Icons.add_comment_outlined),
                   iconSize: 28,
                   color: Colors.white,
                   onPressed: () {
@@ -98,7 +98,7 @@ class _QuestionPageState extends State<QuestionPage> {
             centerTitle: true,
             actions: <Widget>[
               IconButton(
-                  icon: Icon(Icons.add_sharp),
+                  icon: Icon(Icons.add_comment_outlined),
                   iconSize: 28,
                   color: Colors.white,
                   onPressed: () {

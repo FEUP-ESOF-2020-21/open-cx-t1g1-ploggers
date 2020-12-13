@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.add_sharp),
+              icon: Icon(Icons.addchart_rounded),
               iconSize: 28,
               color: Colors.white,
               onPressed: () {

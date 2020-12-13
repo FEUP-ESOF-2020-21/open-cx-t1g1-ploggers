@@ -90,7 +90,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.add_sharp),
+              icon: Icon(Icons.add_box_outlined),
               iconSize: 28,
               color: Colors.white,
               onPressed: () {
@@ -146,10 +146,15 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                           builder: (context) =>
                           UserProfilePage(widget._firestore, question.user.reference)));
                   },
-                  child: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image(image: AssetImage(question.user.picture))),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.blue.shade500, width: 4),),
+                    child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image(image: AssetImage(question.user.picture))),
+                  ),
                   ),
                 ),
                 buildCard(question),
