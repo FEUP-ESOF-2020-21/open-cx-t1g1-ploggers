@@ -302,6 +302,7 @@ class CloudFirestoreController {
         .collection("comments")
         .doc(document.substring(0, document.length - 1))
         .delete();
+  }
 
   Future<void> updateUser(String username, String name, String bio) async {
     await _currentUser.reference
@@ -312,7 +313,6 @@ class CloudFirestoreController {
   Future<void> updateUserPicture(String picture) async {
     await _currentUser.reference.update({'picture': picture});
     _currentUser = await getUser(await _currentUser.reference.get());
-
   }
 
   Future<bool> isHost(User user, DocumentReference question) async {
@@ -340,7 +340,8 @@ class CloudFirestoreController {
 
     return moderatorRef.id == user.reference.id ||
         hostRef.id == user.reference.id;
-  } 
+  }
+
   Future<DocumentReference> addTalk(String title, String room,
       String description, User moderator, DateTime startDate) async {
     firestore.collection("talks").add({
