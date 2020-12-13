@@ -30,4 +30,9 @@ class User {
   bool operator ==(Object user) {
     return user is User && user.username == this.username;
   }
+
+  void toggleAvatar(int index) {
+    String selectedAvatar = "assets/avatar" + index.toString() + ".png";
+    this.picture = selectedAvatar;
+  }
 }
