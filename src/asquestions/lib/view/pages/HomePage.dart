@@ -1,3 +1,4 @@
+import 'package:asquestions/view/pages/UserProfilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 import 'package:asquestions/view/pages/TalkQuestionsPage.dart';
@@ -92,10 +93,19 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
-                child: SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Image(image: AssetImage(_talk.host.picture))),
+                child:GestureDetector(
+                  onTap:  (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              UserProfilePage(widget._firestore, _talk.host.reference)));
+                  },
+                    child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image(image: AssetImage(_talk.host.picture))),
+                ),
               ),
               buildCard(_talk),
             ],

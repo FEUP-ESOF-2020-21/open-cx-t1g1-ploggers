@@ -1,3 +1,4 @@
+import 'package:asquestions/view/pages/UserProfilePage.dart';
 import 'package:asquestions/view/pages/QuestionPage.dart';
 import 'package:asquestions/view/pages/AddQuestionPage.dart';
 import 'package:flutter/material.dart';
@@ -113,10 +114,19 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
-                child: SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Image(image: AssetImage(question.user.picture))),
+                child:GestureDetector(
+                  onTap:  (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              UserProfilePage(widget._firestore, question.user.reference)));
+                  },
+                  child: SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Image(image: AssetImage(question.user.picture))),
+                ),
               ),
               buildCard(question),
               buildVotes(question),
