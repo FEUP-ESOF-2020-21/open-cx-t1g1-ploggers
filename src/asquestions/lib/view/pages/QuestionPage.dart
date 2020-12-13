@@ -1,3 +1,4 @@
+import 'package:asquestions/view/pages/UserProfilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
@@ -91,11 +92,6 @@ class _QuestionPageState extends State<QuestionPage> {
           body: Visibility(
               visible: showLoadingIndicator, child: LinearProgressIndicator()));
     } else {
-      Widget questionCard;
-      if (question.slides.length == 0)
-        questionCard = buildQuestionWithoutSlide();
-      else
-        questionCard = buildQuestionWithSlide();
       return Scaffold(
           appBar: AppBar(
             title: Text("Question Thread"),
@@ -230,12 +226,21 @@ class _QuestionPageState extends State<QuestionPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                ListTile(
-                    leading: Image(image: AssetImage(comment.user.picture)),
-                    title: Text(comment.user.name,
-                        style: new TextStyle(fontSize: 20.0)),
-                    subtitle: Text(comment.content,
-                        style: new TextStyle(fontSize: 18.0))),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserProfilePage(
+                                widget._firestore, comment.user.reference)));
+                  },
+                  child: ListTile(
+                      leading: Image(image: AssetImage(comment.user.picture)),
+                      title: Text(comment.user.name,
+                          style: new TextStyle(fontSize: 20.0)),
+                      subtitle: Text(comment.content,
+                          style: new TextStyle(fontSize: 18.0))),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Row(
@@ -301,12 +306,21 @@ class _QuestionPageState extends State<QuestionPage> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  ListTile(
-                      leading: Image(image: AssetImage(comment.user.picture)),
-                      title: Text(comment.user.name,
-                          style: new TextStyle(fontSize: 20.0)),
-                      subtitle: Text(comment.content,
-                          style: new TextStyle(fontSize: 18.0))),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserProfilePage(
+                                  widget._firestore, comment.user.reference)));
+                    },
+                    child: ListTile(
+                        leading: Image(image: AssetImage(comment.user.picture)),
+                        title: Text(comment.user.name,
+                            style: new TextStyle(fontSize: 20.0)),
+                        subtitle: Text(comment.content,
+                            style: new TextStyle(fontSize: 18.0))),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Row(
@@ -335,20 +349,27 @@ class _QuestionPageState extends State<QuestionPage> {
   }
 
   Widget buildQuestionWithSlide() {
-    return Container(
-      padding: EdgeInsets.all(2.0),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ListTile(
-                leading: Image(image: AssetImage(question.user.picture)),
-                title: Text(question.content,
-                    style: new TextStyle(fontSize: 25.0)),
-                subtitle: Text("Asked by: " + question.user.name,
-                    style: new TextStyle(fontSize: 18.0)),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfilePage(
+                              widget._firestore, question.user.reference)));
+                },
+                child: ListTile(
+                  leading: Image(image: AssetImage(question.user.picture)),
+                  title: Text(question.content,
+                      style: new TextStyle(fontSize: 25.0)),
+                  subtitle: Text("Asked by: " + question.user.name,
+                      style: new TextStyle(fontSize: 18.0)),
+                ),
               ),
               Divider(
                   height: 5,
@@ -368,11 +389,26 @@ class _QuestionPageState extends State<QuestionPage> {
                   indent: 40,
                   endIndent: 40),
               Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                child: Image(
-                    image:
-                        AssetImage('assets/' + question.slides[0].imageName)),
-              ),
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 3,
+                      child: question.slides.length != 1
+                          ? ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: question.slides.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: FittedBox(
+                                        child: Image.network(
+                                            question.slides[index].url),
+                                        fit: BoxFit.fill));
+                              })
+                          : Container(
+                              height: MediaQuery.of(context).size.height / 3,
+                              child: FittedBox(
+                                  child: Image.network(question.slides[0].url),
+                                  fit: BoxFit.fill)))),
               Padding(
                 padding:
                     const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 5.0),
@@ -404,12 +440,21 @@ class _QuestionPageState extends State<QuestionPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ListTile(
-                leading: Image(image: AssetImage(question.user.picture)),
-                title: Text(question.content,
-                    style: new TextStyle(fontSize: 25.0)),
-                subtitle: Text("Asked by: " + question.user.name,
-                    style: new TextStyle(fontSize: 18.0)),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfilePage(
+                              widget._firestore, question.user.reference)));
+                },
+                child: ListTile(
+                  leading: Image(image: AssetImage(question.user.picture)),
+                  title: Text(question.content,
+                      style: new TextStyle(fontSize: 25.0)),
+                  subtitle: Text("Asked by: " + question.user.name,
+                      style: new TextStyle(fontSize: 18.0)),
+                ),
               ),
               Padding(
                 padding:

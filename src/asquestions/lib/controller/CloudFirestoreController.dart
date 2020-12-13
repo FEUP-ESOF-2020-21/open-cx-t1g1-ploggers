@@ -4,9 +4,15 @@ import 'package:asquestions/model/User.dart';
 import 'package:asquestions/model/Question.dart';
 import 'package:asquestions/model/Talk.dart';
 import 'package:asquestions/model/Slide.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
+import 'dart:io';
+import 'StorageController.dart';
 
 class CloudFirestoreController {
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  static final StorageController storage = new StorageController();
+
   static User _currentUser;
   static String _currentUserEmail;
   static bool _needAuth = false;
@@ -119,7 +125,7 @@ class CloudFirestoreController {
 
   Future<Slide> _makeSlideFromSnapshot(DocumentSnapshot snapshot) async {
     int number = snapshot.get('number');
-    String imageName = snapshot.get('imageName');
+    String imageName = snapshot.get('url');
     DocumentReference talk = snapshot.get('talk');
     DocumentReference reference = snapshot.reference;
 
@@ -296,6 +302,17 @@ class CloudFirestoreController {
         .collection("comments")
         .doc(document.substring(0, document.length - 1))
         .delete();
+
+  Future<void> updateUser(String username, String name, String bio) async {
+    await _currentUser.reference
+        .update({'username': username, 'bio': bio, 'name': name});
+    _currentUser = await getUser(await _currentUser.reference.get());
+  }
+
+  Future<void> updateUserPicture(String picture) async {
+    await _currentUser.reference.update({'picture': picture});
+    _currentUser = await getUser(await _currentUser.reference.get());
+
   }
 
   Future<bool> isHost(User user, DocumentReference question) async {
@@ -323,5 +340,54 @@ class CloudFirestoreController {
 
     return moderatorRef.id == user.reference.id ||
         hostRef.id == user.reference.id;
+  } 
+  Future<DocumentReference> addTalk(String title, String room,
+      String description, User moderator, DateTime startDate) async {
+    firestore.collection("talks").add({
+      "description": description,
+      "title": title,
+      "host": _currentUser.reference,
+      "moderator": moderator.reference,
+      "room": room,
+      "startDate": Timestamp.fromDate(startDate)
+    });
+    QuerySnapshot snapshot = await firestore
+        .collection("talks")
+        .where('description', isEqualTo: description)
+        .where('title', isEqualTo: title)
+        .where('host', isEqualTo: _currentUser.reference)
+        .where('moderator', isEqualTo: moderator.reference)
+        .where('room', isEqualTo: room)
+        .where('startDate', isEqualTo: Timestamp.fromDate(startDate))
+        .get();
+    if (snapshot.docs.length == 0) return null;
+    return snapshot.docs[0].reference;
+  }
+
+  Future<void> addSlidesFromImagePicker(
+      List<Asset> images, DocumentReference reference) async {
+    List<File> fileSlides = new List();
+    for (Asset imageAsset in images) {
+      final filePath =
+          await FlutterAbsolutePath.getAbsolutePath(imageAsset.identifier);
+
+      File tempFile = File(filePath);
+      if (tempFile.existsSync()) {
+        fileSlides.add(tempFile);
+      }
+    }
+
+    int count = 1;
+    for (File imageFile in fileSlides) {
+      String url;
+      url = await storage.uploadFile(
+          imageFile, reference.path + "-" + count.toString());
+      firestore.collection("slides").add({
+        "number": count,
+        "talk": reference,
+        "url": url,
+      });
+      count++;
+    }
   }
 }
