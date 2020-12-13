@@ -390,7 +390,9 @@ Effort: L
 
 ### Domain model
 
-To better understand the context of the software system, it is very useful to have a simple UML class diagram with all the key concepts (names, attributes) and relationships involved of the problem domain addressed by your module.
+![Domain Model](./img/domain_model.png)
+
+Our app concepts are simple and easy to understand, consisting of talks, users and posts. Every user can be connected to a talk, either as an attendee or as a host/moderator. Attendees can create questions on the talk's forum, possibly using the presentation's slides to help the host better understand what the question is about - or answer another user's post, by creating a comment on the respective post.
 
 ------
 
@@ -412,7 +414,7 @@ Our high-level logical structure of the code will follow the Architectural Patte
 
 ![physical_architecture](./img/physical_architecture.png)
 
-For this project we are using Flutter, a software development kit created by Google as our mobile application framework since it is one of the most used mobile development frameworks and it was recommended to us by our teacher.
+For this project we are using Flutter, a software development kit created by Google as our mobile application framework since it is one of the most used mobile development frameworks, having many appealing built-in features.
 
 For the app's database, we decided to use Firebase since both Firebase and Flutter were developed by Google, which makes its integration on the project simple. This database server is used to save all needed data such as users, talks, questions and comments, etc.
 
