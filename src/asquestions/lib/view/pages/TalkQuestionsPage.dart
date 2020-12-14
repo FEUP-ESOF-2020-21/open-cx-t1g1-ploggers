@@ -243,7 +243,11 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
         padding: EdgeInsets.only(right: 10),
         child: Column(
           children: <Widget>[
-            Icon(Icons.star_rate_rounded, color: Colors.orange, size: 30),
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child:
+                  Icon(Icons.star_rate_rounded, color: Colors.orange, size: 30),
+            ),
             Transform.scale(
               scale: 2.0,
               child: IconButton(
