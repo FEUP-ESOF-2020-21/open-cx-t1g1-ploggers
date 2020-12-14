@@ -138,23 +138,26 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0),
-                  child:GestureDetector(
-                    onTap:  (){
+                  child: GestureDetector(
+                    onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                          builder: (context) =>
-                          UserProfilePage(widget._firestore, question.user.reference)));
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
+                              builder: (context) => UserProfilePage(
+                                  widget._firestore, question.user.reference)));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.blue.shade500, width: 4),),
-                    child: SizedBox(
-                        width: 80,
-                        height: 80,
-                        child: Image(image: AssetImage(question.user.picture))),
-                  ),
+                        border:
+                            Border.all(color: Colors.blue.shade500, width: 4),
+                      ),
+                      child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child:
+                              Image(image: AssetImage(question.user.picture))),
+                    ),
                   ),
                 ),
                 buildCard(question),
@@ -180,14 +183,14 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 GestureDetector(
-                    onTap:  (){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                          builder: (context) =>
-                          UserProfilePage(widget._firestore, question.user.reference)));
-                    },
-                    child: Padding(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserProfilePage(
+                                widget._firestore, question.user.reference)));
+                  },
+                  child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: SizedBox(
                         width: 80,
@@ -235,6 +238,46 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
   }
 
   Widget buildVotes(Question question) {
+    if (question.highlighted) {
+      return Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child:
+                  Icon(Icons.star_rate_rounded, color: Colors.orange, size: 30),
+            ),
+            Transform.scale(
+              scale: 2.0,
+              child: IconButton(
+                  icon: Icon(Icons.keyboard_arrow_up_outlined),
+                  color:
+                      (question.hasUpvoted(widget._firestore.getCurrentUser())
+                          ? Colors.green
+                          : Colors.black),
+                  onPressed: () {
+                    _toggleUpvote(question);
+                  }),
+            ),
+            Text((question.getVotes()).toString(),
+                style: new TextStyle(fontSize: 18.0)),
+            Transform.scale(
+              scale: 2.0,
+              child: IconButton(
+                  icon: Icon(Icons.keyboard_arrow_down_outlined),
+                  color:
+                      (question.hasDownvoted(widget._firestore.getCurrentUser())
+                          ? Colors.red
+                          : Colors.black),
+                  onPressed: () {
+                    _toggleDownvote(question);
+                  }),
+            ),
+          ],
+        ),
+      );
+    }
     return Padding(
       padding: EdgeInsets.only(right: 10),
       child: Column(
