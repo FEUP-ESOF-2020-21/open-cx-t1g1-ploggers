@@ -169,37 +169,36 @@ class _QuestionPageState extends State<QuestionPage> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: <Widget>[
-                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Container(
-                      //height: 5,
-                      //color: Colors.black,
-                      child: IconButton(
-                          icon: Icon(Icons.close_rounded),
-                          color: Colors.red,
-                          onPressed: () {
-                            //_toggleDeleteQuestion(question);
-                            _toggleDeleteComment(comment);
-                          },
-                          iconSize: 20),
-                    ),
-                  ]),
                   GestureDetector(
-                    onTap:  (){
+                    onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                          builder: (context) =>
-                          UserProfilePage(widget._firestore, comment.user.reference)));
+                              builder: (context) => UserProfilePage(
+                                  widget._firestore, comment.user.reference)));
                     },
-                        child: ListTile(
+                    child: ListTile(
                         leading: Image(image: AssetImage(comment.user.picture)),
-                        title: Text(comment.user.name,
-                            style: new TextStyle(fontSize: 20.0)),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(comment.user.name,
+                                style: new TextStyle(fontSize: 20.0)),
+                            IconButton(
+                                icon: Icon(Icons.close_rounded),
+                                color: Colors.red,
+                                onPressed: () {
+                                  //_toggleDeleteQuestion(question);
+                                  _toggleDeleteComment(comment);
+                                },
+                                iconSize: 20),
+                          ],
+                        ),
                         subtitle: Text(comment.content,
                             style: new TextStyle(fontSize: 18.0))),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    padding: const EdgeInsets.only(left: 10.0, right: 28),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
