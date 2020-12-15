@@ -66,6 +66,7 @@ class _QuestionPageState extends State<QuestionPage> {
     setState(() {
       widget._firestore.removeComment(comment.reference);
     });
+    refreshModel(true);
   }
 
   @override
