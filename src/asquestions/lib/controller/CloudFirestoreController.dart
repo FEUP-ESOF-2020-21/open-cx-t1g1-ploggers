@@ -182,6 +182,18 @@ class CloudFirestoreController {
     return talkRef;
   }
 
+  Future<List<Talk>> getTalksOfUser(DocumentReference user) async {
+    List<Talk> allTalks = await getTalks();
+    List<Talk> talks = [];
+    for (var talk in allTalks) {
+      if (talk.host.reference == user) {
+        talks.add(talk);
+      }
+    }
+    print(talks);
+    return talks;
+  }
+
   Future<User> getUser(DocumentSnapshot snapshot) async {
     Future<User> user = _makeUserFromSnapshot(snapshot);
     return await user;
@@ -343,8 +355,12 @@ class CloudFirestoreController {
         hostRef.id == user.reference.id;
   }
 
-  Future<DocumentReference> addTalk(String title, String room,
-      String description, DocumentReference moderator, DateTime startDate) async {
+  Future<DocumentReference> addTalk(
+      String title,
+      String room,
+      String description,
+      DocumentReference moderator,
+      DateTime startDate) async {
     firestore.collection("talks").add({
       "description": description,
       "title": title,
