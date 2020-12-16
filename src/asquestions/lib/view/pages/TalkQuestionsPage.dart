@@ -133,36 +133,39 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
         child: Container(
           padding: const EdgeInsets.all(2.0),
           child: Card(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserProfilePage(
-                                  widget._firestore, question.user.reference)));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border:
-                            Border.all(color: Colors.blue.shade500, width: 4),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserProfilePage(
+                                    widget._firestore, question.user.reference)));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border:
+                              Border.all(color: Colors.blue.shade500, width: 4),
+                        ),
+                        child: SizedBox(
+                            width: 80,
+                            height: 80,
+                            child:
+                                Image(image: AssetImage(question.user.picture))),
                       ),
-                      child: SizedBox(
-                          width: 80,
-                          height: 80,
-                          child:
-                              Image(image: AssetImage(question.user.picture))),
                     ),
                   ),
-                ),
-                buildCard(question),
-                buildVotes(question),
-              ],
+                  buildCard(question),
+                  buildVotes(question),
+                ],
+              ),
             ),
           ),
         ),
