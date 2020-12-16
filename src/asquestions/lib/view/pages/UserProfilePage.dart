@@ -77,7 +77,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           child: Text(_user.name,
               style: TextStyle(
                 fontSize: 36,
-                fontWeight: FontWeight.w300,
+                fontWeight: FontWeight.w700,
               )),
         ),
         getItems(_user),
@@ -85,7 +85,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             padding: const EdgeInsets.all(20),
             child: Text(
               'User\'s Talks:',
-              style: TextStyle(fontSize: 19),
+              style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
             )),
       ];
       for (var talk in _userTalks) {
@@ -121,7 +121,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         leading: Icon(Icons.chrome_reader_mode),
         title: Text(
           "Bio",
-          style: new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
+          style: new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w400),
         ),
         subtitle: Text(
           _user.bio,
@@ -133,7 +133,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         leading: Icon(Icons.account_circle),
         title: Text(
           "Username",
-          style: new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
+          style: new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w400),
         ),
         subtitle: Text(
           _user.username,
@@ -146,7 +146,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         leading: Icon(Icons.alternate_email),
         title: Text(
           "Email",
-          style: new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
+          style: new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w400),
         ),
         subtitle: Text(
           _user.email,

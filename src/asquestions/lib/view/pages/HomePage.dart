@@ -111,18 +111,18 @@ Widget buildCard(
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
                     child:
-                        Text(talk.title, style: new TextStyle(fontSize: 20.0)),
+                        Text(talk.title, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 1.0),
                     child: Text(talk.host.name,
-                        style: new TextStyle(fontSize: 15.0)),
+                        style: new TextStyle(fontSize: 15.0, fontWeight: FontWeight.w700)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 1.0),
                     child: SizedBox(
                       width: 235.0,
-                      child: Text("Description: " + talk.description,
+                      child: Text(talk.description,
                           style: new TextStyle(fontSize: 15.0)),
                     ),
                   ),
