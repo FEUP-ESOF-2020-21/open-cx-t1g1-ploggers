@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:asquestions/model/User.dart';
+import 'package:asquestions/model/Talk.dart';
+import 'package:asquestions/view/pages/HomePage.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -15,6 +17,7 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   User _user;
+  List<Talk> _userTalks;
   bool showLoadingIndicator = false;
   ScrollController scrollController;
 
@@ -30,6 +33,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       showLoadingIndicator = showIndicator;
     });
     _user = await widget._firestore.getUser(await widget._userReference.get());
+    _userTalks = await widget._firestore.getTalksOfUser(widget._userReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -40,7 +44,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    if (_user == null) {
+    if (_user == null || _userTalks == null) {
       return Scaffold(
           body: Stack(children: <Widget>[
         ClipPath(
@@ -59,6 +63,35 @@ class _UserProfilePageState extends State<UserProfilePage> {
         )
       ]));
     } else {
+      List<Widget> userTalksWidgets = [
+        Container(
+          height: 150,
+          width: 150,
+          child: Image.asset(_user.picture),
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.lightBlue.shade300, width: 4)),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+          child: Text(_user.name,
+              style: TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.w300,
+              )),
+        ),
+        getItems(_user),
+        Container(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              'User\'s Talks:',
+              style: TextStyle(fontSize: 19),
+            )),
+      ];
+      for (var talk in _userTalks) {
+        userTalksWidgets.add(buildCard(context, talk, widget._firestore));
+      }
+
       return Scaffold(
           body: SingleChildScrollView(
         child: Stack(
@@ -72,28 +105,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             Center(
               child: Container(
                 padding: EdgeInsets.only(top: size.height * 0.15),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: 150,
-                      width: 150,
-                      child: Image.asset(_user.picture),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: Colors.lightBlue.shade300, width: 4)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                      child: Text(_user.name,
-                          style: TextStyle(
-                            fontSize: 36,
-                            fontWeight: FontWeight.w300,
-                          )),
-                    ),
-                    getItems(_user),
-                  ],
-                ),
+                child: Column(children: userTalksWidgets),
               ),
             ),
           ],
@@ -128,18 +140,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
           style: new TextStyle(fontSize: 17.0),
         ),
         dense: true,
-      ),
-      Divider(indent: 20, endIndent: 20),
-      ListTile(
-        leading: Icon(Icons.lock),
-        title: Text(
-          "Password",
-          style: new TextStyle(fontSize: 24.0, fontWeight: FontWeight.w300),
-        ),
-        subtitle: Text(
-          _user.replacePassword(),
-          style: new TextStyle(fontSize: 18.0),
-        ),
       ),
       Divider(indent: 20, endIndent: 20),
       ListTile(
