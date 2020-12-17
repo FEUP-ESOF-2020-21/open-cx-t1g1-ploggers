@@ -124,10 +124,15 @@ class _QuestionPageState extends State<QuestionPage> {
     switch (index) {
       case 0:
         Widget questionCard;
-        if (question.slides.length == 0)
+        if (question.slides.isNotEmpty) {
+          if (question.slides[0].url == "number") {
+            questionCard = buildQuestionWithSlideNumbers();
+          } else {
+            questionCard = buildQuestionWithSlide();
+          }
+        } else {
           questionCard = buildQuestionWithoutSlide();
-        else
-          questionCard = buildQuestionWithSlide();
+        }
         return questionCard;
       case 1:
         return Divider(
@@ -280,6 +285,7 @@ class _QuestionPageState extends State<QuestionPage> {
           ),
         );
     }
+    return Scaffold();
   }
 
   Widget buildComments() {
@@ -464,6 +470,76 @@ class _QuestionPageState extends State<QuestionPage> {
                   subtitle: Text("Asked by: " + question.user.name,
                       style: new TextStyle(fontSize: 18.0)),
                 ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(comments.length.toString() + " comments",
+                        style: new TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade700)),
+                    Text(question.getAgeString(),
+                        style: new TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade700))
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildQuestionWithSlideNumbers() {
+    return Container(
+      padding: EdgeInsets.all(2.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfilePage(
+                              widget._firestore, question.user.reference)));
+                },
+                child: ListTile(
+                  leading: Image(image: AssetImage(question.user.picture)),
+                  title: Text(question.content,
+                      style: new TextStyle(fontSize: 25.0)),
+                  subtitle: Text("Asked by: " + question.user.name,
+                      style: new TextStyle(fontSize: 18.0)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Divider(
+                    height: 5,
+                    thickness: 3,
+                    color: Colors.blue.shade200,
+                    indent: 40,
+                    endIndent: 40),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                child: Text("Tagged Slides: " + question.slidesToNumberString(),
+                    style: new TextStyle(fontSize: 18.0)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Divider(
+                    height: 5,
+                    thickness: 3,
+                    color: Colors.blue.shade200,
+                    indent: 40,
+                    endIndent: 40),
               ),
               Padding(
                 padding:
