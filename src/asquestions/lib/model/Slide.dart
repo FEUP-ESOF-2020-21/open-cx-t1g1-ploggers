@@ -9,4 +9,6 @@ class Slide {
   Slide(this.number, this.url, this.talk, this.reference);
 
   Slide.fromNew(this.number, this.url, this.talk);
+
+  Slide.fromNewNoImage(this.number, this.talk);
 }

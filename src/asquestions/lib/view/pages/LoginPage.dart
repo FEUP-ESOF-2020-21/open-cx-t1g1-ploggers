@@ -1,5 +1,4 @@
 import 'package:asquestions/controller/Authenticator.dart';
-import 'package:asquestions/model/User.dart';
 import 'package:asquestions/view/widgets/TextFieldContainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
@@ -105,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
                   margin: const EdgeInsets.only(bottom: 20),
                   child: SigninButton(email: _email, password: _password),
                 )
-                //Container(padding: EdgeInsets.all(20), child: SigninButton({email: _email, password: _password})),
               ]),
             )
           ],
@@ -149,23 +147,7 @@ class SigninButton extends StatelessWidget {
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text(value)));
                 });
-                //Navigator.pop(context);
               })),
     );
-
-    /*return RaisedButton(
-      onPressed: () {
-        print(email.text);
-        context
-            .read<Authenticator>()
-            .signIn(email.text.trim(), password.text.trim())
-            .then((value) {
-          Scaffold.of(context)
-              .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text(value)));
-        });
-      },
-      child: Text("Login"),
-    );*/
   }
 }

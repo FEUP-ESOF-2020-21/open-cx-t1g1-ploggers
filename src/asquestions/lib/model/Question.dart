@@ -86,4 +86,20 @@ class Question extends Post {
       this.highlighted = true;
     }
   }
+
+  String slidesToNumberString() {
+    String result = "";
+    int count = 1;
+    for (Slide slide in slides) {
+      
+      if (count == slides.length) {
+        result += slide.number.toString();
+      }
+      else{
+        result += slide.number.toString() + ", ";
+      }
+      count++;
+    }
+    return result;
+  }
 }

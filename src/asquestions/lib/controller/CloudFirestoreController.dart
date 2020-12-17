@@ -230,6 +230,24 @@ class CloudFirestoreController {
     _currentUserEmail = email;
   }
 
+  void addQuestionWithSlideNumber(
+      String content, List<Slide> slides, DocumentReference talk) async {
+    List<DocumentReference> slidesRef = new List();
+    for (Slide slide in slides) {
+      slidesRef.add(await addSlideFromNumber(slide));
+    }
+    firestore.collection("questions").add({
+      "date": Timestamp.fromDate(DateTime.now()),
+      "slides": slidesRef,
+      "content": content,
+      "talk": talk,
+      "user": _currentUser.reference,
+      "upvotes": [],
+      "downvotes": [],
+      "highlighted": false,
+    });
+  }
+
   void addQuestion(String content, List<Slide> slides, DocumentReference talk) {
     List<DocumentReference> slidesRef = new List();
     for (Slide slide in slides) {
@@ -407,5 +425,36 @@ class CloudFirestoreController {
       });
       count++;
     }
+  }
+
+  Future<DocumentReference> addSlideFromNumber(Slide slide) async {
+    //Check if there is already a database slide with the same number
+    QuerySnapshot snapshot = await firestore
+        .collection("slides")
+        .where('number', isEqualTo: slide.number)
+        .where('talk', isEqualTo: null)
+        .where('url', isEqualTo: "number")
+        .get();
+    if (snapshot.docs.length > 0) {
+      print("Slide already exists, annexing...");
+      return snapshot.docs[0].reference;
+    }
+
+    //If not create one
+    firestore.collection("slides").add({
+      "number": slide.number,
+      "talk": null,
+      "url": "number",
+    });
+
+    QuerySnapshot snapshotCreate = await firestore
+        .collection("slides")
+        .where('number', isEqualTo: slide.number)
+        .where('talk', isEqualTo: null)
+        .where('url', isEqualTo: "number")
+        .get();
+    if (snapshot.docs.length == 0) return snapshotCreate.docs[0].reference;
+    print("New Number Slide created, annexing...");
+    return snapshotCreate.docs[0].reference;
   }
 }
