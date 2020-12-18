@@ -1,3 +1,4 @@
+
 # open-cx-t1g1-ploggers Development Report
 
 Welcome to the documentation pages of the AsQuestions of **openCX**!
@@ -142,19 +143,6 @@ Clearing up the audience's doubts during a talk is often a difficult task for th
 	1. The moderator selects a question he wants to prioritize.
 	2. The moderator selects the send question to speaker button.
 	3. The system rearranges the questions on the database and displays the prioritized questions on top of the talk page.
-
-#### Merge Questions:
-
-*  **Actor**. Moderator
-
-*  **Description**. This use case exists so that the moderator can merge similar questions.
-
-*  **Preconditions and Postconditions**.  To merge a question the user must first join a talk's page, being previously logged in as a moderator. In the end, the user's questions merged will be rearranged to the database and displayed in the list of questions on that talk page.
-
-*  **Normal Flow**. 
-	1. The moderator selects the questions he wants to merge.
-	2. The moderator selects the merge question button.
-	3. The system rearranges the questions on the database and displays the new list of questions on the talks page.
 
 #### Check User Profiles:
 
