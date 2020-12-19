@@ -29,4 +29,8 @@ class Authenticator {
       return e.message;
     }
   }
+
+  Future<void> resetPassword(String email) {
+    return _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
 }
