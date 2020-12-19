@@ -1,5 +1,4 @@
 import 'package:asquestions/controller/Authenticator.dart';
-import 'package:asquestions/model/User.dart';
 import 'package:asquestions/view/pages/RecoverPasswordPage.dart';
 import 'package:asquestions/view/widgets/TextFieldContainer.dart';
 import 'package:flutter/cupertino.dart';
