@@ -22,6 +22,8 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
   bool showLoadingIndicator = false;
   ScrollController scrollController;
 
+  bool isModeratorOrHost;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +37,8 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
     });
     questions = await widget._firestore
         .getQuestionsFromTalkReference(widget._talkReference);
+    isModeratorOrHost = await widget._firestore.isModeratorOrHost(
+        widget._firestore.getCurrentUser(), widget._talkReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -56,18 +60,37 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
     });
   }
 
+  void _toggleHighLighted(Question question) {
+    setState(() {
+      question.triggerHighlighted();
+      widget._firestore.refreshHighLighted(question);
+    });
+  }
+
+  void _toggleDeleteQuestion(Question question) {
+    setState(() {
+      widget._firestore.removeQuestion(question.reference);
+    });
+  }
+
   void openPage() {}
 
   @override
   Widget build(BuildContext context) {
     questions.sort((a, b) => b.getVotes().compareTo(a.getVotes()));
+    questions.sort((a, b) {
+      if (b.highlighted) {
+        return 1;
+      }
+      return -1;
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text('Talk Questions'),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.add_sharp),
+              icon: Icon(Icons.add_box_outlined),
               iconSize: 28,
               color: Colors.white,
               onPressed: () {
@@ -98,43 +121,94 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
 
   Widget buildQuestionCard(BuildContext context, int index) {
     final question = questions[index];
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    QuestionPage(widget._firestore, question.reference)));
-      },
-      child: Container(
-        padding: const EdgeInsets.all(2.0),
-        child: Card(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child:GestureDetector(
-                  onTap:  (){
+    if (!isModeratorOrHost) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      QuestionPage(widget._firestore, question.reference)));
+        },
+        child: Container(
+          padding: const EdgeInsets.all(2.0),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserProfilePage(
+                                    widget._firestore, question.user.reference)));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border:
+                              Border.all(color: Colors.blue.shade500, width: 4),
+                        ),
+                        child: SizedBox(
+                            width: 80,
+                            height: 80,
+                            child:
+                                Image(image: AssetImage(question.user.picture))),
+                      ),
+                    ),
+                  ),
+                  buildCard(question),
+                  buildVotes(question),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      QuestionPage(widget._firestore, question.reference)));
+        },
+        child: Container(
+          padding: const EdgeInsets.all(2.0),
+          child: Card(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(widget._firestore, question.user.reference)));
+                            builder: (context) => UserProfilePage(
+                                widget._firestore, question.user.reference)));
                   },
-                  child: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image(image: AssetImage(question.user.picture))),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Image(image: AssetImage(question.user.picture))),
+                  ),
                 ),
-              ),
-              buildCard(question),
-              buildVotes(question),
-            ],
+                buildCard(question),
+                buildPreferenceDelete(question),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   Widget buildCard(Question question) {
@@ -167,6 +241,46 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
   }
 
   Widget buildVotes(Question question) {
+    if (question.highlighted) {
+      return Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child:
+                  Icon(Icons.star_rate_rounded, color: Colors.orange, size: 30),
+            ),
+            Transform.scale(
+              scale: 2.0,
+              child: IconButton(
+                  icon: Icon(Icons.keyboard_arrow_up_outlined),
+                  color:
+                      (question.hasUpvoted(widget._firestore.getCurrentUser())
+                          ? Colors.green
+                          : Colors.black),
+                  onPressed: () {
+                    _toggleUpvote(question);
+                  }),
+            ),
+            Text((question.getVotes()).toString(),
+                style: new TextStyle(fontSize: 18.0)),
+            Transform.scale(
+              scale: 2.0,
+              child: IconButton(
+                  icon: Icon(Icons.keyboard_arrow_down_outlined),
+                  color:
+                      (question.hasDownvoted(widget._firestore.getCurrentUser())
+                          ? Colors.red
+                          : Colors.black),
+                  onPressed: () {
+                    _toggleDownvote(question);
+                  }),
+            ),
+          ],
+        ),
+      );
+    }
     return Padding(
       padding: EdgeInsets.only(right: 10),
       child: Column(
@@ -195,6 +309,40 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                 onPressed: () {
                   _toggleDownvote(question);
                 }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPreferenceDelete(Question question) {
+    return Padding(
+      padding: EdgeInsets.only(right: 10),
+      child: Column(
+        children: <Widget>[
+          Transform.scale(
+            scale: 2.0,
+            child: IconButton(
+                icon: (question.isHighlighted()
+                    ? Icon(Icons.star_rate_rounded)
+                    : Icon(Icons.star_border_rounded)),
+                color: Colors.orange,
+                onPressed: () {
+                  _toggleHighLighted(question);
+                },
+                iconSize: 16),
+          ),
+          Text((question.getVotes()).toString(),
+              style: new TextStyle(fontSize: 18.0)),
+          Transform.scale(
+            scale: 2.0,
+            child: IconButton(
+                icon: Icon(Icons.close_rounded),
+                color: Colors.red,
+                onPressed: () {
+                  _toggleDeleteQuestion(question);
+                },
+                iconSize: 16),
           ),
         ],
       ),

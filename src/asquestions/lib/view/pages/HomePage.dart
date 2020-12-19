@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.add_sharp),
+              icon: Icon(Icons.addchart_rounded),
               iconSize: 28,
               color: Colors.white,
               onPressed: () {
@@ -79,70 +79,106 @@ class _HomePageState extends State<HomePage> {
   Widget buildTalkCard(BuildContext context, int index) {
     final _talk = _talks[index];
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TalkQuestionsPage(widget._firestore, _talk.reference)));
-      },
-      child: Container(
-        padding: const EdgeInsets.all(2.0),
-        child: Card(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child:GestureDetector(
-                  onTap:  (){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              UserProfilePage(widget._firestore, _talk.host.reference)));
-                  },
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      TalkQuestionsPage(widget._firestore, _talk.reference)));
+        },
+        child: buildCard(context, _talk, widget._firestore));
+  }
+
+//need room and description
+}
+
+Widget buildCard(
+    BuildContext context, Talk talk, CloudFirestoreController _firestore) {
+  final formattedStr = new DateFormat('dd-MM-yyy HH:mm');
+
+  return Container(
+    padding: const EdgeInsets.all(2.0),
+    child: Card(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            child: Padding(
+              padding: EdgeInsets.only(left: 5.0, top: 10.0, bottom: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child:
+                        Text(talk.title, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 1.0),
+                    child: Text(talk.host.name,
+                        style: new TextStyle(fontSize: 15.0, fontWeight: FontWeight.w700)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 1.0),
                     child: SizedBox(
-                        width: 80,
-                        height: 80,
-                        child: Image(image: AssetImage(_talk.host.picture))),
+                      width: 235.0,
+                      child: Text(talk.description,
+                          style: new TextStyle(fontSize: 15.0)),
+                    ),
+                  ),
+                  Container(
+                    height: 10,
+                  ),
+                  Divider(
+                      height: 0,
+                      thickness: 2,
+                      color: Colors.blue.shade500,
+                      indent: 0,
+                      endIndent: 40),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 5.0, bottom: 5.0, right: 40.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(formattedStr.format(talk.startDate),
+                            style: new TextStyle(fontSize: 13.0)),
+                        Text("Room: " + talk.room,
+                            style: new TextStyle(fontSize: 13.0)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            UserProfilePage(_firestore, talk.host.reference)));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.blue.shade500, width: 4),
+                  ),
+                  child: SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Image(image: AssetImage(talk.host.picture))),
                 ),
               ),
-              buildCard(_talk),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
-    );
-  }
-
-  Widget buildCard(Talk talk) {
-    final f = new DateFormat('dd-MM-yyy HH:mm');
-
-    return Flexible(
-      child: Padding(
-        padding: EdgeInsets.only(left: 15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(talk.title, style: new TextStyle(fontSize: 20.0)),
-            Text(talk.host.name, style: new TextStyle(fontSize: 15.0)),
-            Container(
-              height: 10,
-            ),
-            Divider(
-                height: 0,
-                thickness: 3,
-                color: Colors.blue.shade200,
-                indent: 0,
-                endIndent: 40),
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(f.format(talk.startDate),
-                  style: new TextStyle(fontSize: 12.0)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }

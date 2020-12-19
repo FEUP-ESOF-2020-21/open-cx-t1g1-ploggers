@@ -108,13 +108,11 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.only(bottom: 20),
               child: SigninButton(email: _email, password: _password),
             )
-            //Container(padding: EdgeInsets.all(20), child: SigninButton({email: _email, password: _password})),
           ]),
         ),
         FlatButton(
             onPressed: () {
               setState(() {
-                //context.read<Authenticator>().resetPassword(_email.text);
                 Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -157,7 +155,6 @@ class SigninButton extends StatelessWidget {
                       fontWeight: FontWeight.w300,
                       color: Colors.white)),
               onPressed: () {
-                //print(email.text);
                 context
                     .read<Authenticator>()
                     .signIn(email.text.trim(), password.text.trim())
@@ -167,23 +164,8 @@ class SigninButton extends StatelessWidget {
                   Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text(value)));
                 });
-                //Navigator.pop(context);
               })),
     );
 
-    /*return RaisedButton(
-      onPressed: () {
-        print(email.text);
-        context
-            .read<Authenticator>()
-            .signIn(email.text.trim(), password.text.trim())
-            .then((value) {
-          Scaffold.of(context)
-              .removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text(value)));
-        });
-      },
-      child: Text("Login"),
-    );*/
   }
 }

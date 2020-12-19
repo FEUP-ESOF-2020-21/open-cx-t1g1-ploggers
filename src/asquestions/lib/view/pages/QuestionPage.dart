@@ -21,6 +21,7 @@ class _QuestionPageState extends State<QuestionPage> {
   Question question;
   List<Comment> comments;
   bool showLoadingIndicator = false;
+  bool isModeratorOrHost;
   ScrollController scrollController;
 
   @override
@@ -38,6 +39,16 @@ class _QuestionPageState extends State<QuestionPage> {
         .getQuestion(await widget._questionReference.get());
     comments = await widget._firestore
         .getCommentsFromQuestionReference(widget._questionReference);
+    DocumentReference talkRef = await widget._firestore
+        .getTalkFromQuestionReference(widget._questionReference);
+    isModeratorOrHost = await widget._firestore
+        .isModeratorOrHost(widget._firestore.getCurrentUser(), talkRef);
+    comments.sort((a, b) {
+      if (b.isFromModerator) {
+        return 1;
+      }
+      return -1;
+    });
     comments.sort((a, b) {
       if (b.isFromHost) {
         return 1;
@@ -51,6 +62,13 @@ class _QuestionPageState extends State<QuestionPage> {
     print("Question fetch time: " + sw.elapsed.toString());
   }
 
+  void _toggleDeleteComment(Comment comment) {
+    setState(() {
+      widget._firestore.removeComment(comment.reference);
+    });
+    refreshModel(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (question == null) {
@@ -60,7 +78,7 @@ class _QuestionPageState extends State<QuestionPage> {
             centerTitle: true,
             actions: <Widget>[
               IconButton(
-                  icon: Icon(Icons.add_sharp),
+                  icon: Icon(Icons.add_comment_outlined),
                   iconSize: 28,
                   color: Colors.white,
                   onPressed: () {
@@ -81,7 +99,7 @@ class _QuestionPageState extends State<QuestionPage> {
             centerTitle: true,
             actions: <Widget>[
               IconButton(
-                  icon: Icon(Icons.add_sharp),
+                  icon: Icon(Icons.add_comment_outlined),
                   iconSize: 28,
                   color: Colors.white,
                   onPressed: () {
@@ -106,10 +124,15 @@ class _QuestionPageState extends State<QuestionPage> {
     switch (index) {
       case 0:
         Widget questionCard;
-        if (question.slides.length == 0)
+        if (question.slides.isNotEmpty) {
+          if (question.slides[0].url == "number") {
+            questionCard = buildQuestionWithSlideNumbers();
+          } else {
+            questionCard = buildQuestionWithSlide();
+          }
+        } else {
           questionCard = buildQuestionWithoutSlide();
-        else
-          questionCard = buildQuestionWithSlide();
+        }
         return questionCard;
       case 1:
         return Divider(
@@ -145,6 +168,72 @@ class _QuestionPageState extends State<QuestionPage> {
       hasComments:
       default:
         Comment comment = comments[index - 2];
+        if (isModeratorOrHost) {
+          return Card(
+            color: Colors.grey.shade200,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserProfilePage(
+                                  widget._firestore, comment.user.reference)));
+                    },
+                    child: ListTile(
+                        leading: Image(image: AssetImage(comment.user.picture)),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(comment.user.name,
+                                style: new TextStyle(fontSize: 20.0)),
+                            IconButton(
+                                icon: Icon(Icons.close_rounded),
+                                color: Colors.red,
+                                onPressed: () {
+                                  //_toggleDeleteQuestion(question);
+                                  _toggleDeleteComment(comment);
+                                },
+                                iconSize: 20),
+                          ],
+                        ),
+                        subtitle: Text(comment.content,
+                            style: new TextStyle(fontSize: 18.0))),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0, right: 28),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(comment.getAgeString(),
+                              style: new TextStyle(
+                                  fontSize: 14.0, color: Colors.grey.shade700)),
+                          if (!comment.isFromHost && !comment.isFromModerator)
+                            Icon(
+                              Icons.person_rounded,
+                              color: Colors.grey.shade600,
+                            )
+                          else if (!comment.isFromHost &&
+                              comment.isFromModerator)
+                            Icon(
+                              Icons.security_rounded,
+                              color: Colors.lightBlue,
+                            )
+                          else
+                            Icon(
+                              Icons.mic_rounded,
+                              color: Colors.yellow.shade800,
+                            )
+                        ]),
+                  )
+                ],
+              ),
+            ),
+          );
+        }
         return Card(
           color: Colors.grey.shade200,
           child: Padding(
@@ -174,10 +263,15 @@ class _QuestionPageState extends State<QuestionPage> {
                         Text(comment.getAgeString(),
                             style: new TextStyle(
                                 fontSize: 14.0, color: Colors.grey.shade700)),
-                        if (!comment.isFromHost)
+                        if (!comment.isFromHost && !comment.isFromModerator)
                           Icon(
                             Icons.person_rounded,
                             color: Colors.grey.shade600,
+                          )
+                        else if (!comment.isFromHost && comment.isFromModerator)
+                          Icon(
+                            Icons.security_rounded,
+                            color: Colors.lightBlue,
                           )
                         else
                           Icon(
@@ -191,6 +285,7 @@ class _QuestionPageState extends State<QuestionPage> {
           ),
         );
     }
+    return Scaffold();
   }
 
   Widget buildComments() {
@@ -375,6 +470,76 @@ class _QuestionPageState extends State<QuestionPage> {
                   subtitle: Text("Asked by: " + question.user.name,
                       style: new TextStyle(fontSize: 18.0)),
                 ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(comments.length.toString() + " comments",
+                        style: new TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade700)),
+                    Text(question.getAgeString(),
+                        style: new TextStyle(
+                            fontSize: 14.0, color: Colors.grey.shade700))
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildQuestionWithSlideNumbers() {
+    return Container(
+      padding: EdgeInsets.all(2.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfilePage(
+                              widget._firestore, question.user.reference)));
+                },
+                child: ListTile(
+                  leading: Image(image: AssetImage(question.user.picture)),
+                  title: Text(question.content,
+                      style: new TextStyle(fontSize: 25.0)),
+                  subtitle: Text("Asked by: " + question.user.name,
+                      style: new TextStyle(fontSize: 18.0)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Divider(
+                    height: 5,
+                    thickness: 3,
+                    color: Colors.blue.shade200,
+                    indent: 40,
+                    endIndent: 40),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                child: Text("Tagged Slides: " + question.slidesToNumberString(),
+                    style: new TextStyle(fontSize: 18.0)),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Divider(
+                    height: 5,
+                    thickness: 3,
+                    color: Colors.blue.shade200,
+                    indent: 40,
+                    endIndent: 40),
               ),
               Padding(
                 padding:

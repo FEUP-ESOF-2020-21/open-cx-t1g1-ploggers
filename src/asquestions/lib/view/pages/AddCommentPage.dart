@@ -20,6 +20,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
   bool showLoadingIndicator = false;
   ScrollController scrollController;
   bool isFromHost;
+  bool isFromModerator;
 
   @override
   void initState() {
@@ -32,7 +33,10 @@ class _AddCommentPageState extends State<AddCommentPage> {
     setState(() {
       showLoadingIndicator = showIndicator;
     });
-    isFromHost = await widget._firestore.isHost(widget._firestore.getCurrentUser(), widget._questionReference);
+    isFromHost = await widget._firestore
+        .isHost(widget._firestore.getCurrentUser(), widget._questionReference);
+    isFromModerator = await widget._firestore.isModerator(
+        widget._firestore.getCurrentUser(), widget._questionReference);
     if (this.mounted)
       setState(() {
         showLoadingIndicator = false;
@@ -75,7 +79,9 @@ class _AddCommentPageState extends State<AddCommentPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(2.0),
-                  child: Text("New Comment by: " + widget._firestore.getCurrentUser().name,
+                  child: Text(
+                      "New Comment by: " +
+                          widget._firestore.getCurrentUser().name,
                       style: new TextStyle(fontSize: 20.0)),
                 ),
                 Padding(
@@ -91,25 +97,27 @@ class _AddCommentPageState extends State<AddCommentPage> {
                     Center(
                       child: SizedBox(
                           child: TextFieldContainer(
-                            child: TextFormField(
-                        controller: myController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 5,
-                        validator: (input) =>
-                              input.length < 10 ? "Invalid Comment: Too Short!" : null,
-                        onSaved: (input) => _content = input,
-                        decoration: InputDecoration(
-                            suffix: Icon(Icons.question_answer_rounded, color: Colors.blue[900]),
+                        child: TextFormField(
+                          controller: myController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                          validator: (input) => input.length < 10
+                              ? "Invalid Comment: Too Short!"
+                              : null,
+                          onSaved: (input) => _content = input,
+                          decoration: InputDecoration(
+                            suffix: Icon(Icons.question_answer_rounded,
+                                color: Colors.blue[900]),
                             border: InputBorder.none,
                             focusedBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
                             hintText: "Write your Comment",
+                          ),
+                          style: TextStyle(height: 1),
                         ),
-                        style: TextStyle(height: 1),
-                      ),
-                          )),
+                      )),
                     ),
                   ]),
                 ),
@@ -136,7 +144,8 @@ class _AddCommentPageState extends State<AddCommentPage> {
   void _submit() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      widget._firestore.addComment(_content, isFromHost, widget._questionReference);
+      widget._firestore.addComment(
+          _content, isFromHost, isFromModerator, widget._questionReference);
       Navigator.pop(context);
     }
   }

@@ -62,6 +62,7 @@ class _NavigatorPageState extends State<NavigatorPage> {
 
       return Scaffold(
         body: PageView(
+          physics: new NeverScrollableScrollPhysics(),
           controller: _pageController,
           children: _screens,
           onPageChanged: _onPageChanged,
@@ -87,8 +88,9 @@ class _NavigatorPageState extends State<NavigatorPage> {
       );
     } else {
       return Scaffold(
-        body: Center(child: Image.asset("assets/logo.png",width: 350, height: 150, fit: BoxFit.contain))
-      );
+          body: Center(
+              child: Image.asset("assets/logo.png",
+                  width: 350, height: 150, fit: BoxFit.contain)));
     }
   }
 }

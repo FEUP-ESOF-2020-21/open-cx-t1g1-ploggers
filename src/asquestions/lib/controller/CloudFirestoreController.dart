@@ -90,8 +90,10 @@ class CloudFirestoreController {
     }
     DocumentReference talk = snapshot.get('talk');
     DocumentReference reference = snapshot.reference;
-    Question question = Question(
-        user, content, date, upvotes, downvotes, slides, talk, reference);
+
+    bool highlighted = snapshot.get('highlighted');
+    Question question = Question(user, content, date, upvotes, downvotes,
+        slides, highlighted, talk, reference);
     return question;
   }
 
@@ -112,11 +114,12 @@ class CloudFirestoreController {
     String content = snapshot.get('content');
     DateTime date = snapshot.get('date').toDate();
     bool isFromHost = snapshot.get('isFromHost');
+    bool isFromModerator = snapshot.get('isFromModerator');
     DocumentReference question = snapshot.get('question');
     DocumentReference reference = snapshot.reference;
 
-    Comment comment =
-        Comment(user, content, date, isFromHost, question, reference);
+    Comment comment = Comment(
+        user, content, date, isFromHost, isFromModerator, question, reference);
     return comment;
   }
 
@@ -171,6 +174,26 @@ class CloudFirestoreController {
     return await Future.wait(comments);
   }
 
+  Future<DocumentReference> getTalkFromQuestionReference(
+      DocumentReference questionRef) async {
+    DocumentSnapshot questionSnap = await questionRef.get();
+    DocumentReference talkRef = await questionSnap.get('talk');
+
+    return talkRef;
+  }
+
+  Future<List<Talk>> getTalksOfUser(DocumentReference user) async {
+    List<Talk> allTalks = await getTalks();
+    List<Talk> talks = [];
+    for (var talk in allTalks) {
+      if (talk.host.reference == user) {
+        talks.add(talk);
+      }
+    }
+    print(talks);
+    return talks;
+  }
+
   Future<User> getUser(DocumentSnapshot snapshot) async {
     Future<User> user = _makeUserFromSnapshot(snapshot);
     return await user;
@@ -207,6 +230,24 @@ class CloudFirestoreController {
     _currentUserEmail = email;
   }
 
+  void addQuestionWithSlideNumber(
+      String content, List<Slide> slides, DocumentReference talk) async {
+    List<DocumentReference> slidesRef = new List();
+    for (Slide slide in slides) {
+      slidesRef.add(await addSlideFromNumber(slide));
+    }
+    firestore.collection("questions").add({
+      "date": Timestamp.fromDate(DateTime.now()),
+      "slides": slidesRef,
+      "content": content,
+      "talk": talk,
+      "user": _currentUser.reference,
+      "upvotes": [],
+      "downvotes": [],
+      "highlighted": false,
+    });
+  }
+
   void addQuestion(String content, List<Slide> slides, DocumentReference talk) {
     List<DocumentReference> slidesRef = new List();
     for (Slide slide in slides) {
@@ -221,6 +262,7 @@ class CloudFirestoreController {
       "user": _currentUser.reference,
       "upvotes": [],
       "downvotes": [],
+      "highlighted": false,
     });
   }
 
@@ -235,11 +277,13 @@ class CloudFirestoreController {
     });
   }
 
-  void addComment(String content, bool isFromHost, DocumentReference question) {
+  void addComment(String content, bool isFromHost, bool isFromModerator,
+      DocumentReference question) {
     firestore.collection("comments").add({
       "date": Timestamp.fromDate(DateTime.now()),
       "content": content,
       "isFromHost": isFromHost,
+      "isFromModerator": isFromModerator,
       "question": question,
       "user": _currentUser.reference,
     });
@@ -258,6 +302,37 @@ class CloudFirestoreController {
 
     await question.reference
         .update({'upvotes': upvotesRef, 'downvotes': downvotesRef});
+  }
+
+  Future<void> refreshHighLighted(Question question) async {
+    bool highlighted = question.highlighted;
+    await question.reference.update({'highlighted': highlighted});
+  }
+
+  Future<void> removeQuestion(DocumentReference question) async {
+    String document = question.toString().split('/')[1];
+    List<Comment> comments =
+        await this.getCommentsFromQuestionReference(question);
+    for (var comment in comments) {
+      //print(comment);
+      String commentDocument = comment.reference.toString().split('/')[1];
+      await firestore
+          .collection("comments")
+          .doc(commentDocument.substring(0, commentDocument.length - 1))
+          .delete();
+    }
+    await firestore
+        .collection("questions")
+        .doc(document.substring(0, document.length - 1))
+        .delete();
+  }
+
+  Future<void> removeComment(DocumentReference comment) async {
+    String document = comment.toString().split('/')[1];
+    await firestore
+        .collection("comments")
+        .doc(document.substring(0, document.length - 1))
+        .delete();
   }
 
   Future<void> updateUser(String username, String name, String bio) async {
@@ -280,13 +355,35 @@ class CloudFirestoreController {
     return hostRef.id == user.reference.id;
   }
 
-  Future<DocumentReference> addTalk(String title, String room,
-      String description, User moderator, DateTime startDate) async {
+  Future<bool> isModerator(User user, DocumentReference question) async {
+    DocumentSnapshot questionSnap = await question.get();
+    DocumentReference talkRef = questionSnap.get("talk");
+    DocumentSnapshot talkSnap = await talkRef.get();
+    DocumentReference moderatorRef = talkSnap.get("moderator");
+
+    return moderatorRef.id == user.reference.id;
+  }
+
+  Future<bool> isModeratorOrHost(User user, DocumentReference talkRef) async {
+    DocumentSnapshot talkSnap = await talkRef.get();
+    DocumentReference moderatorRef = talkSnap.get("moderator");
+    DocumentReference hostRef = talkSnap.get("host");
+
+    return moderatorRef.id == user.reference.id ||
+        hostRef.id == user.reference.id;
+  }
+
+  Future<DocumentReference> addTalk(
+      String title,
+      String room,
+      String description,
+      DocumentReference moderator,
+      DateTime startDate) async {
     firestore.collection("talks").add({
       "description": description,
       "title": title,
       "host": _currentUser.reference,
-      "moderator": moderator.reference,
+      "moderator": moderator,
       "room": room,
       "startDate": Timestamp.fromDate(startDate)
     });
@@ -295,7 +392,7 @@ class CloudFirestoreController {
         .where('description', isEqualTo: description)
         .where('title', isEqualTo: title)
         .where('host', isEqualTo: _currentUser.reference)
-        .where('moderator', isEqualTo: moderator.reference)
+        .where('moderator', isEqualTo: moderator)
         .where('room', isEqualTo: room)
         .where('startDate', isEqualTo: Timestamp.fromDate(startDate))
         .get();
@@ -328,5 +425,36 @@ class CloudFirestoreController {
       });
       count++;
     }
+  }
+
+  Future<DocumentReference> addSlideFromNumber(Slide slide) async {
+    //Check if there is already a database slide with the same number
+    QuerySnapshot snapshot = await firestore
+        .collection("slides")
+        .where('number', isEqualTo: slide.number)
+        .where('talk', isEqualTo: null)
+        .where('url', isEqualTo: "number")
+        .get();
+    if (snapshot.docs.length > 0) {
+      print("Slide already exists, annexing...");
+      return snapshot.docs[0].reference;
+    }
+
+    //If not create one
+    firestore.collection("slides").add({
+      "number": slide.number,
+      "talk": null,
+      "url": "number",
+    });
+
+    QuerySnapshot snapshotCreate = await firestore
+        .collection("slides")
+        .where('number', isEqualTo: slide.number)
+        .where('talk', isEqualTo: null)
+        .where('url', isEqualTo: "number")
+        .get();
+    if (snapshot.docs.length == 0) return snapshotCreate.docs[0].reference;
+    print("New Number Slide created, annexing...");
+    return snapshotCreate.docs[0].reference;
   }
 }

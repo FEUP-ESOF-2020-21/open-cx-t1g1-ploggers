@@ -1,5 +1,4 @@
 import 'package:asquestions/model/User.dart';
-import 'package:asquestions/view/pages/AddTalkPage.dart';
 import 'package:asquestions/view/widgets/TextFieldContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +18,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
   User _user;
   bool flag1 = true, flag2 = true, flag3 = false, flag4 = false, flag5 = false;
   List<bool> flagList = [];
+
   void initState() {
     flagList = [flag1, flag2, flag3, flag4, flag5];
+    super.initState();
   }
 
   TextEditingController _username = TextEditingController();
@@ -35,7 +36,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    initState();
     _user = widget._firestore.getCurrentUser();
 
     Size size = MediaQuery.of(context).size;
@@ -141,7 +141,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                           name: _name,
                           firestore: widget._firestore)),
                 ])),
-            SignOutPage(widget._firestore)
+            SignOutPage()
           ],
         )));
   }
@@ -150,7 +150,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 class Avatar extends StatefulWidget {
   final VoidCallback refreshParent;
   final int avatarNumber;
-  User user;
+  final User user;
 
   Avatar(this.user, this.avatarNumber, this.refreshParent);
 
@@ -188,9 +188,8 @@ class _AvatarState extends State<Avatar> {
 }
 
 class SignOutPage extends StatelessWidget {
-  final CloudFirestoreController _firestore;
 
-  SignOutPage(this._firestore);
+  SignOutPage();
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
@@ -205,7 +204,7 @@ class SignOutPage extends StatelessWidget {
 class Button extends StatelessWidget {
   final CloudFirestoreController firestore;
   final TextEditingController bio, name, username;
-  DateTime startDate;
+  
   Button({
     this.bio,
     this.username,

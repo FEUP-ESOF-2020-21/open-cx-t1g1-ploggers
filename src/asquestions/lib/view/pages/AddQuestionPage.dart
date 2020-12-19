@@ -23,7 +23,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
   bool _sortedSlides = false;
   bool showLoadingIndicator = false;
   ScrollController scrollController;
-  Question _temp_question;
+  Question _tempQuestion;
 
   @override
   void initState() {
@@ -47,13 +47,14 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
-    _temp_question = new Question.fromNew(
+    _tempQuestion = new Question.fromNew(
         widget._firestore.getCurrentUser(),
         null,
         DateTime.now(),
         [],
         [],
         [],
+        false,
         widget._talkReference); // this object is helping to tag slides
     return Scaffold(
         appBar: AppBar(
@@ -179,7 +180,9 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
     if (_slides.length == 0) {
       slidesInput = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [MyAnnexQuestionForm()]);
+          children: [
+            MyAnnexQuestionForm(widget._talkReference, _tempQuestion)
+          ]);
     } else {
       slidesInput = ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -193,20 +196,33 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
 
   Widget buildSlideCard(BuildContext context, int index) {
     final slide = _slides[index];
-    return SlideCard(_temp_question, slide, _slides.length);
+    return SlideCard(_tempQuestion, slide, _slides.length);
   }
 
   void _submit() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      widget._firestore
-          .addQuestion(_content, _temp_question.slides, widget._talkReference);
+      if (_tempQuestion.slides.isNotEmpty) {
+        if (_tempQuestion.slides[0].reference == null) {
+          widget._firestore.addQuestionWithSlideNumber(_content, _tempQuestion.slides, widget._talkReference);
+        } else {
+          widget._firestore.addQuestion(
+              _content, _tempQuestion.slides, widget._talkReference);
+        }
+      } else {
+        widget._firestore
+            .addQuestion(_content, _tempQuestion.slides, widget._talkReference);
+      }
       Navigator.pop(context);
     }
   }
 }
 
 class MyAnnexQuestionForm extends StatefulWidget {
+  final DocumentReference talkReference;
+  final Question question;
+  MyAnnexQuestionForm(this.talkReference, this.question);
+
   @override
   _MyAnnexQuestionFormState createState() => _MyAnnexQuestionFormState();
 }
@@ -228,18 +244,31 @@ class _MyAnnexQuestionFormState extends State<MyAnnexQuestionForm> {
         controller: myController,
         maxLines: 1,
         decoration: InputDecoration(
-          hintText: "What slides do you want to tag?",
+          hintText: "What slides do you want to tag? (Format: 1,2,3...)",
         ),
         style: TextStyle(height: 1),
+        validator: (value) {
+          List<int> split;
+          try {
+            split = (value.split(',')).map(int.parse).toList();
+          } catch (split) {
+            return "Wrong format! Use format e.g. 1,2,3,4...";
+          }
+          for (int i in split) {
+            Slide _newSlide = Slide.fromNewNoImage(i, widget.talkReference);
+            widget.question.slides.add(_newSlide);
+          }
+          return null;
+        },
       )),
     );
   }
 }
 
 class SlideCard extends StatefulWidget {
-  Question question;
-  Slide slide;
-  int presentationLength;
+  final Question question;
+  final Slide slide;
+  final int presentationLength;
 
   SlideCard(this.question, this.slide, this.presentationLength);
 
