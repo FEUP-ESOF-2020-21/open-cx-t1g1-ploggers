@@ -254,6 +254,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
             Transform.scale(
               scale: 2.0,
               child: IconButton(
+                key: Key("QuestionUpvoteButton" + question.reference.id),
                   icon: Icon(Icons.keyboard_arrow_up_outlined),
                   color:
                       (question.hasUpvoted(widget._firestore.getCurrentUser())
@@ -264,10 +265,12 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
                   }),
             ),
             Text((question.getVotes()).toString(),
+                key: Key("VoteNumber" + question.reference.id),
                 style: new TextStyle(fontSize: 18.0)),
             Transform.scale(
               scale: 2.0,
               child: IconButton(
+                  key: Key("QuestionDownvoteButton" + question.reference.id),
                   icon: Icon(Icons.keyboard_arrow_down_outlined),
                   color:
                       (question.hasDownvoted(widget._firestore.getCurrentUser())

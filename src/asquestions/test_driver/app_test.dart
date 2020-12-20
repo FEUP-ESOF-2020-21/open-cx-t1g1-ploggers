@@ -11,10 +11,9 @@ Future<void> main() {
     ..reporters = [
       ProgressReporter(),
     ] // you can include the "StdoutReporter()" without the message level parameter for verbose log information
-    ..stepDefinitions = [GivenTalkQuestions(), ClickUpvoteButton()]
+    ..stepDefinitions = [GivenTalkQuestions(), WhenUserClicksUpvote(), ThenUpvote(), WhenUserClicksDownvote(), ThenDownvote()]
     ..restartAppBetweenScenarios = true
     ..targetAppPath = "test_driver/app.dart"
-    // ..tagExpression = "@smoke" // uncomment to see an example of running scenarios based on tag expressions
     ..exitAfterTestRun = true; // set to false if debugging to exit cleanly
   return GherkinRunner().execute(config);
 }

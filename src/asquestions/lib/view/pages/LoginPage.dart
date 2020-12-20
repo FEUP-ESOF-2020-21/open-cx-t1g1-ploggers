@@ -78,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   bottom: 20),
               child: TextFieldContainer(
                 child: TextField(
+                  key: Key("LoginEmailField"),
                   controller: _email,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
@@ -92,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                   left: size.width * 0.1, right: size.width * 0.1),
               child: TextFieldContainer(
                 child: TextField(
+                  key: Key("LoginPasswordField"),
                   controller: _password,
                   obscureText: _hidePassword,
                   decoration: InputDecoration(
@@ -140,6 +142,7 @@ class SigninButton extends StatelessWidget {
           minWidth: 350.0,
           height: 50.0,
           child: RaisedButton(
+              key: Key("SignInButton"),
               highlightElevation: 0.0,
               splashColor: Colors.blue[800],
               highlightColor: Colors.blue,

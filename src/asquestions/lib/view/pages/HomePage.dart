@@ -79,6 +79,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildTalkCard(BuildContext context, int index) {
     final _talk = _talks[index];
     return GestureDetector(
+        key: Key("TalkButton" + index.toString()),
         onTap: () {
           Navigator.push(
               context,
