@@ -1,4 +1,5 @@
 import 'package:asquestions/controller/Authenticator.dart';
+import 'package:asquestions/view/pages/RecoverPasswordPage.dart';
 import 'package:asquestions/view/widgets/TextFieldContainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:asquestions/controller/CloudFirestoreController.dart';
@@ -27,87 +28,103 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: size.height*0.036),
-              child: Container(
-                alignment: Alignment.topLeft,
-                child: BackButton(color: Colors.blue)),
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: size.height * 0.036),
+          child: Container(
+              alignment: Alignment.topLeft,
+              child: BackButton(color: Colors.blue)),
+        ),
+        Container(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            child: Image.asset("assets/logo.png",
+                width: size.width * 0.7,
+                height: size.height * 0.22,
+                fit: BoxFit.cover),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: size.height * 0.005),
+          child: Divider(
+            indent: size.width * 0.1,
+            endIndent: size.width * 0.1,
+            height: 20,
+            color: Colors.blue[900],
+          ),
+        ),
+        Text(
+          "Sign In",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w300,
+              color: Colors.blue[600]),
+        ),
+        Divider(
+          indent: size.width * 0.1,
+          endIndent: size.width * 0.1,
+          height: 20,
+          color: Colors.blue[900],
+        ),
+        Form(
+          key: formKey,
+          child: Column(children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(
+                  top: 20,
+                  left: size.width * 0.1,
+                  right: size.width * 0.1,
+                  bottom: 20),
+              child: TextFieldContainer(
+                child: TextField(
+                  controller: _email,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.email_rounded, color: Colors.blue[900]),
+                      hintText: "Email",
+                      border: InputBorder.none),
+                ),
+              ),
             ),
             Container(
-              alignment: Alignment.topCenter,
-              child: SizedBox(
-                child: Image.asset("assets/logo.png", width: size.width*0.7, height: size.height*0.22, fit: BoxFit.cover),
+              padding: EdgeInsets.only(
+                  left: size.width * 0.1, right: size.width * 0.1),
+              child: TextFieldContainer(
+                child: TextField(
+                  controller: _password,
+                  obscureText: _hidePassword,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.lock_rounded, color: Colors.blue[900]),
+                      hintText: "Password",
+                      border: InputBorder.none),
+                ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: size.height * 0.005),
-              child: Divider(
-                indent: size.width*0.1,
-                endIndent: size.width*0.1,
-                height: 20,
-                color: Colors.blue[900],
-              ),
-            ),
-            Text(
-              "Sign In",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.blue[600]),
-            ),
-            Divider(
-              indent: size.width*0.1,
-              endIndent: size.width*0.1,
-              height: 20,
-              color: Colors.blue[900],
-            ),
-            Form(
-              key: formKey,
-              child: Column(children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(
-                      top: 20,
-                      left: size.width * 0.1,
-                      right: size.width * 0.1,
-                      bottom: 20),
-                  child: TextFieldContainer(
-                    child: TextField(
-                      controller: _email,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.email_rounded, color: Colors.blue[900]),
-                          hintText: "Email",
-                          border: InputBorder.none),
-                    ),
-              
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                      left: size.width * 0.1, right: size.width * 0.1),
-                  child: TextFieldContainer(
-                      child: TextField(
-                      controller: _password,
-                      obscureText: _hidePassword,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.lock_rounded, color: Colors.blue[900]),
-                          hintText: "Password",
-                          border: InputBorder.none),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                      left: size.width * 0.1, right: size.width * 0.1),
-                  margin: const EdgeInsets.only(bottom: 20),
-                  child: SigninButton(email: _email, password: _password),
-                )
-              ]),
+            Container(
+              padding: EdgeInsets.only(
+                  left: size.width * 0.1, right: size.width * 0.1),
+              margin: const EdgeInsets.only(bottom: 20),
+              child: SigninButton(email: _email, password: _password),
             )
-          ],
-        )));
+          ]),
+        ),
+        FlatButton(
+            onPressed: () {
+              setState(() {
+                Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              RecoverPasswordPage(widget._firestore)));
+              });
+            },
+            child: Text(
+              "Forgot password?",
+              style: TextStyle(fontSize: 18),
+            ))
+      ],
+    )));
   }
 }
 
@@ -137,7 +154,6 @@ class SigninButton extends StatelessWidget {
                       fontWeight: FontWeight.w300,
                       color: Colors.white)),
               onPressed: () {
-                //print(email.text);
                 context
                     .read<Authenticator>()
                     .signIn(email.text.trim(), password.text.trim())
@@ -149,5 +165,6 @@ class SigninButton extends StatelessWidget {
                 });
               })),
     );
+
   }
 }
