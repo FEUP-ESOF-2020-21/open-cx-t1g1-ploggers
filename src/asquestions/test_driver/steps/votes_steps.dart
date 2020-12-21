@@ -21,7 +21,7 @@ class GivenTalkQuestions extends GivenWithWorld<FlutterWorld> {
 
     await FlutterDriverUtils.tap(world.driver, signInButtonFinder);
 
-    final talkButtonFinder = find.byValueKey("TalkButton0");
+    final talkButtonFinder = find.byValueKey("TalkButton7iKsTbzcoCaYhARsYPO2");
 
     await FlutterDriverUtils.tap(world.driver, talkButtonFinder);
   }

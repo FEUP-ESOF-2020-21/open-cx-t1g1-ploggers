@@ -90,6 +90,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
+              key: Key("QuestionAddButton"),
               icon: Icon(Icons.add_box_outlined),
               iconSize: 28,
               color: Colors.white,
@@ -326,6 +327,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
           Transform.scale(
             scale: 2.0,
             child: IconButton(
+                key: Key("QuestionMarkButton" + question.reference.id),
                 icon: (question.isHighlighted()
                     ? Icon(Icons.star_rate_rounded)
                     : Icon(Icons.star_border_rounded)),
@@ -340,6 +342,7 @@ class _TalkQuestionsState extends State<TalkQuestionsPage> {
           Transform.scale(
             scale: 2.0,
             child: IconButton(
+                key: Key("QuestionDeleteButton" + question.reference.id),
                 icon: Icon(Icons.close_rounded),
                 color: Colors.red,
                 onPressed: () {
