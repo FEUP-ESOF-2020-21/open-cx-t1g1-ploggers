@@ -543,14 +543,11 @@ Use cross-links to the code repository and only embed real fragments of code whe
 
 ## Test
 
-There are several ways of documenting testing activities, and quality assurance in general, being the most common: a strategy, a plan, test case specifications, and test checklists.
+In order to test our app's features we implemented acceptance tests using the **gherkin package**. These tests are divided in two parts, the features and the steps. The features are described in **.feature** files using the same language used in the acceptance tests. The steps are defined in **.dart** files and are responsible for performing the actions described in the features. We decided to implement automated tests for the most important features of our app, such as:
 
-In this section it is only expected to include the following:
-
-- test plan describing the list of features to be tested and the testing methods and tools;
-- test case specifications to verify the functionalities, using unit tests and acceptance tests.
-
-A good practice is to simplify this, avoiding repetitions, and automating the testing actions as much as possible.
+- Highlighting a question
+- Posting a question and anexing a slide
+- Upvoting/Downvoting a question
 
 ------
 
@@ -564,18 +561,7 @@ For the purpose of ESOF, we will use a very simple approach, just to manage feat
 
 ## Project management
 
-Software project management is an art and science of planning and leading software projects, in which software projects are planned, implemented, monitored and controlled.
-
-In the context of ESOF, we expect that each team adopts a project management tool capable of registering tasks, assign tasks to people, add estimations to tasks, monitor tasks progress, and therefore being able to track their projects.
-
-Example of tools to do this are:
-
-- [Trello.com](https://trello.com/)
-- [Github Projects](https://github.com/features/project-management/com)
-- [Pivotal Tracker](https://www.pivotaltracker.com/)
-- [Jira](https://www.atlassian.com/software/jira)
-
-We recommend to use the simplest tool that can possibly work for the team.
+Our project management tool of choice was [Github Projects](https://github.com/FEUP-ESOF-2020-21/open-cx-t1g1-ploggers/projects/1), since it is simple and allows us to register, assign and monitor tasks.
 
 ------
 
