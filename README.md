@@ -1,5 +1,5 @@
 
-  
+
 # open-cx-t1g1-ploggers Development Report
 
 Welcome to the documentation pages of the AsQuestions of **openCX**!
@@ -547,6 +547,8 @@ In order to test our app's features we implemented acceptance tests using the **
 - Highlighting a question
 - Posting a question and anexing a slide
 - Upvoting/Downvoting a question
+
+![acceptance_tests](./img/acceptance_tests.png)
 
 ------
 
