@@ -457,4 +457,15 @@ class CloudFirestoreController {
     print("New Number Slide created, annexing...");
     return snapshotCreate.docs[0].reference;
   }
+
+
+  Future<DocumentReference> getQuestionReferenceByContent(String content) async {
+    QuerySnapshot snapshot = await firestore
+        .collection("questions")
+        .where("content", isEqualTo: content)
+        .limit(1)
+        .get();
+    if (snapshot.docs.length == 0) return null;
+    return snapshot.docs[0].reference;
+  }
 }

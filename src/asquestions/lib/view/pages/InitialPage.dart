@@ -76,6 +76,7 @@ class _InitialPageState extends State<InitialPage> {
               minWidth: 350.0,
               height: 50.0,
               child: RaisedButton(
+                key: Key("LoginButton"),
                 highlightElevation: 0.0,
                 splashColor: Colors.blue[900],
                 highlightColor: Colors.blue,

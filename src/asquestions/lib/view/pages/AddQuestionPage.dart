@@ -99,6 +99,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                     child: SizedBox(
                         child: TextFieldContainer(
                       child: TextFormField(
+                        key: Key("QuestionField"),
                         controller: myController,
                         keyboardType: TextInputType.multiline,
                         maxLines: 5,
@@ -154,6 +155,7 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
                     children: [
                       Expanded(
                           child: TextButton(
+                            key: Key("SubmitButton"),
                         onPressed: () => _submit(),
                         child: Text("Submit",
                             style: TextStyle(color: Colors.white)),
@@ -295,6 +297,7 @@ class _SlideCardState extends State<SlideCard> {
     ]);
 
     return GestureDetector(
+      key: Key("AnnexSlideButton" + widget.slide.number.toString()),
       onTap: () {
         setState(() {
           widget.question.toggleAnnexSlide(widget.slide);

@@ -77,7 +77,7 @@ class AsQuestionsApp extends StatelessWidget {
             // closer together (more dense) than on mobile platforms.
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: /*InitialPage(firestore)),*/ MainPage(firestore)),
+          home: MainPage(firestore)),
     );
   }
 }
@@ -95,6 +95,9 @@ class MainPage extends StatelessWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pop(context);
         });
+      }
+      else{
+        context.watch<Authenticator>().signOut(); //Disable auto-login 
       }
       _firestore.setCurrentUserEmail(firebaseUser.email);
       return NavigatorPage(_firestore);
