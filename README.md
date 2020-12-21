@@ -1,4 +1,5 @@
 
+  
 # open-cx-t1g1-ploggers Development Report
 
 Welcome to the documentation pages of the AsQuestions of **openCX**!
@@ -523,21 +524,19 @@ For the app's database, we decided to use Firebase since both Firebase and Flutt
 
 The communication between both sides of the application is done over HTTPS, retrieving/storing all information needed from the database.
 
+
 ### Prototype
 
-To help on validating all the architectural, design and technological decisions made, we usually implement a vertical prototype, a thin vertical slice of the system.
+For the application prototype, we decide to start with our Story #3, which states that "As an attendee, I want to see and answer questions so that I can help the other attendees.", this being the basis of our app.
 
-In this subsection please describe in more detail which, and how, user(s) story(ies) were implemented.
+
+We've laid out the general structure of a talk room page, and while we still don't have a real database to connect to, we've added the functionality to allow users to create and submit their questions, which will be temporarily stored by the app and then be displayed in the talks page. Also, work has begun on the question voting system, which for the moment only stores the counting in a local variable.
 
 ------
 
 ## Implementation
 
-Regular product increments are a good practice of product management.
-
-While not necessary, sometimes it might be useful to explain a few aspects of the code that have the greatest potential to confuse software engineers about how it works. Since the code should speak by itself, try to keep this section as short and simple as possible.
-
-Use cross-links to the code repository and only embed real fragments of code when strictly needed, since they tend to become outdated very soon.
+Changelogs for the 4 different product increments can be found [here](https://github.com/FEUP-ESOF-2020-21/open-cx-t1g1-ploggers/releases).
 
 ------
 
@@ -564,9 +563,3 @@ For the purpose of ESOF, we will use a very simple approach, just to manage feat
 Our project management tool of choice was [Github Projects](https://github.com/FEUP-ESOF-2020-21/open-cx-t1g1-ploggers/projects/1), since it is simple and allows us to register, assign and monitor tasks.
 
 ------
-
-## Evolution - contributions to open-cx
-
-Describe your contribution to open-cx (iteration 5), linking to the appropriate pull requests, issues, documentation.
-
----
